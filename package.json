@@ -7,15 +7,39 @@
     "build": "next build",
     "start": "next start",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "prepare": "husky install",
+    "commit": "git-cz",
+    "preinstall": "node -e \"if(!process.env.npm_execpath.includes('npm')) throw new Error('This project uses npm for package management, please use npm to install dependencies.')\"",
+    "prettier": "prettier --write ."
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,ts,tsx}": [
+      "eslint --max-warnings=0",
+      "prettier --write"
+    ],
+    "**/*.{html,json,css,scss,md,mdx}": [
+      "prettier -w"
+    ]
   },
   "dependencies": {
     "next": "14.1.4",
     "react": "^18",
     "react-dom": "^18"
   },
+  "engines": {
+    "node": ">=18.17.0",
+    "npm": ">=6.14.4"
+  },
   "devDependencies": {
     "@chromatic-com/storybook": "^1.3.1",
+    "@commitlint/cli": "^19.2.1",
+    "@commitlint/config-conventional": "^19.1.0",
     "@storybook/addon-a11y": "^8.0.6",
     "@storybook/addon-essentials": "^8.0.6",
     "@storybook/addon-interactions": "^8.0.6",
@@ -28,10 +52,15 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "autoprefixer": "^10.4.19",
     "eslint": "^8",
     "eslint-config-next": "14.1.4",
     "eslint-plugin-storybook": "^0.8.0",
+    "husky": "^8.0.0",
+    "postcss": "^8.4.38",
+    "prettier": "^3.3.1",
     "storybook": "^8.0.6",
+    "tailwindcss": "^3.4.4",
     "typescript": "^5"
   }
 }
