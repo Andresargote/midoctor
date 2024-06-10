@@ -23,4 +23,4 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## How to make a commit
 
-Use the command `npm run commit` to make a commit. This will open a prompt to write a commit message.
+Use the command `git commit` to make a commit. This will open a prompt to write a commit message.
