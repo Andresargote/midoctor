@@ -1,7 +1,7 @@
 export default function Home() {
   return (
     <main>
-      <p>Telemedicine super app</p>
+      <p className="text-3xl font-bold underline">Telemedicine super app</p>
     </main>
   );
 }
