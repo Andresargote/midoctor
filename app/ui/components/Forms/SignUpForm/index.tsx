@@ -6,13 +6,10 @@ import { Button } from '../../Button';
 import TextInput from '../../TextInput';
 import { signUpSchema } from './validate-schema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Provider } from '../../Provider';
-import Google from '@/app/ui/icons/Google';
-import { Separator } from '../../Separator';
 import { Toast } from '../../Toast';
+import { signUp } from '@/app/(auth)/crear-cuenta/action';
 
 type SignUpFormDefaultValues = {
-  fullName: string;
   email: string;
 };
 
@@ -25,44 +22,32 @@ export function SignUpForm() {
     formState: { errors },
   } = useForm<SignUpFormDefaultValues>({
     defaultValues: {
-      fullName: '',
       email: '',
     },
     resolver: zodResolver(signUpSchema),
   });
-
-  const onSubmit = async (data: SignUpFormDefaultValues) => {
+  const onSubmit = async (formValues: SignUpFormDefaultValues) => {
     setIsLoading(true);
     setError(null);
     try {
-      const { fullName, email } = data;
-      console.log(fullName, email);
+      const { email } = formValues;
+
+      const { error } = await signUp(email);
+
+      if (error) {
+        throw new Error();
+      }
     } catch (error) {
       setError(
-        'Ocurrió un error al intentar crear su cuenta, por favor intenta de nuevo, si el problema persiste contacta a soporte.',
+        'Ocurrió un error al iniciar sesión, por favor intenta de nuevo, si el problema persiste contacta con soporte.',
       );
     } finally {
       setIsLoading(false);
     }
   };
-
   return (
     <>
-      <div className="flex items-center flex-column mb-7">
-        <Provider
-          disabled={isLoading}
-          icon={Google}
-          text="Crear cuenta con Google"
-        />
-      </div>
-      <Separator>O</Separator>
       <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
-        <TextInput
-          id="fullName"
-          label="Nombre completo"
-          {...register('fullName')}
-          errorMessage={(errors['fullName']?.message as string) ?? ''}
-        />
         <TextInput
           id="email"
           label="Email"

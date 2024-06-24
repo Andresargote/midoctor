@@ -1,9 +1,6 @@
 import { z } from 'zod';
 
 export const signUpSchema = z.object({
-  fullName: z.string().min(1, {
-    message: 'Introduce tu nombre completo',
-  }),
   email: z
     .string()
     .min(1, {

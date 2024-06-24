@@ -6,10 +6,8 @@ import { Button } from '../../Button';
 import TextInput from '../../TextInput';
 import { signInSchema } from './validate-schema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Provider } from '../../Provider';
-import Google from '@/app/ui/icons/Google';
-import { Separator } from '../../Separator';
 import { Toast } from '../../Toast';
+import { signIn } from '@/app/(auth)/iniciar-sesion/action';
 
 type SignInFormDefaultValues = {
   email: string;
@@ -29,15 +27,20 @@ export function SignInForm() {
     resolver: zodResolver(signInSchema),
   });
 
-  const onSubmit = async (data: SignInFormDefaultValues) => {
+  const onSubmit = async (formValues: SignInFormDefaultValues) => {
     setIsLoading(true);
     setError(null);
     try {
-      const { email } = data;
-      console.log(email);
+      const { email } = formValues;
+
+      const { error } = await signIn(email);
+
+      if (error) {
+        throw new Error();
+      }
     } catch (error) {
       setError(
-        'Ocurrió un error al iniciar sesión, por favor intenta de nuevo, si el problema persiste contacta a soporte.',
+        'Ocurrió un error al iniciar sesión, por favor intenta de nuevo, si el problema persiste contacta con soporte.',
       );
     } finally {
       setIsLoading(false);
@@ -46,14 +49,6 @@ export function SignInForm() {
 
   return (
     <>
-      <div className="flex items-center flex-column mb-7">
-        <Provider
-          disabled={isLoading}
-          icon={Google}
-          text="Iniciar sesión con Google"
-        />
-      </div>
-      <Separator>O</Separator>
       <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
         <TextInput
           id="email"

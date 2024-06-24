@@ -16,7 +16,7 @@ export function Button({ isLoading = false, ...props }) {
         'px-4 font-semibold rounded-full min-h-14 text-f-white',
         props?.disabled
           ? 'bg-primary-100'
-          : 'bg-primary-500  hover:bg-primary-600 transition duration-300',
+          : 'bg-primary-500 hover:bg-primary-600 transition duration-300',
         props.className,
       )}
       {...props}
