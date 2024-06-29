@@ -9,6 +9,7 @@ module.exports = {
     colors: {
       'f-black': '#0A0A0A',
       'f-white': '#FFFFFF',
+      'f-gray': '#F8FAFC',
       neutral: {
         50: '#F8FAFC',
         100: '#F1F5F9',

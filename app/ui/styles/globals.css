@@ -7,3 +7,31 @@
   padding: 0;
   margin: 0;
 }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+@layer base {
+  input:hover,
+  .focused-btn:hover {
+    transition: box-shadow 0.3s;
+    box-shadow: 0 0 0 2px #1fbeb8;
+  }
+
+  input:focus,
+  .focused-btn:focus {
+    outline: transparent solid 1px;
+    box-shadow:
+      inset 0 0 0 2px #1fbeb8,
+      0 0 0 2px #a6e5e2;
+  }
+}
