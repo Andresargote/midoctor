@@ -1,4 +1,4 @@
-import { createClient } from '@/app/lib/utils/supabase/client';
+import { createClient } from '@/app/lib/utils/supabase/server';
 import { redirect } from 'next/navigation';
 
 export default async function MiPerfil() {

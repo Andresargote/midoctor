@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '../lib/utils/supabase/server';
+import { AppHeader } from '../ui/components/AppHeader';
 
 export default async function AppLayout({
   children,
@@ -15,8 +16,12 @@ export default async function AppLayout({
 
   return (
     <html lang="es">
-      <body>
-        <p>App layout</p>
+      <body
+        style={{
+          backgroundColor: '#F1F5F9',
+        }}
+      >
+        <AppHeader />
         {children}
       </body>
     </html>

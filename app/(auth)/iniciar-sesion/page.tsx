@@ -7,7 +7,7 @@ export default function SignIn() {
   return (
     <>
       <header className="container px-6 py-5 mx-auto">
-        <Link className="flex items-start gap-2" href="/">
+        <Link className="flex items-start gap-2 w-fit" href="/">
           <Logo width={144} color="#1FBEB8" role="img" aria-label="MiDoctor" />
           <p className="sr-only">MiDoctor</p>
         </Link>
