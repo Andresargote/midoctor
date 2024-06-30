@@ -94,7 +94,7 @@ export function AppNav() {
 
       <div
         className={clsx(
-          'absolute top-0 left-0 z-50 h-full px-3 py-2 bg-f-white w-72 lg:block',
+          'fixed top-0 left-0 z-50 h-full px-3 py-2 bg-f-white w-72 lg:block',
           isNavOpen ? 'block' : 'hidden',
         )}
         id="nav-menu"

@@ -15,7 +15,7 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
         </label>
         <input
           id={id}
-          className="flex w-full px-4 transition duration-300 border rounded-full f-black min-h-14 border-neutral-300"
+          className="flex w-full px-4 transition duration-300 border rounded-full text-f-black min-h-14 border-neutral-300"
           {...props}
           ref={ref}
         />

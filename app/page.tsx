@@ -12,7 +12,7 @@ export default async function Home() {
         Telemedicine super app
         {data?.user?.email}
       </p>
-      <form action={signOut} className="flex flex-col gap-4 prose">
+      <form action={signOut} className="flex flex-col gap-4">
         <button className="btn btn-primary">Log out</button>
       </form>
     </main>
