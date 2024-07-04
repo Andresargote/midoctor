@@ -1,15 +1,26 @@
 import { createClient } from '@/app/lib/utils/supabase/server';
-import { Button } from '@/app/ui/components/Button';
-import TextInput from '@/app/ui/components/TextInput';
-import { TextareaInput } from '@/app/ui/components/TextareaInput';
-import { UploadAvatar } from '@/app/ui/components/UploadAvatar';
 import { redirect } from 'next/navigation';
 import { Envelope } from 'react-bootstrap-icons';
 import * as Switch from '@radix-ui/react-switch';
+import { ProfileForm } from '@/app/ui/components/Forms/ProfileForm';
+import { UserProfile } from '@/app/lib/types';
+import { PostgrestError } from '@supabase/supabase-js';
 
 export default async function MiPerfil() {
   const supabase = createClient();
   const { data, error } = await supabase.auth.getUser();
+
+  const {
+    data: profile,
+    error: profileError,
+  }: {
+    data: UserProfile | null;
+    error: PostgrestError | null;
+  } = await supabase
+    .from('profiles')
+    .select()
+    .eq('id', data?.user?.id)
+    .single();
 
   if (error || !data?.user) {
     redirect('/iniciar-sesion');
@@ -26,17 +37,10 @@ export default async function MiPerfil() {
           </p>
 
           <div className="w-full px-4 py-6 mb-6 rounded-lg bg-f-white">
-            <form className="flex flex-col gap-4">
-              <UploadAvatar />
-              <TextInput label="Nombre de usuario" id="user-name" />
-              <TextInput label="Nombre completo" id="full-name" />
-              <TextareaInput
-                label="Sobre mí"
-                id="about-me"
-                placeholder="Escribe algo sobre ti"
-              />
-              <Button type="submit">Guardar cambios</Button>
-            </form>
+            <ProfileForm
+              profile={profile}
+              profileError={profileError ? true : false}
+            />
           </div>
 
           <h2 className="mb-2 text-2xl font-semibold text-neutral-900">

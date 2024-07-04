@@ -9,8 +9,10 @@ import { signOut } from '@/app/(home)/action';
 import { useState } from 'react';
 import { Loader } from '../Loader';
 import { Toast } from '../Toast';
+import { Avatar } from '../Avatar';
+import { UserProfile } from '@/app/lib/types';
 
-export function AppHeader() {
+export function AppHeader({ profile }: { profile: UserProfile | null }) {
   const [signOutError, setSignOutError] = useState(false);
   const [isSignOutLoading, setIsSignOutLoading] = useState(false);
 
@@ -50,7 +52,7 @@ export function AppHeader() {
                 className="rounded-full w-11 h-11 bg-primary-500 text-f-white"
                 aria-label="Abrir opciones de usuario"
               >
-                <span className="text-xl">A</span>
+                <Avatar profile={profile} />
               </button>
             </DropdownMenu.Trigger>
 
