@@ -10,8 +10,7 @@
     "build-storybook": "storybook build",
     "prepare": "husky install",
     "commit": "git-cz",
-    "preinstall": "node -e \"if(!process.env.npm_execpath.includes('npm')) throw new Error('This project uses npm for package management, please use npm to install dependencies.')\"",
-    "prettier": "prettier --write ."
+    "preinstall": "node -e \"if(!process.env.npm_execpath.includes('npm')) throw new Error('This project uses npm for package management, please use npm to install dependencies.')\""
   },
   "config": {
     "commitizen": {
@@ -21,9 +20,6 @@
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
       "npx @biomejs/biome check --write ./app/"
-    ],
-    "**/*.{html,json,css,scss,md,mdx}": [
-      "prettier -w"
     ]
   },
   "dependencies": {
@@ -68,7 +64,6 @@
     "eslint-plugin-storybook": "^0.8.0",
     "husky": "^8.0.0",
     "postcss": "^8.4.38",
-    "prettier": "^3.3.1",
     "storybook": "^8.0.6",
     "tailwindcss": "^3.4.4",
     "typescript": "^5"

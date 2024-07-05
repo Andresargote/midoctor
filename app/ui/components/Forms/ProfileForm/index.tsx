@@ -81,8 +81,6 @@ export function ProfileForm({ profile, profileError }: ProfileFormProps) {
 		return value.toLowerCase().replace(/\s/g, "-").trim();
 	};
 
-	console.log(profile);
-
 	return (
 		<>
 			<form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
