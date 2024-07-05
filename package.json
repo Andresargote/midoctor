@@ -20,8 +20,7 @@
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
-      "eslint --max-warnings=0",
-      "prettier --write"
+      "npx @biomejs/biome check --write ./app/"
     ],
     "**/*.{html,json,css,scss,md,mdx}": [
       "prettier -w"

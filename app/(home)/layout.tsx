@@ -1,14 +1,14 @@
 export default function AppLayout({
-  children,
+	children,
 }: Readonly<{
-  children: React.ReactNode;
+	children: React.ReactNode;
 }>) {
-  return (
-    <html lang="es">
-      <body>
-        <p>App layout</p>
-        {children}
-      </body>
-    </html>
-  );
+	return (
+		<html lang="es">
+			<body>
+				<p>App layout</p>
+				{children}
+			</body>
+		</html>
+	);
 }
