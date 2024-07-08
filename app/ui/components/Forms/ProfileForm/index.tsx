@@ -25,7 +25,9 @@ export type UserFormDefaultValues = {
 };
 
 export function ProfileForm({ profile, profileError }: ProfileFormProps) {
-	console.log(profile);
+	const [isSuccess, setIsSuccess] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
+	const [isError, setIsError] = useState(false);
 	const [isProfileError, setIsProfileError] = useState(false);
 	const [avatarImg, setAvatarImg] = useState<File | null>(null);
 
@@ -50,6 +52,9 @@ export function ProfileForm({ profile, profileError }: ProfileFormProps) {
 	});
 
 	const onSubmit = async (formValues: UserFormDefaultValues) => {
+		setIsSuccess(false);
+		setIsError(false);
+		setIsLoading(true);
 		try {
 			if (avatarImg) {
 				const avatarFormData = new FormData();
@@ -72,8 +77,13 @@ export function ProfileForm({ profile, profileError }: ProfileFormProps) {
 				id: profile?.id as string,
 				...formValues,
 			});
+
+			setIsSuccess(true);
 		} catch (error) {
 			console.error(error);
+			setIsError(true);
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -85,7 +95,6 @@ export function ProfileForm({ profile, profileError }: ProfileFormProps) {
 		<>
 			<form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
 				<UploadAvatar
-					isLoading={!!profile}
 					defaultAvatarUrl={profile?.avatar_url ?? ""}
 					handleSetAvatarFileBeforeUpload={(file) => setAvatarImg(file)}
 				/>
@@ -109,12 +118,23 @@ export function ProfileForm({ profile, profileError }: ProfileFormProps) {
 					{...register("about_me")}
 					errorMessage={(errors.about_me?.message as string) ?? ""}
 				/>
-				<Button type="submit">Guardar cambios</Button>
+				<Button disabled={isLoading} type="submit" isLoading={isLoading}>
+					Guardar cambios
+				</Button>
 			</form>
+			{isSuccess && (
+				<Toast type="success" message="¡Perfil actualizado correctamente!" />
+			)}
 			{isProfileError && (
 				<Toast
 					type="error"
 					message="Ocurrió un error al cargar tu perfil. Si el problema persiste, contacta con soporte"
+				/>
+			)}
+			{isError && (
+				<Toast
+					type="error"
+					message="Ocurrió un error al intentar guardar los cambios. Si el problema persiste, contacta con soporte"
 				/>
 			)}
 		</>

@@ -9,12 +9,23 @@ export type TextInputProps = ComponentProps<"input"> & {
 };
 
 const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
-	({ label, id, errorMessage, handleInputFormatter, ...props }, ref) => {
+	(
+		{
+			label,
+			id,
+			errorMessage,
+			handleInputFormatter,
+
+			...props
+		},
+		ref,
+	) => {
 		return (
 			<div className="flex flex-col gap-1.5">
 				<label htmlFor={id} className="text-sm font-light text-neutral-600">
 					{label}
 				</label>
+
 				<input
 					id={id}
 					className="flex w-full px-4 transition duration-300 border rounded-full text-f-black min-h-14 border-neutral-300"
@@ -27,6 +38,7 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
 						props.onChange?.(e);
 					}}
 				/>
+
 				{errorMessage && (
 					<span className="text-xs font-semibold text-error-500 font-xs">
 						{errorMessage}

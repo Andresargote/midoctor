@@ -18,6 +18,7 @@ export function Avatar({ profile }: { profile: UserProfile | null }) {
 					width={44}
 					height={44}
 					className="rounded-full w-11 h-11"
+					style={{ objectFit: "cover" }}
 				/>
 			) : (
 				<span className="text-xl">{initial()}</span>

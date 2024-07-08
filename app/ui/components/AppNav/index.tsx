@@ -19,7 +19,7 @@ export function AppNav() {
 
 	const navLinks = [
 		{
-			title: "Mis Consultas",
+			title: "Mis Consultorios",
 			href: "/",
 			icon: (
 				<Hospital color="#0A0A0A" width={20} height={20} className="mr-6" />

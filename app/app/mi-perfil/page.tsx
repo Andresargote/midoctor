@@ -4,6 +4,7 @@ import { ProfileForm } from "@/app/ui/components/Forms/ProfileForm";
 import * as Switch from "@radix-ui/react-switch";
 import type { PostgrestError } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 import { Envelope } from "react-bootstrap-icons";
 
 export default async function MiPerfil() {
@@ -25,6 +26,7 @@ export default async function MiPerfil() {
 	if (error || !data?.user) {
 		redirect("/iniciar-sesion");
 	}
+
 	return (
 		<main className="px-4 py-6 mx-auto">
 			<div className="container flex flex-col items-center mx-auto lg:pl-72 ">
@@ -32,7 +34,7 @@ export default async function MiPerfil() {
 					<h1 className="mb-2 text-3xl font-semibold text-neutral-900">
 						Perfil
 					</h1>
-					<p className="mb-6 font-light text-neutral-800">
+					<p className="mb-6 font-light leading-relaxed text-neutral-800 ">
 						Aquí puedes ver y editar la información de tu perfil.
 					</p>
 
@@ -43,7 +45,7 @@ export default async function MiPerfil() {
 					<h2 className="mb-2 text-2xl font-semibold text-neutral-900">
 						Preferencias de notificación
 					</h2>
-					<p className="mb-6 font-light text-neutral-800">
+					<p className="mb-6 font-light leading-relaxed text-neutral-800">
 						Cómo te gustaría recibir notificaciones cuando alguien agende una
 						cita contigo?
 					</p>
