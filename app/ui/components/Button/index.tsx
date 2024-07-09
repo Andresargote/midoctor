@@ -11,7 +11,6 @@ export type ButtonProps = ComponentProps<"button"> & {
 export function Button({ isLoading = false, ...props }) {
 	return (
 		<button
-			aria-label="Botón para iniciar sesión"
 			className={clsx(
 				"focused-btn px-4 font-semibold rounded-full min-h-14 text-f-white",
 				props?.disabled

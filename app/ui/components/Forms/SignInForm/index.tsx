@@ -57,7 +57,12 @@ export function SignInForm() {
 					type="email"
 					errorMessage={(errors.email?.message as string) ?? ""}
 				/>
-				<Button type="submit" disabled={isLoading} isLoading={isLoading}>
+				<Button
+					type="submit"
+					disabled={isLoading}
+					isLoading={isLoading}
+					aria-label="Botón para iniciar sesión"
+				>
 					Iniciar sesión
 				</Button>
 			</form>

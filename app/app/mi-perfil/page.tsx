@@ -4,7 +4,6 @@ import { ProfileForm } from "@/app/ui/components/Forms/ProfileForm";
 import * as Switch from "@radix-ui/react-switch";
 import type { PostgrestError } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
-import { Suspense } from "react";
 import { Envelope } from "react-bootstrap-icons";
 
 export default async function MiPerfil() {

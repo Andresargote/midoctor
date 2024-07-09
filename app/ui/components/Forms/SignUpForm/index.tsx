@@ -55,7 +55,12 @@ export function SignUpForm() {
 					type="email"
 					errorMessage={(errors.email?.message as string) ?? ""}
 				/>
-				<Button type="submit" disabled={isLoading} isLoading={isLoading}>
+				<Button
+					type="submit"
+					disabled={isLoading}
+					isLoading={isLoading}
+					aria-label="Botón para crear cuenta"
+				>
 					Crear cuenta
 				</Button>
 			</form>

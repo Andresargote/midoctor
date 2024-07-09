@@ -4,11 +4,9 @@ import Link from "next/link";
 import { useState } from "react";
 import {
 	Briefcase,
-	Calendar,
 	Clock,
 	Hospital,
 	List,
-	People,
 	Wallet2,
 	X,
 } from "react-bootstrap-icons";
@@ -19,8 +17,8 @@ export function AppNav() {
 
 	const navLinks = [
 		{
-			title: "Mis Consultorios",
-			href: "/",
+			title: "Mi Consultorio",
+			href: "/app/mi-consultorio",
 			icon: (
 				<Hospital color="#0A0A0A" width={20} height={20} className="mr-6" />
 			),
@@ -36,7 +34,7 @@ export function AppNav() {
 			title: "Mi Disponibilidad",
 			href: "/",
 			icon: <Clock color="#0A0A0A" width={20} height={20} className="mr-6" />,
-		},
+		} /*,
 		{
 			title: "Mi Calendario",
 			href: "/",
@@ -45,10 +43,10 @@ export function AppNav() {
 			),
 		},
 		{
-			title: "Mis Clientes",
+			title: "Mis Pacientes",
 			href: "/",
 			icon: <People color="#0A0A0A" width={20} height={20} className="mr-6" />,
-		},
+		},*/,
 		{
 			title: "Citas Reservadas",
 			href: "/",
