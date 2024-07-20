@@ -3,21 +3,15 @@ import { type ComponentProps, forwardRef } from "react";
 export type TextInputProps = ComponentProps<"input"> & {
 	label: string;
 	id: string;
-	errorMessage: string;
+	errorMessage?: string;
+	helperText?: string;
 	// eslint-disable-next-line no-unused-vars
 	handleInputFormatter?: (value: string) => string;
 };
 
 const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
 	(
-		{
-			label,
-			id,
-			errorMessage,
-			handleInputFormatter,
-
-			...props
-		},
+		{ label, id, errorMessage, helperText, handleInputFormatter, ...props },
 		ref,
 	) => {
 		return (
@@ -38,6 +32,12 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
 						props.onChange?.(e);
 					}}
 				/>
+
+				{helperText && (
+					<small className="text-xs font-light text-neutral-600">
+						{helperText}
+					</small>
+				)}
 
 				{errorMessage && (
 					<span className="text-xs font-semibold text-error-500 font-xs">

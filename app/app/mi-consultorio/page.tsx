@@ -9,7 +9,7 @@ export default async function MiConsultorio() {
 						<h1 className="mb-2 text-3xl font-semibold text-neutral-900">
 							Mi Consultorio
 						</h1>
-						<p className="font-light leading-relaxed text-neutral-800 ">
+						<p className="font-light leading-relaxed text-neutral-800">
 							Aquí puedes ver y editar la información de tu consultorio.
 						</p>
 					</div>

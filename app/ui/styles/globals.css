@@ -51,6 +51,25 @@ textarea {
   transform: translateX(19px);
 }
 
+.PhoneInput {
+  min-height: 3.5rem;
+  border-radius: 9999px;
+  border: 1px solid #cbd5e1;
+}
+
+.PhoneInputCountry {
+  background-color: #f1f5f9;
+  padding-inline: 1rem;
+  border-radius: 9999px 0px 0px 9999px;
+  margin-right: 0px !important;
+}
+
+.PhoneInputInput {
+  min-height: 3.5rem;
+  padding-inline: 1rem;
+  border-radius: 0px 9999px 9999px 0px;
+}
+
 @layer base {
   input:hover,
   textarea:hover,

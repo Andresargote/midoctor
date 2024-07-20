@@ -15,6 +15,7 @@ import Logo from "../../icons/Logo";
 export function AppNav() {
 	const [isNavOpen, setIsNavOpen] = useState(false);
 
+	//todo: manage active link with the current route
 	const navLinks = [
 		{
 			title: "Mi Consultorio",

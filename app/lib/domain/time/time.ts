@@ -11,6 +11,7 @@ export class Time {
 	get hour(): number {
 		return this.props.hour;
 	}
+
 	get minutes(): number {
 		return this.props.minutes;
 	}
