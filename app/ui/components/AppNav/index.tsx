@@ -1,6 +1,7 @@
 "use client";
 import clsx from "clsx";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import {
 	Briefcase,
@@ -14,8 +15,8 @@ import Logo from "../../icons/Logo";
 
 export function AppNav() {
 	const [isNavOpen, setIsNavOpen] = useState(false);
+	const currentPath = usePathname();
 
-	//todo: manage active link with the current route
 	const navLinks = [
 		{
 			title: "Mi Consultorio",
@@ -116,7 +117,13 @@ export function AppNav() {
 						{navLinks.map((link) => (
 							<li
 								key={link.href}
-								className="p-3 transition duration-300 rounded-full text-neutral-900 hover:bg-neutral-100 "
+								className={clsx(
+									`p-3 transition duration-300 rounded-full text-neutral-900 ${
+										currentPath === link.href
+											? "bg-neutral-100"
+											: "hover:bg-neutral"
+									}`,
+								)}
 							>
 								<Link href={link.href} className="flex items-center">
 									{link.icon}

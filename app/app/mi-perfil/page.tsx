@@ -37,7 +37,7 @@ export default async function MiPerfil() {
 						Aquí puedes ver y editar la información de tu perfil.
 					</p>
 
-					<div className="w-full px-4 py-6 mb-6 rounded-lg bg-f-white">
+					<div className="w-full px-4 py-6 mb-6 rounded-lg shadow-sm bg-f-white">
 						<ProfileForm profile={profile} profileError={!!profileError} />
 					</div>
 
@@ -49,7 +49,7 @@ export default async function MiPerfil() {
 						cita contigo?
 					</p>
 
-					<div className="w-full px-4 py-6 mb-6 rounded-lg bg-f-white">
+					<div className="w-full px-4 py-6 mb-6 rounded-lg shadow-sm bg-f-white">
 						<div className="flex items-center justify-between">
 							<label
 								htmlFor="email"

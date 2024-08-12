@@ -3,7 +3,9 @@
 import { signOut } from "@/app/(home)/action";
 import type { UserProfile } from "@/app/lib/types";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import clsx from "clsx";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { BoxArrowInLeft, Person } from "react-bootstrap-icons";
 import Logo from "../../icons/Logo";
@@ -15,7 +17,7 @@ import { Toast } from "../Toast";
 export function AppHeader({ profile }: { profile: UserProfile | null }) {
 	const [signOutError, setSignOutError] = useState(false);
 	const [isSignOutLoading, setIsSignOutLoading] = useState(false);
-
+	const currentPath = usePathname();
 	const handleSignOut = async () => {
 		setSignOutError(false);
 		try {
@@ -67,7 +69,12 @@ export function AppHeader({ profile }: { profile: UserProfile | null }) {
 									className="transition duration-300 rounded-full hover:bg-neutral-100"
 								>
 									<Link
-										className="flex items-center w-full p-3 text-neutral-900"
+										className={clsx(
+											"flex items-center w-full p-3 text-neutral-900 rounded-full",
+											currentPath === "/app/mi-perfil"
+												? "bg-neutral-100"
+												: "hover:bg-neutral",
+										)}
 										href="/app/mi-perfil"
 									>
 										<Person

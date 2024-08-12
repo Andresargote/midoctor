@@ -39,9 +39,12 @@ export function Toast({ type = "success", message }: ToastProps) {
 				<div
 					key={t.id}
 					className={clsx(
-						"max-w-96 fixed top-0 right-0 z-50 p-4 m-4 rounded-xl",
+						"max-w-96 fixed top-0 right-0 p-4 m-4 rounded-xl",
 						t.type === "success" ? "bg-success-100" : "bg-error-100",
 					)}
+					style={{
+						zIndex: 9999,
+					}}
 					role="alert"
 				>
 					<p className="text-f-black">{t.message}</p>

@@ -1,7 +1,8 @@
 import { z } from "zod";
 
-export const consultingSchema = (isOnline: boolean) => {
+export const consultSchema = (isOnline: boolean) => {
 	return z.object({
+		is_online: z.boolean(),
 		name: z.string().min(1, {
 			message: "Introduce el nombre de tu consultorio",
 		}),
@@ -14,7 +15,7 @@ export const consultingSchema = (isOnline: boolean) => {
 					.min(1, {
 						message: "Introduce una dirección para tu consultorio",
 					}),
-		phoneNumber: z
+		phone_number: z
 			.string({
 				message: "Introduce un número de teléfono",
 			})
