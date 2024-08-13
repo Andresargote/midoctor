@@ -27,14 +27,14 @@ export function AppNav() {
 		},
 		{
 			title: "Mis Servicios",
-			href: "/",
+			href: "/app/mis-servicios",
 			icon: (
 				<Briefcase color="#0A0A0A" width={20} height={20} className="mr-6" />
 			),
 		},
 		{
 			title: "Mi Disponibilidad",
-			href: "/",
+			href: "/app/mi-disponibilidad",
 			icon: <Clock color="#0A0A0A" width={20} height={20} className="mr-6" />,
 		} /*,
 		{
@@ -51,7 +51,7 @@ export function AppNav() {
 		},*/,
 		{
 			title: "Citas Reservadas",
-			href: "/",
+			href: "/app/mis-citas-reservadas",
 			icon: <Wallet2 color="#0A0A0A" width={20} height={20} className="mr-6" />,
 		},
 	];
