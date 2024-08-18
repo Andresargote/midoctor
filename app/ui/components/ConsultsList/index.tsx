@@ -7,8 +7,9 @@ import { Button } from "../Button";
 import TextInput from "../TextInput";
 import "react-phone-number-input/style.css";
 import { addConsult as AddConsultAction } from "@/app/app/mi-consultorio/action";
+import type { Consult } from "@/app/lib/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Toast } from "../Toast";
@@ -21,14 +22,19 @@ type ConsultFormDefaultValues = {
 	phone_number: string;
 };
 
-export function AddConsult({
+export function ConsultsList({
 	userId,
+	consultsData,
 }: {
 	userId: string;
+	consultsData: Consult[];
 }) {
+	const searchParams = useSearchParams();
+	const action = searchParams.get("action");
 	const router = useRouter();
-	const [open, setOpen] = useState(false);
+
 	const [isOnline, setIsOnline] = useState(false);
+	const [consults, setConsults] = useState(consultsData ?? []);
 	const [added, setAdded] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
@@ -54,7 +60,7 @@ export function AddConsult({
 		setIsLoading(true);
 		setError(null);
 		try {
-			const { error } = await AddConsultAction({
+			const { data, error } = await AddConsultAction({
 				...formValues,
 				user_id: userId,
 			});
@@ -64,8 +70,12 @@ export function AddConsult({
 			}
 
 			setAdded(true);
+
+			if (data) {
+				setConsults((prevConsults) => [...prevConsults, data]);
+			}
+
 			handleResetFormValues();
-			setOpen(false);
 		} catch (error) {
 			setError(
 				"Ocurrió un error al agregar el consultorio, por favor intenta de nuevo, si el problema persiste contacta con soporte.",
@@ -83,20 +93,12 @@ export function AddConsult({
 			phone_number: "",
 		});
 		setIsOnline(false);
+		router.back();
 	};
 
 	return (
 		<>
-			<Dialog.Root open={open}>
-				<Dialog.Trigger asChild>
-					<Button
-						type="button"
-						aria-label="Abre modal para agregar consultorio"
-						onClick={() => setOpen(true)}
-					>
-						Agregar consultorio
-					</Button>
-				</Dialog.Trigger>
+			<Dialog.Root open={action === "new"}>
 				<Dialog.Portal>
 					<Dialog.Overlay className="fixed top-0 left-0 z-50 w-full h-full bg-f-black opacity-15" />
 
@@ -105,13 +107,11 @@ export function AddConsult({
 						onInteractOutside={() => {
 							if (!isLoading) {
 								handleResetFormValues();
-								setOpen(false);
 							}
 						}}
 						onEscapeKeyDown={() => {
 							if (!isLoading) {
 								handleResetFormValues();
-								setOpen(false);
 							}
 						}}
 						className="fixed z-50 w-full max-w-md p-8 transform shadow-sm bg-f-white rounded-2xl top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4"
@@ -211,7 +211,6 @@ export function AddConsult({
 										disabled={isLoading}
 										onClick={() => {
 											handleResetFormValues();
-											setOpen(false);
 										}}
 									>
 										Cancelar
@@ -233,7 +232,6 @@ export function AddConsult({
 							<button
 								onClick={() => {
 									handleResetFormValues();
-									setOpen(false);
 								}}
 								type="button"
 								className="absolute p-2 rounded-full focused-btn top-4 right-4 bg-neutral-100"
@@ -248,6 +246,36 @@ export function AddConsult({
 			{error && <Toast type="error" message={error} />}
 			{added && (
 				<Toast type="success" message="Consultorio agregado exitosamente" />
+			)}
+			{consults.length === 0 ? (
+				<p className="text-lg font-light text-center text-neutral-800">
+					Aún no tienes consultorios registrados
+				</p>
+			) : (
+				<main className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
+					{consults?.map((consult) => (
+						<div
+							key={consult.id}
+							className="h-full p-4 rounded-lg shadow-sm bg-f-white"
+						>
+							<h2 className="mb-2 text-xl font-semibold text-neutral-900">
+								{consult.name}
+							</h2>
+							<div className="p-2 rounded-full w-fit bg-neutral-100">
+								<p className="text-xs font-base text-neutral-900">
+									{consult.is_online
+										? "Consulta virtual"
+										: "Consulta presencial"}
+								</p>
+							</div>
+							{consult.address && (
+								<p className="mt-4 text-sm font-light leading-relaxed text-neutral-800">
+									{consult.address}
+								</p>
+							)}
+						</div>
+					))}
+				</main>
 			)}
 		</>
 	);

@@ -9,6 +9,7 @@ export type UserProfile = {
 };
 
 export type Service = {
+	service_id: string;
 	owner_id: string;
 	name: string;
 	price: number;
@@ -16,4 +17,13 @@ export type Service = {
 		hours: number;
 		minutes: number;
 	};
+};
+
+export type Consult = {
+	id: string;
+	is_online: boolean;
+	name: string;
+	address: string;
+	phone_number: string;
+	user_id: string;
 };

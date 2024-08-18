@@ -1,5 +1,6 @@
 import { createClient } from "@/app/lib/utils/supabase/server";
-import { AddConsult } from "@/app/ui/components/AddConsult";
+import { ConsultsList } from "@/app/ui/components/ConsultsList";
+import Link from "next/link";
 import { Suspense } from "react";
 
 export default async function MiConsultorio() {
@@ -26,42 +27,21 @@ export default async function MiConsultorio() {
 					</div>
 
 					{consults.data?.length === 0 && (
-						<div className="w-fit">
-							<AddConsult userId={data?.user?.id ?? ""} />
+						<div>
+							<Link
+								className="flex flex-col justify-center px-4 font-semibold transition duration-300 rounded-full w-fit bg-primary-500 hover:bg-primary-600 focused-btn min-h-14 text-f-white"
+								href="mi-consultorio/?action=new"
+							>
+								Agregar consultorio
+							</Link>
 						</div>
 					)}
 				</header>
 				<Suspense fallback={<div>Cargando...</div>}>
-					{consults.data?.length === 0 ? (
-						<p className="text-lg font-light text-center text-neutral-800">
-							Aún no tienes consultorios registrados
-						</p>
-					) : (
-						<main className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
-							{consults.data?.map((consult) => (
-								<div
-									key={consult.id}
-									className="h-full p-4 rounded-lg shadow-sm bg-f-white"
-								>
-									<h2 className="mb-2 text-xl font-semibold text-neutral-900">
-										{consult.name}
-									</h2>
-									<div className="p-2 rounded-full w-fit bg-neutral-100">
-										<p className="text-xs font-base text-neutral-900">
-											{consult.is_online
-												? "Consulta virtual"
-												: "Consulta presencial"}
-										</p>
-									</div>
-									{consult.address && (
-										<p className="mt-4 text-sm font-light leading-relaxed text-neutral-800">
-											{consult.address}
-										</p>
-									)}
-								</div>
-							))}
-						</main>
-					)}
+					<ConsultsList
+						userId={data?.user?.id ?? ""}
+						consultsData={consults.data ?? []}
+					/>
 				</Suspense>
 			</div>
 		</div>

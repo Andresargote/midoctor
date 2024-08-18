@@ -10,7 +10,7 @@ type Service = {
 		hours: string;
 		minutes: string;
 	};
-	user_id: string;
+	owner_id: string;
 };
 
 export async function addService(service: Service): Promise<{
@@ -30,7 +30,7 @@ export async function addService(service: Service): Promise<{
 		};
 
 		const newService = {
-			owner_id: service.user_id,
+			owner_id: service.owner_id,
 			name: service.name,
 			price: convertPriceToCents(service.price),
 			duration: {

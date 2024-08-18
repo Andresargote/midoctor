@@ -1,5 +1,4 @@
 import { createClient } from "@/app/lib/utils/supabase/server";
-import Select from "@/app/ui/components/Select";
 import { ServicesList } from "@/app/ui/components/ServicesList";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -35,14 +34,13 @@ export default async function MisServicios() {
 						</Link>
 					</div>
 				</header>
-				<main>
-					<Suspense fallback={<div>Cargando...</div>}>
-						<ServicesList
-							userId={data?.user?.id ?? ""}
-							servicesData={services.data ?? []}
-						/>
-					</Suspense>
-				</main>
+
+				<Suspense fallback={<div>Cargando...</div>}>
+					<ServicesList
+						userId={data?.user?.id ?? ""}
+						servicesData={services.data ?? []}
+					/>
+				</Suspense>
 			</div>
 		</div>
 	);

@@ -1,5 +1,6 @@
 "use server";
 
+import type { Consult as ConsultType } from "@/app/lib/types";
 import { createClient } from "@/app/lib/utils/supabase/server";
 
 type Consult = {
@@ -10,13 +11,19 @@ type Consult = {
 	user_id: string;
 };
 
-export async function addConsult(consult: Consult) {
+export async function addConsult(consult: Consult): Promise<{
+	error: boolean | null;
+	data?: ConsultType;
+}> {
 	try {
 		const supabase = createClient();
 
-		const { error } = await supabase.from("consults").insert({
-			...consult,
-		});
+		const { data, error } = await supabase
+			.from("consults")
+			.insert({
+				...consult,
+			})
+			.select();
 
 		if (error) {
 			console.error("Error adding consult:", error, error?.message);
@@ -27,6 +34,7 @@ export async function addConsult(consult: Consult) {
 
 		return {
 			error: null,
+			data: data[0],
 		};
 	} catch (error) {
 		return {
