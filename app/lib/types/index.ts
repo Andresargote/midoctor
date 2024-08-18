@@ -7,3 +7,13 @@ export type UserProfile = {
 	created_at: string | null;
 	updated_at: string | null;
 };
+
+export type Service = {
+	owner_id: string;
+	name: string;
+	price: number;
+	duration: {
+		hours: number;
+		minutes: number;
+	};
+};

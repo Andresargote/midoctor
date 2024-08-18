@@ -73,7 +73,7 @@ textarea {
 @layer base {
   input:hover,
   textarea:hover,
-  .focused-btn:hover,
+  select:hover .focused-btn:hover,
   .SwitchRoot:focus {
     transition: box-shadow 0.3s;
     box-shadow: 0 0 0 2px #1fbeb8;
@@ -85,6 +85,7 @@ textarea {
 
   input:focus,
   textarea:focus,
+  select:focus,
   .focused-btn:focus,
   .SwitchRoot:focus {
     outline: transparent solid 1px;

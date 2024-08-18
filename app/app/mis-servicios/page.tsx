@@ -1,7 +1,19 @@
+import { createClient } from "@/app/lib/utils/supabase/server";
+import Select from "@/app/ui/components/Select";
 import { ServicesList } from "@/app/ui/components/ServicesList";
 import Link from "next/link";
+import { Suspense } from "react";
 
 export default async function MisServicios() {
+	const supabase = createClient();
+
+	const { data } = await supabase.auth.getUser();
+
+	const services = await supabase
+		.from("services")
+		.select("*")
+		.eq("owner_id", data?.user?.id);
+
 	return (
 		<div className="px-4 py-6 mx-auto">
 			<div className="container mx-auto lg:pl-72">
@@ -24,7 +36,12 @@ export default async function MisServicios() {
 					</div>
 				</header>
 				<main>
-					<ServicesList />
+					<Suspense fallback={<div>Cargando...</div>}>
+						<ServicesList
+							userId={data?.user?.id ?? ""}
+							servicesData={services.data ?? []}
+						/>
+					</Suspense>
 				</main>
 			</div>
 		</div>

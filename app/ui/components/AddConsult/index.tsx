@@ -8,6 +8,7 @@ import TextInput from "../TextInput";
 import "react-phone-number-input/style.css";
 import { addConsult as AddConsultAction } from "@/app/app/mi-consultorio/action";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Toast } from "../Toast";
@@ -25,10 +26,11 @@ export function AddConsult({
 }: {
 	userId: string;
 }) {
+	const router = useRouter();
 	const [open, setOpen] = useState(false);
 	const [isOnline, setIsOnline] = useState(false);
 	const [added, setAdded] = useState(false);
-	const [error, setErrror] = useState<string | null>(null);
+	const [error, setError] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 
 	const {
@@ -50,7 +52,7 @@ export function AddConsult({
 
 	const onSubmit = async (formValues: ConsultFormDefaultValues) => {
 		setIsLoading(true);
-		setErrror(null);
+		setError(null);
 		try {
 			const { error } = await AddConsultAction({
 				...formValues,
@@ -65,7 +67,7 @@ export function AddConsult({
 			handleResetFormValues();
 			setOpen(false);
 		} catch (error) {
-			setErrror(
+			setError(
 				"Ocurrió un error al agregar el consultorio, por favor intenta de nuevo, si el problema persiste contacta con soporte.",
 			);
 		} finally {

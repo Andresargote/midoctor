@@ -1,20 +1,42 @@
 "use client";
+import { addService } from "@/app/app/mis-servicios/action";
+import type { Service } from "@/app/lib/types";
+import { zodResolver } from "@hookform/resolvers/zod";
 import * as Dialog from "@radix-ui/react-dialog";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { X } from "react-bootstrap-icons";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Button } from "../Button";
 import PriceInput from "../PriceInput";
+import Select from "../Select";
 import TextInput from "../TextInput";
+import { Toast } from "../Toast";
+import { serviceSchema } from "./validate-schema";
 
-export function ServicesList() {
+type ServiceFormDefaultValues = {
+	name: string;
+	price: string;
+	duration: {
+		hours: string;
+		minutes: string;
+	};
+};
+
+export function ServicesList({
+	userId,
+	servicesData,
+}: {
+	userId: string;
+	servicesData: Service[];
+}) {
 	const searchParams = useSearchParams();
 	const action = searchParams.get("action");
 	const router = useRouter();
-	const [open, setOpen] = useState(false);
-	const [isOnline, setIsOnline] = useState(false);
+	const [services, setServices] = useState(servicesData ?? []);
+	const [added, setAdded] = useState(false);
+	const [error, setError] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 
 	const {
@@ -24,22 +46,101 @@ export function ServicesList() {
 		reset,
 		formState: { errors },
 		control,
-	} = useForm({
+	} = useForm<ServiceFormDefaultValues>({
 		defaultValues: {
-			is_online: false,
 			name: "",
-			address: "",
-			phone_number: "",
+			price: "0",
+			duration: {
+				hours: "0",
+				minutes: "30",
+			},
 		},
+		resolver: zodResolver(serviceSchema),
 	});
 
-	const onSubmit = async () => {
-		console.log("submit");
+	const onSubmit = async (formValues: ServiceFormDefaultValues) => {
+		setIsLoading(true);
+		setError(null);
+		try {
+			const { data, error } = await addService({
+				...formValues,
+				user_id: userId,
+			});
+
+			if (error) {
+				throw new Error();
+			}
+
+			setAdded(true);
+
+			if (data) {
+				setServices((prevServices) => [...prevServices, data]);
+			}
+			handleResetFormValues();
+		} catch (error) {
+			setError(
+				"Ocurrió un error al intentar agregar el servicio. Por favor, intenta de nuevo.",
+			);
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
 	const handleResetFormValues = () => {
+		reset({
+			name: "",
+			price: "0",
+			duration: {
+				hours: "0",
+				minutes: "30",
+			},
+		});
 		router.back();
 	};
+
+	const generateHoursSelectOptions = () => {
+		const hoursOptions = [
+			{
+				value: "0",
+				label: "0 horas",
+			},
+		];
+		for (let i = 0; i < 8; i++) {
+			if (i === 0) {
+				hoursOptions.push({
+					value: `${i + 1}`,
+					label: "1 hora",
+				});
+			} else {
+				hoursOptions.push({
+					value: `${i + 1}`,
+					label: `${i + 1} horas`,
+				});
+			}
+		}
+
+		return hoursOptions;
+	};
+
+	const generateMinutesSelectOptions = () => {
+		const minutesOptions = [
+			{
+				value: "0",
+				label: "0 minutos",
+			},
+		];
+		for (let i = 0; i < 55; i += 5) {
+			minutesOptions.push({
+				value: `${i + 5}`,
+				label: `${i + 5} minutos`,
+			});
+		}
+
+		return minutesOptions;
+	};
+
+	const hoursSelectOptions = generateHoursSelectOptions();
+	const minutesSelectOptions = generateMinutesSelectOptions();
 
 	return (
 		<>
@@ -87,7 +188,32 @@ export function ServicesList() {
 								errorMessage={(errors.name?.message as string) ?? ""}
 								autoFocus
 							/>
-							<PriceInput label="Precio" id="price" />
+							<PriceInput label="Precio" id="price" {...register("price")} />
+							<div className="flex flex-col gap-1.5">
+								<label
+									className="text-sm font-light text-neutral-600"
+									htmlFor="minutes"
+								>
+									Duración
+								</label>
+								<div className="flex gap-1.5 justify-between">
+									<div className="w-full">
+										<Select
+											id="hours"
+											options={hoursSelectOptions}
+											{...register("duration.hours")}
+										/>
+									</div>
+									<div className="w-full">
+										<Select
+											id="minutes"
+											options={minutesSelectOptions}
+											{...register("duration.minutes")}
+											defaultValue={"30"}
+										/>
+									</div>
+								</div>
+							</div>
 							<div className="flex items-center justify-end gap-3">
 								<Dialog.Close asChild>
 									<Button
@@ -128,8 +254,39 @@ export function ServicesList() {
 					</Dialog.Content>
 				</Dialog.Portal>
 			</Dialog.Root>
-
-			<p>Services list</p>
+			{error && <Toast type="error" message={error} />}
+			{added && (
+				<Toast type="success" message="Servicio agregado exitosamente" />
+			)}
+			{services.length === 0 ? (
+				<p className="text-lg font-light text-center text-neutral-800">
+					Aún no tienes servicios registrados
+				</p>
+			) : (
+				<ul className="grid grid-cols-1 gap-6">
+					{services.map((service) => (
+						<li
+							key={service.owner_id}
+							className="flex items-center justify-between p-4 rounded-lg shadow-sm bg-f-white"
+						>
+							<div>
+								<h3 className="text-lg font-semibold text-neutral-900">
+									{service.name}
+								</h3>
+								<p className="text-sm font-light text-neutral-800">
+									{service.duration.hours} horas {service.duration.minutes}{" "}
+									minutos
+								</p>
+							</div>
+							<div>
+								<p className="text-lg font-semibold text-neutral-900">
+									${service.price / 100}
+								</p>
+							</div>
+						</li>
+					))}
+				</ul>
+			)}
 		</>
 	);
 }
