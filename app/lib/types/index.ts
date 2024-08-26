@@ -27,3 +27,22 @@ export type Consult = {
 	phone_number: string;
 	user_id: string;
 };
+
+export type Slot = {
+	start: string;
+	end: string;
+};
+
+export type Day = {
+	idDay: number;
+	day: string;
+	available: boolean;
+	slots: Slot[];
+};
+
+export type Availability = {
+	timezone: string;
+	name: string;
+	active: boolean;
+	days: Day[];
+};

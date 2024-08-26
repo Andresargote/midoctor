@@ -1,3 +1,4 @@
+import { clsx } from "clsx";
 import { type ComponentProps, forwardRef } from "react";
 
 export type SelectProps = ComponentProps<"select"> & {
@@ -10,13 +11,23 @@ export type SelectProps = ComponentProps<"select"> & {
 		label: string;
 	}[];
 	defaultValue?: string;
+	style?: string; // Prop to pass custom styles
 
 	// eslint-disable-next-line no-unused-vars
 };
 
 const Select = forwardRef<HTMLSelectElement, SelectProps>(
 	(
-		{ label, id, errorMessage, helperText, options, defaultValue, ...props },
+		{
+			label,
+			id,
+			errorMessage,
+			helperText,
+			options,
+			defaultValue,
+			style,
+			...props
+		},
 		ref,
 	) => {
 		return (
@@ -30,7 +41,10 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
 				<select
 					id={id}
 					ref={ref}
-					className="flex w-full px-4 transition duration-300 border rounded-full text-f-black min-h-14 border-neutral-300"
+					className={clsx(
+						"flex w-full px-4 transition duration-300 border rounded-full text-f-black min-h-14 border-neutral-300",
+						style,
+					)}
 					{...props}
 				>
 					{options.map((option) => (
