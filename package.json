@@ -26,7 +26,6 @@
     "@hookform/resolvers": "^3.6.0",
     "@radix-ui/react-dialog": "^1.1.1",
     "@radix-ui/react-dropdown-menu": "^2.1.1",
-    "@radix-ui/react-select": "^2.1.1",
     "@radix-ui/react-switch": "^1.1.0",
     "@supabase/ssr": "^0.3.0",
     "@supabase/supabase-js": "^2.43.5",
@@ -39,6 +38,7 @@
     "react-hook-form": "^7.52.0",
     "react-loading-skeleton": "^3.4.0",
     "react-phone-number-input": "^3.4.3",
+    "react-select": "^5.8.0",
     "zod": "^3.23.8"
   },
   "engines": {

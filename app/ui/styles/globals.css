@@ -70,11 +70,22 @@ textarea {
   border-radius: 0px 9999px 9999px 0px;
 }
 
+.select__list {
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.select__list-open {
+  width: 100%;
+  max-height: 200px;
+}
+
 @layer base {
   input:hover,
   textarea:hover,
   select:hover .focused-btn:hover,
-  .SwitchRoot:focus {
+  .SwitchRoot:hover {
     transition: box-shadow 0.3s;
     box-shadow: 0 0 0 2px #1fbeb8;
     outline: transparent solid 1px;
