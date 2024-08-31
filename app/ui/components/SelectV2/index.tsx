@@ -1,0 +1,110 @@
+import clsx from 'clsx';
+import { useAccesibleDropdown } from '../../hooks/useAccessibleDropdown';
+import { Check } from 'react-bootstrap-icons';
+
+type SelectV2Props = {
+  value: string | null;
+  options: Array<{ value: string; label: string }>;
+  onChange: (value: string) => void;
+  namespace?: string;
+  label?: string;
+  id?: string;
+};
+
+export function SelectV2({
+  value,
+  options,
+  onChange,
+  namespace = 'default_select_namespace',
+  label = '',
+  id = '',
+}: SelectV2Props) {
+  const {
+    listContainerRef,
+    isDropdownOpen,
+    setIsDropdownOpen,
+    activeIndex,
+    setActiveIndex,
+    select,
+    setIsFocus,
+  } = useAccesibleDropdown({
+    options,
+    value,
+    onChange,
+    namespace,
+  });
+
+  const chosen = options.find((o) => o.value === value);
+
+  return (
+    <div id={`${namespace}-dropdown-root`} className='relative h-full'>
+      <button
+        role='combobox'
+        value='Select'
+        aria-label={label}
+        aria-autocomplete='none'
+        aria-controls={`${namespace}_dropdown`}
+        aria-haspopup='listbox'
+        aria-expanded={isDropdownOpen}
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          setIsDropdownOpen(!isDropdownOpen);
+        }}
+        onFocus={() => setIsFocus(true)}
+        onBlur={() => setIsFocus(false)}
+        className='flex flex-col justify-center w-full h-full px-4 py-2 transition duration-300 border rounded-full bg-f-white text-f-black border-neutral-300 focused-btn'
+        id={id}
+      >
+        {chosen?.label || label}
+      </button>
+      {isDropdownOpen && (
+        <ul
+          role='listbox'
+          id={`${namespace}_dropdown`}
+          className={clsx(
+            isDropdownOpen
+              ? 'w-full bg-f-white rounded-lg border border-neutral-300 shadow-xs z-50 absolute mt-2 max-h-60 overflow-y-auto list-none'
+              : 'w-0 h-0 overflow-hidden'
+          )}
+          tabIndex={-1}
+          ref={listContainerRef}
+        >
+          {options?.map((option, index) => (
+            <li
+              key={option.value}
+              id={`${namespace}_element_${option.value}`}
+              role='option'
+              onMouseOver={() => setActiveIndex(index)}
+              onClick={() => select(option.value)}
+              aria-selected={index === activeIndex}
+              className={clsx(index === activeIndex && 'bg-neutral-100')}
+            >
+              <label
+                className={clsx(
+                  'flex w-full px-2 py-2 transition-all cursor-pointer',
+                  chosen?.value === option.value && 'bg-neutral-100'
+                )}
+              >
+                <input
+                  name={`${namespace}_radio`}
+                  type='radio'
+                  onChange={() => select(option.value)}
+                  checked={chosen?.value === option.value}
+                  value={option.value}
+                  className='w-0 h-0 p-0 m-0 overflow-hidden opacity-0'
+                />
+                <div className='flex items-center justify-between w-full'>
+                  <span>{option.label}</span>
+                  {chosen?.value === option.value && (
+                    <Check className='w-5 h-5 text-primary-500' />
+                  )}
+                </div>
+              </label>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}

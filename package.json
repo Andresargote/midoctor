@@ -10,8 +10,7 @@
     "build-storybook": "storybook build",
     "prepare": "husky install",
     "commit": "git-cz",
-    "preinstall": "node -e \"if(!process.env.npm_execpath.includes('npm')) throw new Error('This project uses npm for package management, please use npm to install dependencies.')\"",
-    "prettier": "prettier --write ."
+    "preinstall": "node -e \"if(!process.env.npm_execpath.includes('npm')) throw new Error('This project uses npm for package management, please use npm to install dependencies.')\""
   },
   "config": {
     "commitizen": {
@@ -20,16 +19,14 @@
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
-      "eslint --max-warnings=0",
-      "prettier --write"
-    ],
-    "**/*.{html,json,css,scss,md,mdx}": [
-      "prettier -w"
+      "npx @biomejs/biome check --write ./app/"
     ]
   },
   "dependencies": {
     "@hookform/resolvers": "^3.6.0",
+    "@radix-ui/react-dialog": "^1.1.1",
     "@radix-ui/react-dropdown-menu": "^2.1.1",
+    "@radix-ui/react-switch": "^1.1.0",
     "@supabase/ssr": "^0.3.0",
     "@supabase/supabase-js": "^2.43.5",
     "clsx": "^2.1.1",
@@ -39,6 +36,9 @@
     "react-confetti": "^6.1.0",
     "react-dom": "^18",
     "react-hook-form": "^7.52.0",
+    "react-loading-skeleton": "^3.4.0",
+    "react-phone-number-input": "^3.4.3",
+    "react-select": "^5.8.0",
     "zod": "^3.23.8"
   },
   "engines": {
@@ -67,7 +67,6 @@
     "eslint-plugin-storybook": "^0.8.0",
     "husky": "^8.0.0",
     "postcss": "^8.4.38",
-    "prettier": "^3.3.1",
     "storybook": "^8.0.6",
     "tailwindcss": "^3.4.4",
     "typescript": "^5"
