@@ -10,7 +10,6 @@ import { X } from 'react-bootstrap-icons';
 import { Controller, useForm } from 'react-hook-form';
 import { Button } from '../Button';
 import PriceInput from '../PriceInput';
-import Select from '../Select';
 import TextInput from '../TextInput';
 import { Toast } from '../Toast';
 import { serviceSchema } from './validate-schema';
@@ -41,8 +40,6 @@ export function ServicesList({
   const [isLoading, setIsLoading] = useState(false);
 
   const {
-    getValues,
-    setValue,
     register,
     handleSubmit,
     reset,
@@ -63,6 +60,7 @@ export function ServicesList({
   const onSubmit = async (formValues: ServiceFormDefaultValues) => {
     setIsLoading(true);
     setError(null);
+    setAdded(false);
     try {
       const { data, error } = await addService({
         ...formValues,

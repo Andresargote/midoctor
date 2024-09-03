@@ -1,84 +1,16 @@
+import { createClient } from '@/app/lib/utils/supabase/server';
 import { Availability } from '@/app/ui/components/Availability';
+import { Suspense } from 'react';
 
-export default function MiDisponibilidad() {
-  const DEFAULT_availability = {
-    timezone: 'America/Caracas',
-    name: 'Default timezone',
-    active: true,
-    days: [
-      {
-        idDay: 0,
-        day: 'Domingo',
-        available: false,
-        slots: [],
-      },
-      {
-        idDay: 1,
-        day: 'Lunes',
-        available: true,
-        slots: [
-          {
-            start: '08:00',
-            end: '12:00',
-          },
-        ],
-      },
-      {
-        idDay: 2,
-        day: 'Martes',
-        available: true,
-        slots: [
-          {
-            start: '08:00',
-            end: '12:00',
-          },
-        ],
-      },
-      {
-        idDay: 3,
-        day: 'Miércoles',
-        available: true,
-        slots: [
-          {
-            start: '08:00',
-            end: '12:00',
-          },
-        ],
-      },
-      {
-        idDay: 4,
-        day: 'Jueves',
-        available: true,
-        slots: [
-          {
-            start: '08:00',
-            end: '12:00',
-          },
-        ],
-      },
-      {
-        idDay: 5,
-        day: 'Viernes',
-        available: true,
-        slots: [
-          {
-            start: '08:00',
-            end: '12:00',
-          },
-          {
-            start: '14:00',
-            end: '18:00',
-          },
-        ],
-      },
-      {
-        idDay: 6,
-        day: 'Sábado',
-        available: false,
-        slots: [],
-      },
-    ],
-  };
+export default async function MiDisponibilidad() {
+  const supabase = createClient();
+
+  const { data } = await supabase.auth.getUser();
+
+  const { data: availibilities } = await supabase
+    .from('availabilities')
+    .select('*')
+    .eq('user_id', data?.user?.id);
 
   return (
     <div className='px-4 py-6 mx-auto'>
@@ -94,7 +26,13 @@ export default function MiDisponibilidad() {
           </div>
         </header>
         <main>
-          <Availability availability={DEFAULT_availability} />
+          <Suspense fallback={<div>Cargando...</div>}>
+            {availibilities?.length === 0 && <p>No hay disponibilidadades agregadas</p>}
+
+            {availibilities && availibilities?.length > 0 && (
+              <Availability availability={availibilities[0]} />
+            )}
+          </Suspense>
         </main>
       </div>
     </div>
