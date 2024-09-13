@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { useAccesibleDropdown } from '../../hooks/useAccessibleDropdown';
-import { Check } from 'react-bootstrap-icons';
+import { Check, ChevronDown } from 'react-bootstrap-icons';
 
 type SelectV2Props = {
   value: string | null;
@@ -53,10 +53,11 @@ export function SelectV2({
         }}
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
-        className='flex flex-col justify-center w-full h-full px-4 py-2 transition duration-300 border rounded-full bg-f-white text-f-black border-neutral-300 focused-btn'
+        className='flex items-center justify-between w-full h-full px-4 py-2 transition duration-300 border rounded-full bg-f-white text-f-black border-neutral-300 focused-btn'
         id={id}
       >
         {chosen?.label || label}
+        <ChevronDown color='#0A0A0A' />
       </button>
       {isDropdownOpen && (
         <ul

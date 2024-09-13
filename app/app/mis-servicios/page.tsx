@@ -11,7 +11,7 @@ export default async function MisServicios() {
   const services = await supabase
     .from('services')
     .select('*')
-    .eq('owner_id', data?.user?.id);
+    .eq('user_id', data?.user?.id);
 
   return (
     <div className='px-4 py-6 mx-auto'>
