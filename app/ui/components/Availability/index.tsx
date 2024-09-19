@@ -5,6 +5,9 @@ import { useState } from 'react';
 import { PlusLg, Trash3 } from 'react-bootstrap-icons';
 import { generateHoursAndMinutes } from '@/app/lib/utils';
 import { SelectV2 } from '../SelectV2';
+import { Button } from '../Button';
+import { editAvailabilyDays } from '@/app/app/mi-disponibilidad/action';
+import { Toast } from '../Toast';
 
 export type AvailabilityProps = {
   availability: AvailabilityType;
@@ -20,6 +23,9 @@ const END_TIMES = generateHoursAndMinutes('06:00', '23:59', 15).map((time) => ({
 }));
 
 export function Availability({ availability }: AvailabilityProps) {
+  const [updated, setUpdated] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [value, setValues] = useState<AvailabilityType>(availability);
 
   const handleDisableDay = (day: string) => {
@@ -104,19 +110,60 @@ export function Availability({ availability }: AvailabilityProps) {
     }));
   };
 
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setUpdated(false);
+    try {
+      const { error } = await editAvailabilyDays({
+        availabilityId: availability.id,
+        days: value.days,
+      });
+
+      if (error) {
+        throw new Error();
+      }
+
+      setUpdated(true);
+    } catch (error) {
+      console.error('Error editing availability:', error);
+      setError(
+        'Ocurrió un error al intentar actualizar la disponibilidad. Por favor, intenta de nuevo.'
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <form className='flex flex-col gap-6'>
-      {value.days.map((availability, index) => (
-        <AvailabilityRow
-          key={availability.idDay}
-          availability={availability}
-          handleDisableDay={handleDisableDay}
-          handleAddSlot={handleAddSlot}
-          handleRemoveSlot={handleRemoveSlot}
-          handleChangeSlot={handleChangeSlot}
-        />
-      ))}
-    </form>
+    <>
+      <form className='flex flex-col gap-6' onSubmit={handleSubmit}>
+        {value.days.map((availability) => (
+          <AvailabilityRow
+            key={availability.idDay}
+            availability={availability}
+            handleDisableDay={handleDisableDay}
+            handleAddSlot={handleAddSlot}
+            handleRemoveSlot={handleRemoveSlot}
+            handleChangeSlot={handleChangeSlot}
+          />
+        ))}
+        <div className='mt-6'>
+          <Button
+            bgColorKey='success'
+            type='submit'
+            isLoading={isLoading}
+            disabled={isLoading}
+          >
+            Guardar cambios
+          </Button>
+        </div>
+      </form>
+      {error && <Toast type='error' message={error} />}
+      {updated && (
+        <Toast type='success' message='Disponibilidad actualizada exitosamente' />
+      )}
+    </>
   );
 }
 

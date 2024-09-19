@@ -25,7 +25,7 @@ export function generateHoursAndMinutes(
     hoursAndMinutes.push(minutesToTime(minutes));
   }
 
-  hoursAndMinutes.push('23:59');
+  //hoursAndMinutes.push('23:59');
 
   return hoursAndMinutes;
 }
