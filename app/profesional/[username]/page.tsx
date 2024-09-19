@@ -2,7 +2,8 @@ import { createClient } from '@/app/lib/utils/supabase/server';
 import { ClientForm } from '@/app/ui/components/ClientForm';
 import Logo from '@/app/ui/icons/Logo';
 import Image from 'next/image';
-import { GeoAlt, Telephone } from 'react-bootstrap-icons';
+import { GeoAlt, Link, Telephone } from 'react-bootstrap-icons';
+import { Balancer } from 'react-wrap-balancer';
 
 export default async function Profesional({
   params,
@@ -63,83 +64,87 @@ export default async function Profesional({
 
   return (
     <>
-      <header className='px-4 py-6 bg-f-white'>
+      <header className='px-4 py-6'>
         <div className='max-w-screen-lg m-auto'>
           <Logo width={144} color='#1FBEB8' role='img' aria-label='MiDoctor' />
         </div>
       </header>
-      <main className='flex h-screen px-4 py-6'>
-        <div className='grid max-w-screen-lg grid-cols-1 m-auto shadow-sm md:grid-cols-2 bg-f-white rounded-xl'>
-          <section className='flex flex-col gap-6 px-4 py-6'>
-            {profesional?.avatar_url && (
-              <Image
-                alt={`Foto de perfil de ${profesional?.full_name}`}
-                src={profesional?.avatar_url}
-                width={150}
-                height={150}
-                className='object-cover rounded-full'
-              />
-            )}
-            <div>
+      <main className='max-w-screen-lg px-4 pt-8 pb-6 m-auto '>
+        <div className='grid grid-cols-1 m-auto md:grid-cols-2'>
+          <section className='flex flex-col gap-6 px-4 py-6 shadow-sm bg-f-white rounded-t-3xl md:rounded-t-none md:!rounded-l-3xl'>
+            <div className='flex items-center gap-4'>
+              {profesional?.avatar_url && (
+                <Image
+                  alt={`Foto de perfil de ${profesional?.full_name}`}
+                  src={profesional?.avatar_url}
+                  width={88}
+                  height={88}
+                  className='object-cover rounded-full'
+                />
+              )}
+
               {profesional?.full_name && (
-                <h1 className='text-lg font-medium text-neutral-900'>
+                <h1 className='text-xl font-semibold text-neutral-900'>
                   {profesional.full_name}
                 </h1>
               )}
-              {consult?.address && (
-                <address className='text-sm font-light text-neutral-500'>
-                  {consult?.address}
-                </address>
-              )}
             </div>
             {profesional?.about_me && (
-              <div>
-                <h2 className='mb-1 font-medium text-neutral-900'>Sobre mí</h2>
-                <p className='leading-relaxed text-neutral-500'>
-                  {profesional?.about_me}
-                </p>
-              </div>
+              <p className='leading-relaxed text-neutral-500'>
+                <Balancer>{profesional?.about_me}</Balancer>
+              </p>
             )}
-            {consult && !consult.is_online && (
-              <div className='flex flex-col gap-1'>
-                <h2 className='font-medium text-neutral-900'>Información de consulta</h2>
-                <address className='flex items-center gap-2 not-italic text-neutral-500 mb'>
-                  {<GeoAlt />} {consult?.address}
-                </address>
-                <address className='flex items-center gap-2 not-italic text-neutral-500'>
-                  {<Telephone />} {consult?.phone_number}
-                </address>
-              </div>
-            )}
+
             {services && services?.length > 0 && (
               <div>
-                <h2 className='mb-1 font-medium text-neutral-900'>Mis servicios</h2>
-                <ul className='flex flex-col gap-3'>
+                <h2 className='mb-3 text-sm font-semibold text-neutral-900'>
+                  Mis servicios y precios
+                </h2>
+                <ul className='flex flex-col'>
                   {services.map((service) => (
                     <li
                       key={service.service_id}
-                      className='flex flex-col list-none text-neutral-500'
+                      className='flex items-center justify-between border-b-[1px] border-neutral-200 pb-2'
                     >
-                      <h3 className='text-neutral-900'>
-                        {service.name} - ${centsToDolar(service.price)}
-                      </h3>
+                      <div>
+                        <h3 className='text-sm font-medium text-neutral-900'>
+                          {service.name}
+                        </h3>
 
-                      {service?.duration && (
-                        <span className='text-sm'>
-                          Duración:{' '}
-                          {calcDuration(
-                            service?.duration.hours,
-                            service?.duration.minutes
-                          )}
-                        </span>
-                      )}
+                        {service?.duration && (
+                          <span className='text-xs text-neutral-500'>
+                            Duración:{' '}
+                            {calcDuration(
+                              service?.duration.hours,
+                              service?.duration.minutes
+                            )}
+                          </span>
+                        )}
+                      </div>
+                      <span className='font-medium text-neutral-900'>
+                        ${centsToDolar(service.price)}
+                      </span>
                     </li>
                   ))}
                 </ul>
               </div>
             )}
+
+            {consult && !consult.is_online && (
+              <div className='flex flex-col'>
+                <h2 className='mb-3 text-sm font-medium font-semibold text-neutral-900'>
+                  Información de consulta
+                </h2>
+                <address className='flex items-center gap-2 mb-2 text-sm not-italic font-light text-neutral-500'>
+                  {<GeoAlt />} {consult?.address}
+                </address>
+                <address className='flex items-center gap-2 text-sm not-italic font-light text-neutral-500'>
+                  {<Telephone />} {consult?.phone_number}
+                </address>
+              </div>
+            )}
           </section>
-          <aside className='flex flex-col gap-6 px-4 py-6 bg-primary-500 rounded-xl'>
+          <aside className='flex flex-col gap-6 px-4 py-6 shadow-sm bg-primary-100 rounded-b-3xl md:rounded-b-none md:!rounded-r-3xl'>
             <ClientForm services={services ?? []} availability={availability} />
           </aside>
         </div>

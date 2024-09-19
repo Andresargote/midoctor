@@ -90,19 +90,19 @@ export function ClientForm({ services, availability }: ClientFormProps) {
 
   const handleNextWeek = () => {
     setCurrentWeekStart(currentWeekStart.add(1, 'week'));
-    setCurrentHour('');
-    setCurrentDay(null);
   };
 
   const handlePrevWeek = () => {
     setCurrentWeekStart(currentWeekStart.subtract(1, 'week'));
-    setCurrentHour('');
-    setCurrentDay(null);
   };
 
   const today = dayjs().startOf('week');
 
   const isCurrentWeek = currentWeekStart.isSame(today, 'week');
+
+  const isDayInCurrentWeek = (day: dayjs.Dayjs) => {
+    return currentWeekStart.isSame(day, 'week');
+  };
 
   return (
     <form>
@@ -110,7 +110,7 @@ export function ClientForm({ services, availability }: ClientFormProps) {
         <label className='text-sm' htmlFor='motivo-consulta'>
           Motivo de la consulta:
         </label>
-        <div className='h-12 mb-6 '>
+        <div className='h-12 mb-6'>
           <SelectV2
             label='Elige el motivo de la visita'
             value={service}
@@ -125,7 +125,7 @@ export function ClientForm({ services, availability }: ClientFormProps) {
       </div>
       <div className='flex flex-col gap-8 p-4 rounded-lg bg-f-white'>
         <div>
-          <h2 className='mb-4 font-medium text-neutral-900'>Dia</h2>
+          <h2 className='font-medium text-neutral-500'>Dia</h2>
           <div className='flex justify-end w-full gap-2 mb-4'>
             {!isCurrentWeek && (
               <button
@@ -153,12 +153,14 @@ export function ClientForm({ services, availability }: ClientFormProps) {
               <li key={i}>
                 <button
                   className={clsx(
-                    'flex flex-col items-center p-2 min-w-14 gap-2.5 rounded-lg font-medium text-sm',
-                    currentDay && currentDay.format('ddd') === day.format('ddd')
-                      ? 'bg-primary-500 text-f-white'
+                    'flex flex-col items-center p-3 rounded-md font-medium text-sm gap-1 w-[72px]',
+                    currentDay &&
+                      currentDay.format('ddd') === day.format('ddd') &&
+                      isDayInCurrentWeek(currentDay)
+                      ? 'bg-success-500 text-f-white'
                       : 'bg-neutral-200 text-neutral-500',
                     isCurrentDayBeforeToday(day) &&
-                      'bg-neutral-50 text-neutral-300 line-through'
+                      'bg-neutral-50 text-neutral-200 line-through'
                   )}
                   onClick={(e) => {
                     e.preventDefault();
@@ -174,17 +176,17 @@ export function ClientForm({ services, availability }: ClientFormProps) {
           </ol>
         </div>
         <div>
-          <h2 className='mb-4 font-medium text-neutral-900'>Hora</h2>
+          <h2 className='mb-4 font-medium text-neutral-500'>Hora</h2>
           {getHoursByDay(currentDay).length > 0 ? (
             <ol className='flex flex-wrap gap-3.5'>
               {getHoursByDay(currentDay)?.map((hour, i) => (
                 <li key={i}>
                   <button
                     className={clsx(
-                      'p-2 font-medium rounded-lg',
+                      'p-3 font-medium rounded-md w-[72px]',
                       hour === currentHour
-                        ? 'bg-primary-500 text-f-white'
-                        : ' bg-neutral-200 text-neutral-600'
+                        ? 'bg-success-500 text-f-white'
+                        : 'bg-neutral-200 text-neutral-600'
                     )}
                     onClick={(e) => {
                       e.preventDefault();
