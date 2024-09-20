@@ -2,7 +2,7 @@ import { createClient } from '@/app/lib/utils/supabase/server';
 import { ClientForm } from '@/app/ui/components/ClientForm';
 import Logo from '@/app/ui/icons/Logo';
 import Image from 'next/image';
-import { GeoAlt, Link, Telephone } from 'react-bootstrap-icons';
+import { GeoAlt, Telephone } from 'react-bootstrap-icons';
 import { Balancer } from 'react-wrap-balancer';
 
 export default async function Profesional({
@@ -68,14 +68,14 @@ export default async function Profesional({
 	return (
 		<>
 			<header className="px-4 py-6">
-				<div className="max-w-screen-lg m-auto">
+				<div className="m-auto max-w-screen-lg">
 					<Logo width={144} color="#1FBEB8" role="img" aria-label="MiDoctor" />
 				</div>
 			</header>
-			<main className="max-w-screen-lg px-4 pt-8 pb-6 m-auto ">
-				<div className="grid grid-cols-1 m-auto md:grid-cols-2">
+			<main className="px-4 pt-8 pb-6 m-auto max-w-screen-lg">
+				<div className="grid grid-cols-1 m-auto md:grid-cols-2 min-h-[640px]">
 					<section className="flex flex-col gap-6 px-4 py-6 shadow-sm bg-f-white rounded-t-3xl md:rounded-t-none md:!rounded-l-3xl">
-						<div className="flex items-center gap-4">
+						<div className="flex gap-4 items-center">
 							{profesional?.avatar_url && (
 								<Image
 									alt={`Foto de perfil de ${profesional?.full_name}`}
@@ -138,16 +138,16 @@ export default async function Profesional({
 								<h2 className="mb-3 text-sm font-medium font-semibold text-neutral-900">
 									Información de consulta
 								</h2>
-								<address className="flex items-center gap-2 mb-2 text-sm not-italic font-light text-neutral-500">
+								<address className="flex gap-2 items-center mb-2 text-sm not-italic font-light text-neutral-500">
 									{<GeoAlt />} {consult?.address}
 								</address>
-								<address className="flex items-center gap-2 text-sm not-italic font-light text-neutral-500">
+								<address className="flex gap-2 items-center text-sm not-italic font-light text-neutral-500">
 									{<Telephone />} {consult?.phone_number}
 								</address>
 							</div>
 						)}
 					</section>
-					<aside className="flex flex-col gap-6 px-4 py-6 shadow-sm bg-primary-100 rounded-b-3xl md:rounded-b-none md:!rounded-r-3xl">
+					<aside className="flex flex-col gap-6 px-4 py-6 shadow-sm bg-f-gray rounded-b-3xl md:rounded-b-none md:!rounded-r-3xl">
 						<ClientForm services={services ?? []} availability={availability} />
 					</aside>
 				</div>

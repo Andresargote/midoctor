@@ -3,7 +3,7 @@ import { type ComponentProps, forwardRef } from 'react';
 type TextareaInputProps = ComponentProps<'textarea'> & {
 	label: string;
 	id: string;
-	errorMessage: string;
+	errorMessage?: string;
 };
 
 const TextareaInput = forwardRef<HTMLTextAreaElement, TextareaInputProps>(
@@ -15,7 +15,7 @@ const TextareaInput = forwardRef<HTMLTextAreaElement, TextareaInputProps>(
 				</label>
 				<textarea
 					id={id}
-					className="w-full px-4 py-2 border rounded-xl border-neutral-300 text-f-black"
+					className="px-4 py-2 w-full rounded-xl border border-neutral-300 text-f-black"
 					rows={4}
 					{...props}
 					ref={ref}
