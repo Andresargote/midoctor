@@ -1,6 +1,6 @@
-import * as Dialog from "@radix-ui/react-dialog";
-import { Button } from "../Button";
-import { X } from "react-bootstrap-icons";
+import * as Dialog from '@radix-ui/react-dialog';
+import { Button } from '../Button';
+import { X } from 'react-bootstrap-icons';
 
 type Props = {
 	visible: boolean;
@@ -32,26 +32,26 @@ export function DeleteServiceModal({
 							handleCloseModal(false);
 						}
 					}}
-					className="fixed z-50 w-full max-w-md p-8 transform shadow-sm bg-f-white rounded-2xl top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4"
+					className="fixed top-2/4 left-2/4 z-50 p-8 w-full max-w-md rounded-2xl shadow-sm transform -translate-x-2/4 -translate-y-2/4 bg-f-white"
 					style={{
-						transform: "translate(-50%, -50%)",
-						width: "calc(100% - 1rem)",
+						transform: 'translate(-50%, -50%)',
+						width: 'calc(100% - 1rem)',
 					}}
-					onOpenAutoFocus={(event) => {
+					onOpenAutoFocus={event => {
 						event.preventDefault();
 					}}
 				>
 					<Dialog.Title className="max-w-[90%] mb-2 text-2xl font-semibold leading-relaxed text-neutral-900">
-						¿Eliminar consultorio?
+						¿Eliminar servicio?
 					</Dialog.Title>
 					<Dialog.Description className="mb-6 text-sm font-light leading-relaxed text-neutral-800">
 						<strong>¡Esta acción no tiene vuelta atrás!</strong>
 						<br />
-						¿Seguro que quieres eliminar el consultorio{" "}
+						¿Seguro que quieres eliminar el servicio{' '}
 						<strong className="font-bold">{serviceName}</strong>?
 					</Dialog.Description>
 
-					<div className="flex items-center justify-end gap-3">
+					<div className="flex gap-3 justify-end items-center">
 						<Dialog.Close asChild>
 							<Button
 								bgColorKey="neutral"
@@ -83,7 +83,7 @@ export function DeleteServiceModal({
 							}
 						}}
 						type="button"
-						className="absolute p-2 rounded-full focused-btn top-4 right-4 bg-neutral-100"
+						className="absolute top-4 right-4 p-2 rounded-full focused-btn bg-neutral-100"
 						aria-label="Cerrar modal de eliminar consultorio"
 					>
 						<X color="#0A0A0A" width={24} height={24} />
