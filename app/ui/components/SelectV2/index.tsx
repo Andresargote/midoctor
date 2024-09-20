@@ -53,7 +53,7 @@ export function SelectV2({
         }}
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
-        className='flex items-center justify-between w-full h-full px-4 py-2 transition duration-300 border rounded-full bg-f-white text-f-black border-neutral-300 focused-btn'
+        className='flex justify-between items-center px-4 py-2 w-full h-full rounded-full border transition duration-300 bg-f-white text-f-black border-neutral-300 focused-btn'
         id={id}
       >
         {chosen?.label || label}
@@ -65,8 +65,8 @@ export function SelectV2({
           id={`${namespace}_dropdown`}
           className={clsx(
             isDropdownOpen
-              ? 'w-full bg-f-white rounded-lg border border-neutral-300 shadow-xs z-50 absolute mt-2 max-h-60 overflow-y-auto list-none'
-              : 'w-0 h-0 overflow-hidden'
+              ? 'overflow-y-auto absolute z-50 mt-2 w-full max-h-60 list-none rounded-lg border bg-f-white border-neutral-300 shadow-xs'
+              : 'overflow-hidden w-0 h-0'
           )}
           tabIndex={-1}
           ref={listContainerRef}
@@ -93,9 +93,9 @@ export function SelectV2({
                   onChange={() => select(option.value)}
                   checked={chosen?.value === option.value}
                   value={option.value}
-                  className='w-0 h-0 p-0 m-0 overflow-hidden opacity-0'
+                  className='overflow-hidden p-0 m-0 w-0 h-0 opacity-0'
                 />
-                <div className='flex items-center justify-between w-full'>
+                <div className='flex justify-between items-center w-full'>
                   <span>{option.label}</span>
                   {chosen?.value === option.value && (
                     <Check className='w-5 h-5 text-primary-500' />
