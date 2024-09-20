@@ -6,8 +6,6 @@ export default async function Home() {
 
 	const { data } = await supabase.auth.getUser();
 
-	console.log('data');
-
 	return (
 		<main>
 			<p className="text-3xl font-bold underline text-primary-500">
