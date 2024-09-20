@@ -1,8 +1,8 @@
-"use client";
-import clsx from "clsx";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+'use client';
+import clsx from 'clsx';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useState } from 'react';
 import {
 	Briefcase,
 	Clock,
@@ -10,8 +10,8 @@ import {
 	List,
 	Wallet2,
 	X,
-} from "react-bootstrap-icons";
-import Logo from "../../icons/Logo";
+} from 'react-bootstrap-icons';
+import Logo from '../../icons/Logo';
 
 export function AppNav() {
 	const [isNavOpen, setIsNavOpen] = useState(false);
@@ -19,22 +19,22 @@ export function AppNav() {
 
 	const navLinks = [
 		{
-			title: "Mi Consultorio",
-			href: "/app/mi-consultorio",
+			title: 'Mi Consultorio',
+			href: '/app/mi-consultorio',
 			icon: (
 				<Hospital color="#0A0A0A" width={20} height={20} className="mr-6" />
 			),
 		},
 		{
-			title: "Mis Servicios",
-			href: "/app/mis-servicios",
+			title: 'Mis Servicios',
+			href: '/app/mis-servicios',
 			icon: (
 				<Briefcase color="#0A0A0A" width={20} height={20} className="mr-6" />
 			),
 		},
 		{
-			title: "Mi Disponibilidad",
-			href: "/app/mi-disponibilidad",
+			title: 'Mi Disponibilidad',
+			href: '/app/mi-disponibilidad',
 			icon: <Clock color="#0A0A0A" width={20} height={20} className="mr-6" />,
 		} /*,
 		{
@@ -50,8 +50,8 @@ export function AppNav() {
 			icon: <People color="#0A0A0A" width={20} height={20} className="mr-6" />,
 		},*/,
 		{
-			title: "Citas Reservadas",
-			href: "/app/mis-citas-reservadas",
+			title: 'Citas Reservadas',
+			href: '/app/mis-citas-reservadas',
 			icon: <Wallet2 color="#0A0A0A" width={20} height={20} className="mr-6" />,
 		},
 	];
@@ -77,8 +77,8 @@ export function AppNav() {
 				type="button"
 				onClick={handleNavToggle}
 				className={clsx(
-					"absolute z-50 p-3 transition duration-300 w-fit bg-f-white focused-btn lg:hidden rounded-r-lg left-[288px] top-1",
-					isNavOpen ? "block" : "hidden",
+					'absolute z-50 p-3 transition duration-300 w-fit bg-f-white focused-btn lg:hidden rounded-r-lg left-[288px] top-1',
+					isNavOpen ? 'block' : 'hidden',
 				)}
 				aria-label="Cerrar menú de navegación"
 				aria-controls="nav-menu"
@@ -88,16 +88,16 @@ export function AppNav() {
 
 			<div
 				className={clsx(
-					"fixed top-0 left-0 z-40 w-full h-full bg-f-black opacity-15 lg:hidden",
-					isNavOpen ? "block" : "hidden",
+					'fixed top-0 left-0 z-40 w-full h-full bg-f-black opacity-15 lg:hidden',
+					isNavOpen ? 'block' : 'hidden',
 				)}
 				role="presentation"
 			/>
 
 			<div
 				className={clsx(
-					"fixed top-0 left-0 z-50 h-full px-3 py-2 bg-f-white w-72 lg:block",
-					isNavOpen ? "block" : "hidden",
+					'fixed top-0 left-0 z-50 h-full px-3 py-2 bg-f-white w-72 lg:block',
+					isNavOpen ? 'block' : 'hidden',
 				)}
 				id="nav-menu"
 			>
@@ -114,14 +114,14 @@ export function AppNav() {
 				</div>
 				<nav aria-label="Menú principal">
 					<ul className="flex flex-col gap-1">
-						{navLinks.map((link) => (
+						{navLinks.map(link => (
 							<li
 								key={link.href}
 								className={clsx(
 									`p-3 transition duration-300 rounded-full text-neutral-900 ${
 										currentPath === link.href
-											? "bg-neutral-100"
-											: "hover:bg-neutral"
+											? 'bg-neutral-100'
+											: 'hover:bg-neutral'
 									}`,
 								)}
 							>

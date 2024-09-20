@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import ConfettiComponent from "react-confetti";
+import { useEffect, useState } from 'react';
+import ConfettiComponent from 'react-confetti';
 
 export function Confetti() {
 	const [vWidth, setVWidth] = useState(0);
@@ -14,13 +14,13 @@ export function Confetti() {
 		if (vHeight === 0) setVHeight(window.innerHeight);
 		if (vWidth === 0) setVWidth(window.innerWidth);
 
-		addEventListener("resize", () => {
+		addEventListener('resize', () => {
 			setVWidth(window.innerWidth);
 			setVHeight(window.innerHeight);
 		});
 
 		return () => {
-			removeEventListener("resize", () => {
+			removeEventListener('resize', () => {
 				setVWidth(window.innerWidth);
 				setVHeight(window.innerHeight);
 			});

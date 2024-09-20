@@ -1,4 +1,4 @@
-import { InvalidTimeError } from "./errors";
+import { InvalidTimeError } from './errors';
 
 type TimeProps = {
 	hour: number;

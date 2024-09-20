@@ -1,8 +1,8 @@
-import clsx from "clsx";
-import { useEffect, useState } from "react";
+import clsx from 'clsx';
+import { useEffect, useState } from 'react';
 
 export type ToastProps = {
-	type?: "success" | "error";
+	type?: 'success' | 'error';
 	message: string;
 };
 
@@ -14,7 +14,7 @@ type ToastType = ToastProps & {
 // - Add a close button
 // - Manage multiple toasts
 // - Add animation
-export function Toast({ type = "success", message }: ToastProps) {
+export function Toast({ type = 'success', message }: ToastProps) {
 	const [toats, setToats] = useState<ToastType[]>([
 		{
 			id: new Date().getTime(),
@@ -35,12 +35,12 @@ export function Toast({ type = "success", message }: ToastProps) {
 
 	return (
 		<>
-			{toats.map((t) => (
+			{toats.map(t => (
 				<div
 					key={t.id}
 					className={clsx(
-						"max-w-96 fixed top-0 right-0 p-4 m-4 rounded-xl",
-						t.type === "success" ? "bg-success-100" : "bg-error-100",
+						'max-w-96 fixed top-0 right-0 p-4 m-4 rounded-xl',
+						t.type === 'success' ? 'bg-success-100' : 'bg-error-100',
 					)}
 					style={{
 						zIndex: 9999,

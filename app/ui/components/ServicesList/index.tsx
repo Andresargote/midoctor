@@ -1,10 +1,10 @@
-"use client";
-import type { Service } from "@/app/lib/types";
-import { useEffect, useState } from "react";
-import { ServiceCard } from "./service";
-import { DeleteServiceModal } from "./deleteModal";
-import { deleteService } from "./action";
-import { Toast } from "../Toast";
+'use client';
+import type { Service } from '@/app/lib/types';
+import { useEffect, useState } from 'react';
+import { ServiceCard } from './service';
+import { DeleteServiceModal } from './deleteModal';
+import { deleteService } from './action';
+import { Toast } from '../Toast';
 
 export function ServicesList({ data }: { data: Service[] }) {
 	const [services, setServices] = useState(data ?? []);
@@ -15,9 +15,9 @@ export function ServicesList({ data }: { data: Service[] }) {
 
 	const [state, setState] = useState({
 		loading: false,
-		infoMessage: "",
-		errorMessage: "",
-		successMessage: "",
+		infoMessage: '',
+		errorMessage: '',
+		successMessage: '',
 	});
 
 	const handleOpenDeleteModal = (service: Service) => {
@@ -32,37 +32,37 @@ export function ServicesList({ data }: { data: Service[] }) {
 		}
 
 		if (!selectedService) {
-			setState((prev) => ({
+			setState(prev => ({
 				...prev,
-				infoMessage: "Selecciona un servicio para eliminar",
+				infoMessage: 'Selecciona un servicio para eliminar',
 			}));
 			return;
 		}
 
 		try {
-			setState((prev) => ({ ...prev, loading: true }));
+			setState(prev => ({ ...prev, loading: true }));
 
 			const { error } = await deleteService(selectedService.service_id);
 
 			if (error) {
-				throw new Error("Error al eliminar el servicio");
+				throw new Error('Error al eliminar el servicio');
 			}
 
-			setServices((prev) =>
-				prev.filter((s) => s.service_id !== selectedService.service_id),
+			setServices(prev =>
+				prev.filter(s => s.service_id !== selectedService.service_id),
 			);
-			setState((prev) => ({
+			setState(prev => ({
 				...prev,
-				successMessage: "Servicio eliminado exitosamente",
+				successMessage: 'Servicio eliminado exitosamente',
 			}));
 		} catch (e) {
-			setState((prev) => ({
+			setState(prev => ({
 				...prev,
-				errorMessage: "Error al eliminar el servicio",
+				errorMessage: 'Error al eliminar el servicio',
 			}));
 		} finally {
 			setDeleteModal({ visible: false });
-			setState((prev) => ({ ...prev, loading: false }));
+			setState(prev => ({ ...prev, loading: false }));
 		}
 	};
 
@@ -94,7 +94,7 @@ export function ServicesList({ data }: { data: Service[] }) {
 					</p>
 				) : (
 					<ul className="grid grid-cols-1 gap-6">
-						{services.map((service) => (
+						{services.map(service => (
 							<ServiceCard
 								key={service.service_id}
 								service={service}

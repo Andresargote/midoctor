@@ -1,10 +1,10 @@
-import type { UserProfile } from "@/app/lib/types";
-import { createClient } from "@/app/lib/utils/supabase/server";
-import { ProfileForm } from "@/app/ui/components/Forms/ProfileForm";
-import * as Switch from "@radix-ui/react-switch";
-import type { PostgrestError } from "@supabase/supabase-js";
-import { redirect } from "next/navigation";
-import { Envelope } from "react-bootstrap-icons";
+import type { UserProfile } from '@/app/lib/types';
+import { createClient } from '@/app/lib/utils/supabase/server';
+import { ProfileForm } from '@/app/ui/components/Forms/ProfileForm';
+import * as Switch from '@radix-ui/react-switch';
+import type { PostgrestError } from '@supabase/supabase-js';
+import { redirect } from 'next/navigation';
+import { Envelope } from 'react-bootstrap-icons';
 
 export default async function MiPerfil() {
 	const supabase = createClient();
@@ -17,13 +17,13 @@ export default async function MiPerfil() {
 		data: UserProfile | null;
 		error: PostgrestError | null;
 	} = await supabase
-		.from("profiles")
+		.from('profiles')
 		.select()
-		.eq("id", data?.user?.id)
+		.eq('id', data?.user?.id)
 		.single();
 
 	if (error || !data?.user) {
-		redirect("/iniciar-sesion");
+		redirect('/iniciar-sesion');
 	}
 
 	return (

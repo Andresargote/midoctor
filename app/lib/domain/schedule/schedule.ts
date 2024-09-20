@@ -1,5 +1,5 @@
-import type { Time } from "../time";
-import type { Day } from "./day";
+import type { Time } from '../time';
+import type { Day } from './day';
 
 type ScheduleRules = Array<Rule>;
 type Rule = {

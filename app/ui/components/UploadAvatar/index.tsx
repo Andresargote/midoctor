@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import { useEffect, useState } from "react";
+import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
 type PreviewFile = {
 	file?: File;
@@ -55,9 +55,9 @@ export function UploadAvatar({
 		<div className="flex flex-wrap items-center gap-4">
 			<button
 				type="button"
-				onClick={(e) => {
+				onClick={e => {
 					e.preventDefault();
-					const avatar = document.getElementById("avatar");
+					const avatar = document.getElementById('avatar');
 					avatar?.click();
 				}}
 				className="w-20 h-20 text-center rounded-full bg-primary-500 text-f-white"
@@ -79,9 +79,9 @@ export function UploadAvatar({
 				<button
 					role="button"
 					type="button"
-					onClick={(e) => {
+					onClick={e => {
 						e.preventDefault();
-						const avatar = document.getElementById("avatar");
+						const avatar = document.getElementById('avatar');
 						avatar?.click();
 					}}
 					className="p-3 rounded-lg bg-neutral-100"

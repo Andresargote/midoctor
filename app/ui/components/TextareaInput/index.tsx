@@ -1,6 +1,6 @@
-import { type ComponentProps, forwardRef } from "react";
+import { type ComponentProps, forwardRef } from 'react';
 
-type TextareaInputProps = ComponentProps<"textarea"> & {
+type TextareaInputProps = ComponentProps<'textarea'> & {
 	label: string;
 	id: string;
 	errorMessage: string;
@@ -30,6 +30,6 @@ const TextareaInput = forwardRef<HTMLTextAreaElement, TextareaInputProps>(
 	},
 );
 
-TextareaInput.displayName = "TextareaInput";
+TextareaInput.displayName = 'TextareaInput';
 
 export default TextareaInput;

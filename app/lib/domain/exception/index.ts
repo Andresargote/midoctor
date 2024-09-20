@@ -1,4 +1,4 @@
-import type { Interval } from "../schedule/schedule";
+import type { Interval } from '../schedule/schedule';
 
 type ExceptionProps = {
 	date: Date;

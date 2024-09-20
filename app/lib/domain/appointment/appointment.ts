@@ -1,5 +1,5 @@
-import type { Service } from "../service";
-import type { Time } from "../time";
+import type { Service } from '../service';
+import type { Time } from '../time';
 
 export enum AppointmentStatusOptions {
 	Pending = 0,

@@ -6,26 +6,26 @@ import { ServicesList } from '@/app/ui/components/ServicesList';
 import { Suspense } from 'react';
 
 export default async function MisServicios() {
-  const supabase = createClient();
+	const supabase = createClient();
 
-  const { data } = await supabase.auth.getUser();
+	const { data } = await supabase.auth.getUser();
 
-  const services = await supabase
-    .from('services')
-    .select('*')
-    .eq('user_id', data?.user?.id);
+	const services = await supabase
+		.from('services')
+		.select('*')
+		.eq('user_id', data?.user?.id);
 
-  return (
-    <Suspense fallback={<p>Cargando...</p>}>
-      <GeneralWrapper
-        userId={data?.user?.id ?? ''}
-        title='Mis Servicios'
-        description='Aquí puedes ver y editar la información de tus servicios.'
-        btnText='Agregar servicio'
-        data={services.data ?? []}
-        AddModal={AddService}
-        Content={ServicesList}
-      />
-    </Suspense>
-  );
+	return (
+		<Suspense fallback={<p>Cargando...</p>}>
+			<GeneralWrapper
+				userId={data?.user?.id ?? ''}
+				title="Mis Servicios"
+				description="Aquí puedes ver y editar la información de tus servicios."
+				btnText="Agregar servicio"
+				data={services.data ?? []}
+				AddModal={AddService}
+				Content={ServicesList}
+			/>
+		</Suspense>
+	);
 }

@@ -1,7 +1,7 @@
-import { SignUpForm } from "@/app/ui/components/Forms/SignUpForm";
-import Logo from "@/app/ui/icons/Logo";
-import Link from "next/link";
-import React from "react";
+import { SignUpForm } from '@/app/ui/components/Forms/SignUpForm';
+import Logo from '@/app/ui/icons/Logo';
+import Link from 'next/link';
+import React from 'react';
 
 export default function SignUp() {
 	return (
