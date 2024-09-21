@@ -5,6 +5,12 @@ import Image from 'next/image';
 import { GeoAlt, Telephone } from 'react-bootstrap-icons';
 import { Balancer } from 'react-wrap-balancer';
 
+/**
+TODO:
+	- redirect to 404 if profesional not found
+	- add skeleton loading
+ */
+
 export default async function Profesional({
 	params,
 }: {

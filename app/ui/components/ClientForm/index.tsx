@@ -7,10 +7,23 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/es';
 import { generateHoursAndMinutes } from '@/app/lib/utils';
 import clsx from 'clsx';
-import { Calendar4, ChevronLeft, ChevronRight } from 'react-bootstrap-icons';
+import {
+	Calendar4,
+	CheckCircle,
+	ChevronLeft,
+	ChevronRight,
+	Clipboard2Pulse,
+	ExclamationTriangle,
+	XCircle,
+} from 'react-bootstrap-icons';
 import TextInput from '../TextInput';
 import TextareaInput from '../TextareaInput';
 import { Button } from '../Button';
+import { Controller, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { clientSchema } from './validate-schema';
+import Balancer from 'react-wrap-balancer';
+import { Loader } from '../Loader';
 
 type ClientFormProps = {
 	services: Service[];
@@ -24,14 +37,24 @@ TODO:
 	- refactorizar el codigo, usar useForm
 */
 
+type ClientFormValues = {
+	service: string;
+	day: dayjs.Dayjs;
+	hour: string;
+	name: string;
+	email: string;
+	comment: string;
+};
+
 dayjs.locale('es');
 export function ClientForm({ services, availability }: ClientFormProps) {
 	const [step, setStep] = useState(0);
 	const [currentWeekStart, setCurrentWeekStart] = useState(
 		dayjs().startOf('week').add(0, 'day'),
 	);
-	const [currentDay, setCurrentDay] = useState<null | dayjs.Dayjs>(dayjs());
-	const [currentHour, setCurrentHour] = useState('');
+	const [submissionStatus, setSubmissionStatus] = useState<
+		'idle' | 'loading' | 'success' | 'error' | 'warning'
+	>('warning');
 
 	const getWeekDays = (startDate: dayjs.Dayjs) => {
 		const days = [];
@@ -41,7 +64,6 @@ export function ClientForm({ services, availability }: ClientFormProps) {
 		return days;
 	};
 
-	const [service, setService] = useState(services[0]?.name);
 	const serviceOptions = services?.map(service => {
 		return {
 			value: service.name,
@@ -54,7 +76,7 @@ export function ClientForm({ services, availability }: ClientFormProps) {
 	const getHoursByDay = (day: dayjs.Dayjs | null) => {
 		if (day) {
 			const dayOfWeek = day.day();
-			const slots = availability.days.find(
+			const slots = availability?.days.find(
 				day => day.idDay === dayOfWeek,
 			)?.slots;
 			let hours = [];
@@ -103,7 +125,122 @@ export function ClientForm({ services, availability }: ClientFormProps) {
 		return currentWeekStart.isSame(day, 'week');
 	};
 
+	const {
+		setValue,
+		register,
+		handleSubmit,
+		formState: { errors },
+		control,
+		watch,
+	} = useForm<ClientFormValues>({
+		defaultValues: {
+			service: services[0]?.name,
+			day: dayjs(),
+			hour: '',
+			name: '',
+			email: '',
+			comment: '',
+			// TODO: add timezone
+		},
+		resolver: zodResolver(clientSchema),
+	});
+
+	const onSubmit = (formValues: ClientFormValues) => {
+		console.log(formValues);
+	};
+
+	const renderSubmissionStatus = () => {
+		switch (submissionStatus) {
+			case 'loading':
+				return (
+					<div className="flex flex-col gap-4 justify-center items-center h-full">
+						<div className="flex flex-col justify-center items-center w-20 h-20 rounded-full bg-primary-500">
+							<Clipboard2Pulse color="#FFFF" size={40} />
+						</div>
+						<h3 className="text-xl font-semibold text-center text-neutral-900">
+							<Balancer>Estamos preparando tu cita</Balancer>
+						</h3>
+						<Loader />
+					</div>
+				);
+			case 'success':
+				return (
+					<div className="flex flex-col gap-4 justify-center items-center h-full">
+						<div className="flex flex-col justify-center items-center w-20 h-20 rounded-full bg-primary-500">
+							<CheckCircle color="#FFFF" size={40} />
+						</div>
+						<h3 className="text-xl font-semibold text-center text-neutral-900">
+							<Balancer>Tu cita ha sido confirmada</Balancer>
+						</h3>
+						<p className="text-sm leading-relaxed text-center text-neutral-500">
+							<Balancer>
+								Gracias por confiar en nosotros. En unos segundos recibirás
+								todos los detalles por correo.
+							</Balancer>
+						</p>
+					</div>
+				);
+			case 'error':
+				return (
+					<div className="flex flex-col gap-4 justify-center items-center h-full">
+						<div className="flex flex-col justify-center items-center w-20 h-20 rounded-full bg-error-500">
+							<XCircle color="#FFFF" size={40} />
+						</div>
+						<h3 className="text-xl font-semibold text-center text-neutral-900">
+							<Balancer>Ups parece que algo salió mal</Balancer>
+						</h3>
+						<p className="text-sm leading-relaxed text-center text-neutral-500">
+							<Balancer>
+								Lo sentimos, ha ocurrido un problema. Por favor, vuelve a
+								intentarlo.
+							</Balancer>
+						</p>
+						<Button
+							onClick={() => {
+								setSubmissionStatus('idle');
+								setStep(0);
+							}}
+						>
+							Volver a intentar
+						</Button>
+					</div>
+				);
+			case 'warning':
+				return (
+					<div className="flex flex-col gap-4 justify-center items-center h-full">
+						<div className="flex flex-col justify-center items-center w-20 h-20 rounded-full bg-warning-500">
+							<ExclamationTriangle color="#FFFF" size={40} />
+						</div>
+						<h3 className="text-xl font-semibold text-center text-neutral-900">
+							<Balancer>La hora seleccionada ya no está disponible</Balancer>
+						</h3>
+						<p className="text-sm leading-relaxed text-center text-neutral-500">
+							<Balancer>
+								Parece que la hora que elegiste ya no está disponible. Por
+								favor, selecciona otra hora para continuar con la reserva.
+							</Balancer>
+						</p>
+						<Button
+							onClick={() => {
+								setSubmissionStatus('idle');
+								setStep(0);
+							}}
+						>
+							Seleccionar otra hora
+						</Button>
+					</div>
+				);
+
+			default:
+				return null;
+		}
+	};
+
 	const renderStep = () => {
+		if (submissionStatus !== 'idle') {
+			return renderSubmissionStatus();
+		}
+
 		switch (step) {
 			case 0:
 				return (
@@ -116,15 +253,19 @@ export function ClientForm({ services, availability }: ClientFormProps) {
 								Motivo de la consulta:
 							</label>
 							<div className="mb-6 h-12">
-								<SelectV2
-									label="Elige el motivo de la visita"
-									value={service}
-									options={serviceOptions}
-									onChange={value => {
-										setService(value);
-									}}
-									namespace="motivo-consulta"
-									id="motivo-consulta"
+								<Controller
+									render={({ field }) => (
+										<SelectV2
+											label="Elige el motivo de la visita"
+											value={field.value}
+											options={serviceOptions}
+											onChange={field.onChange}
+											namespace="motivo-consulta"
+											id="motivo-consulta"
+										/>
+									)}
+									name="service"
+									control={control}
 								/>
 							</div>
 						</div>
@@ -159,9 +300,9 @@ export function ClientForm({ services, availability }: ClientFormProps) {
 											<button
 												className={clsx(
 													'flex flex-col items-center p-3 rounded-md font-medium text-sm gap-1 w-[72px]',
-													currentDay &&
-														currentDay.format('ddd') === day.format('ddd') &&
-														isDayInCurrentWeek(currentDay)
+													watch('day') &&
+														watch('day').format('ddd') === day.format('ddd') &&
+														isDayInCurrentWeek(watch('day'))
 														? 'bg-primary-500 text-f-white'
 														: 'bg-neutral-100 text-neutral-500',
 													isCurrentDayBeforeToday(day) &&
@@ -169,7 +310,7 @@ export function ClientForm({ services, availability }: ClientFormProps) {
 												)}
 												onClick={e => {
 													e.preventDefault();
-													setCurrentDay(day);
+													setValue('day', day);
 												}}
 												disabled={isCurrentDayBeforeToday(day)}
 											>
@@ -184,20 +325,20 @@ export function ClientForm({ services, availability }: ClientFormProps) {
 								<h2 className="mb-4 text-sm font-light text-neutral-600">
 									Hora
 								</h2>
-								{getHoursByDay(currentDay).length > 0 ? (
+								{getHoursByDay(watch('day')).length > 0 ? (
 									<ol className="flex flex-wrap gap-3.5">
-										{getHoursByDay(currentDay)?.map((hour, i) => (
+										{getHoursByDay(watch('day'))?.map((hour, i) => (
 											<li key={i}>
 												<button
 													className={clsx(
 														'p-3 font-medium rounded-md w-[72px]',
-														hour === currentHour
+														hour === watch('hour')
 															? 'bg-primary-500 text-f-white'
 															: 'bg-neutral-100 text-neutral-600',
 													)}
 													onClick={e => {
 														e.preventDefault();
-														setCurrentHour(hour);
+														setValue('hour', hour);
 														setStep(1);
 													}}
 												>
@@ -206,7 +347,7 @@ export function ClientForm({ services, availability }: ClientFormProps) {
 											</li>
 										))}
 									</ol>
-								) : !currentDay ? (
+								) : !watch('day') ? (
 									<p className="text-sm font-light text-neutral-600">
 										Selecciona un día para poder visualizar las horas
 										disponibles.
@@ -236,19 +377,35 @@ export function ClientForm({ services, availability }: ClientFormProps) {
 						<div className="flex gap-2 items-center text-sm">
 							<Calendar4 color="#0F172A" />
 							<p className="text-sm font-light text-neutral-900">
-								{currentDay?.format('DD')} de {currentDay?.format('MMMM')} del{' '}
-								{currentDay?.format('YYYY')}, {currentHour}
+								{watch('day')?.format('DD')} de {watch('day')?.format('MMMM')}{' '}
+								del {watch('day')?.format('YYYY')}, {watch('hour')}
 							</p>
 						</div>
-						<form className="flex flex-col gap-4">
-							<TextInput label="Nombre" id="nombre" type="text" required />
-							<TextInput label="Email" id="email" type="email" required />
+						<form
+							className="flex flex-col gap-4"
+							onSubmit={handleSubmit(onSubmit)}
+						>
+							<TextInput
+								label="Nombre"
+								id="name"
+								type="text"
+								{...register('name')}
+								errorMessage={(errors.name?.message as string) ?? ''}
+							/>
+							<TextInput
+								label="Email"
+								id="email"
+								type="email"
+								{...register('email')}
+								errorMessage={(errors.email?.message as string) ?? ''}
+							/>
 							<TextareaInput
 								label="Comentario para el profesional"
 								id="comentario"
 								placeholder="Escribe aquí tu comentario"
+								{...register('comment')}
 							/>
-							<Button>Reservar</Button>
+							<Button type="submit">Reservar</Button>
 						</form>
 					</>
 				);

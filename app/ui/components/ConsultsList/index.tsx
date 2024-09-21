@@ -24,6 +24,7 @@ export function ConsultsList({ data }: { data: Consult[] }) {
 	const handleDeleteConsult = async (consultId: string) => {
 		setIsLoading(true);
 		setError(null);
+		setDeleted('');
 		try {
 			await deleteConsult(consultId);
 
@@ -35,6 +36,7 @@ export function ConsultsList({ data }: { data: Consult[] }) {
 			);
 		} finally {
 			setIsLoading(false);
+
 			handleCloseDeleteModal();
 		}
 	};
@@ -61,7 +63,7 @@ export function ConsultsList({ data }: { data: Consult[] }) {
 								handleCloseDeleteModal();
 							}
 						}}
-						className="fixed z-50 w-full max-w-md p-8 transform shadow-sm bg-f-white rounded-2xl top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4"
+						className="fixed top-2/4 left-2/4 z-50 p-8 w-full max-w-md rounded-2xl shadow-sm transform -translate-x-2/4 -translate-y-2/4 bg-f-white"
 						style={{
 							transform: 'translate(-50%, -50%)',
 							width: 'calc(100% - 1rem)',
@@ -80,7 +82,7 @@ export function ConsultsList({ data }: { data: Consult[] }) {
 							<strong className="font-bold">{selectedConsult?.name}</strong>?
 						</Dialog.Description>
 
-						<div className="flex items-center justify-end gap-3">
+						<div className="flex gap-3 justify-end items-center">
 							<Dialog.Close asChild>
 								<Button
 									bgColorKey="neutral"
@@ -114,7 +116,7 @@ export function ConsultsList({ data }: { data: Consult[] }) {
 								}
 							}}
 							type="button"
-							className="absolute p-2 rounded-full focused-btn top-4 right-4 bg-neutral-100"
+							className="absolute top-4 right-4 p-2 rounded-full focused-btn bg-neutral-100"
 							aria-label="Cerrar modal de eliminar consultorio"
 						>
 							<X color="#0A0A0A" width={24} height={24} />
@@ -129,11 +131,11 @@ export function ConsultsList({ data }: { data: Consult[] }) {
 					Aún no tienes consultorios registrados
 				</p>
 			) : (
-				<main className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
+				<main className="grid grid-cols-1 auto-rows-fr gap-6 md:grid-cols-2 lg:grid-cols-3">
 					{consults?.map(consult => (
 						<div
 							key={consult.id}
-							className="h-full p-4 rounded-lg shadow-sm bg-f-white"
+							className="p-4 h-full rounded-lg shadow-sm bg-f-white"
 						>
 							<div className="flex justify-between">
 								<h2 className="mb-2 text-xl font-semibold text-neutral-900">
@@ -146,7 +148,7 @@ export function ConsultsList({ data }: { data: Consult[] }) {
 										setIsOpen(true);
 									}}
 									type="button"
-									className="flex items-center justify-center w-8 h-8 transition duration-300 rounded-md hover:bg-error-50 focused-btn"
+									className="flex justify-center items-center w-8 h-8 rounded-md transition duration-300 hover:bg-error-50 focused-btn"
 									aria-label="Botón para eliminar consultorio"
 								>
 									<Trash3 color="#EF4444" />

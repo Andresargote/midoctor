@@ -2,7 +2,7 @@
 
 import * as Dialog from '@radix-ui/react-dialog';
 import * as Switch from '@radix-ui/react-switch';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { consultSchema } from '../../ConsultsList/validate-schema';
@@ -46,6 +46,7 @@ export function AddConsult({
 		reset,
 		formState: { errors },
 		control,
+		watch,
 	} = useForm<ConsultFormDefaultValues>({
 		defaultValues: {
 			is_online: false,
@@ -96,6 +97,10 @@ export function AddConsult({
 		handleCloseModal();
 	};
 
+	useEffect(() => {
+		setIsOnline(watch('is_online'));
+	}, [watch('is_online')]);
+
 	return (
 		<>
 			<Dialog.Root open={opened}>
@@ -114,7 +119,7 @@ export function AddConsult({
 								handleResetFormValues();
 							}
 						}}
-						className="fixed z-50 w-full max-w-md p-8 transform shadow-sm bg-f-white rounded-2xl top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4"
+						className="fixed top-2/4 left-2/4 z-50 p-8 w-full max-w-md rounded-2xl shadow-sm transform -translate-x-2/4 -translate-y-2/4 bg-f-white"
 						style={{
 							transform: 'translate(-50%, -50%)',
 							width: 'calc(100% - 1rem)',
@@ -135,22 +140,24 @@ export function AddConsult({
 							className="flex flex-col gap-6"
 							onSubmit={handleSubmit(onSubmit)}
 						>
-							<div className="flex items-center gap-3">
-								<Switch.Root
-									id="is_online"
-									className="SwitchRoot"
-									checked={isOnline}
-									onCheckedChange={checked => {
-										setIsOnline(checked);
-										setValue('is_online', checked);
-									}}
-									{...register('is_online')}
-								>
-									<Switch.Thumb className="SwitchThumb" />
-								</Switch.Root>
+							<div className="flex gap-3 items-center">
+								<Controller
+									render={({ field }) => (
+										<Switch.Root
+											id="is_online"
+											className="SwitchRoot"
+											checked={field.value}
+											onCheckedChange={field.onChange}
+										>
+											<Switch.Thumb className="SwitchThumb" />
+										</Switch.Root>
+									)}
+									name="is_online"
+									control={control}
+								/>
 								<label
 									htmlFor="is_online"
-									className="flex items-center gap-4 text-sm text-f-black"
+									className="flex gap-4 items-center text-sm text-f-black"
 								>
 									Consulta virtual
 								</label>
@@ -163,7 +170,7 @@ export function AddConsult({
 								autoFocus
 								helperText="El nombre de tu consultorio solo es visible para ti."
 							/>
-							{!isOnline && (
+							{!watch('is_online') && (
 								<TextInput
 									label="Dirección del consultorio"
 									id="address"
@@ -203,7 +210,7 @@ export function AddConsult({
 									</span>
 								)}
 							</div>
-							<div className="flex items-center justify-end gap-3">
+							<div className="flex gap-3 justify-end items-center">
 								<Dialog.Close asChild>
 									<Button
 										bgColorKey="neutral"
@@ -238,7 +245,7 @@ export function AddConsult({
 									}
 								}}
 								type="button"
-								className="absolute p-2 rounded-full focused-btn top-4 right-4 bg-neutral-100"
+								className="absolute top-4 right-4 p-2 rounded-full focused-btn bg-neutral-100"
 								aria-label="Cerrar modal de creación de consultorio"
 							>
 								<X color="#0A0A0A" width={24} height={24} />
