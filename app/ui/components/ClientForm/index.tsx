@@ -27,6 +27,32 @@ type ClientFormProps = {
 
     - podes listar los días de la semana, poder hacer scroll e ir sumando semanas en el futuro, mostrar las horas de los dias las horas debo mostrarlas en el timezone de la persona
 */
+const TIMEZONES = [
+  { value: 'America/Argentina/Buenos_Aires', label: '(GMT-3) Buenos Aires, Argentina' },
+  { value: 'America/Bogota', label: '(GMT-5) Bogotá, Colombia' },
+  { value: 'America/Lima', label: '(GMT-5) Lima, Perú' },
+  { value: 'America/Mexico_City', label: '(GMT-6) Ciudad de México, México' },
+  { value: 'America/Panama', label: '(GMT-5) Panamá, Panamá' },
+  { value: 'America/Santiago', label: '(GMT-4) Santiago, Chile' },
+  { value: 'America/Guayaquil', label: '(GMT-5) Guayaquil, Ecuador' },
+  { value: 'America/Montevideo', label: '(GMT-3) Montevideo, Uruguay' },
+  {
+    value: 'America/Santo_Domingo',
+    label: '(GMT-4) Santo Domingo, República Dominicana',
+  },
+  { value: 'America/Miami', label: '(GMT-4) Miami, Estados Unidos' },
+  { value: 'America/Toronto', label: '(GMT-4) Toronto, Canadá' },
+  { value: 'Europe/Madrid', label: '(GMT+2) Madrid, España' },
+  { value: 'Europe/Lisbon', label: '(GMT+1) Lisboa, Portugal' },
+  { value: 'Europe/Rome', label: '(GMT+2) Roma, Italia' },
+  { value: 'America/Costa_Rica', label: '(GMT-6) San José, Costa Rica' },
+  { value: 'America/Asuncion', label: '(GMT-4) Asunción, Paraguay' },
+  { value: 'America/La_Paz', label: '(GMT-4) La Paz, Bolivia' },
+  { value: 'America/Port_of_Spain', label: '(GMT-4) Puerto España, Trinidad y Tobago' },
+  { value: 'America/Curacao', label: '(GMT-4) Curazao' },
+  { value: 'America/Caracas', label: '(GMT-4) Caracas, Venezuela' },
+];
+
 dayjs.locale('es');
 export function ClientForm({ services, availability }: ClientFormProps) {
   const [currentWeekStart, setCurrentWeekStart] = useState(
@@ -207,6 +233,16 @@ export function ClientForm({ services, availability }: ClientFormProps) {
               No hay horas disponibles para este día.
             </p>
           )}
+        </div>
+        <div>
+          <h2 className='mb-4 font-medium text-neutral-500'>Zona horaria</h2>
+          <select className='w-[64%] px-4 py-2 border rounded-lg bg-f-white border-neutral-300 text-f-black text-sm'>
+            {TIMEZONES.map((timezone) => (
+              <option key={timezone.value} value={timezone.value}>
+                {timezone.label}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
     </form>
