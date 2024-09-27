@@ -1,6 +1,6 @@
 'use client';
 
-import { Availability, Service } from '@/app/lib/types';
+import { Availability, Day, Service } from '@/app/lib/types';
 import { SelectV2 } from '../SelectV2';
 import { useState } from 'react';
 import dayjs from 'dayjs';
@@ -32,8 +32,8 @@ type ClientFormProps = {
 
 /*
 TODO:
-    - mostrar horas no disponibles
-    - tener en cuenta el timezone
+	- mostrar horas no disponibles
+	- tener en cuenta el timezone
 	- refactorizar el codigo, usar useForm
 */
 
@@ -63,6 +63,7 @@ export function ClientForm({ services, availability }: ClientFormProps) {
 		}
 		return days;
 	};
+	const weekDays = getWeekDays(currentWeekStart);
 
 	const serviceOptions = services?.map(service => {
 		return {
@@ -71,7 +72,24 @@ export function ClientForm({ services, availability }: ClientFormProps) {
 		};
 	});
 
-	const weekDays = getWeekDays(currentWeekStart);
+	function generateWeekHours(
+		availability: Availability,
+		timezone: string,
+	): Day[] {
+		if (timezone === availability.timezone) {
+			return availability.days.slice();
+		}
+
+		const dates: dayjs.Dayjs[] = [];
+
+		for (const day of availability.days) {
+			for (const slot of day.slots) {
+				const start = dayjs().tz(availability.timezone).startOf('day');
+			}
+		}
+
+		return availability.days.slice();
+	}
 
 	const getHoursByDay = (day: dayjs.Dayjs | null) => {
 		if (day) {
