@@ -72,25 +72,6 @@ export function ClientForm({ services, availability }: ClientFormProps) {
 		};
 	});
 
-	function generateWeekHours(
-		availability: Availability,
-		timezone: string,
-	): Day[] {
-		if (timezone === availability.timezone) {
-			return availability.days.slice();
-		}
-
-		const dates: dayjs.Dayjs[] = [];
-
-		for (const day of availability.days) {
-			for (const slot of day.slots) {
-				const start = dayjs().tz(availability.timezone).startOf('day');
-			}
-		}
-
-		return availability.days.slice();
-	}
-
 	const getHoursByDay = (day: dayjs.Dayjs | null) => {
 		if (day) {
 			const dayOfWeek = day.day();
