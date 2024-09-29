@@ -1,5 +1,5 @@
 import { createClient } from '@/app/lib/utils/supabase/server';
-import { ClientForm } from '@/app/ui/components/ClientForm';
+import { ScheduleForm } from '@/app/ui/components/ScheduleForm';
 import Logo from '@/app/ui/icons/Logo';
 import Image from 'next/image';
 import { GeoAlt, Telephone } from 'react-bootstrap-icons';
@@ -154,7 +154,10 @@ export default async function Profesional({
 						)}
 					</section>
 					<aside className="flex flex-col gap-6 px-4 py-6 shadow-sm bg-f-gray rounded-b-3xl md:rounded-b-none md:!rounded-r-3xl">
-						<ClientForm services={services ?? []} availability={availability} />
+						<ScheduleForm
+							services={services ?? []}
+							availability={availability}
+						/>
 					</aside>
 				</div>
 			</main>

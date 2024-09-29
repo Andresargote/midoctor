@@ -30,7 +30,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { clientSchema } from './validate-schema';
 import { DateTime, Interval } from 'luxon';
 
-type ClientFormProps = {
+type ScheduleFormProps = {
 	services: Service[];
 	availability: Availability;
 };
@@ -80,7 +80,7 @@ type ScheduleFormValues = {
 	timezone: string;
 };
 
-export function ClientForm({ services, availability }: ClientFormProps) {
+export function ScheduleForm({ services, availability }: ScheduleFormProps) {
 	/*console.log('disponibilidad', availability);
 	const [step, setStep] = useState(0);
 	const [currentWeekStart, setCurrentWeekStart] = useState(
