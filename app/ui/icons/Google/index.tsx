@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 export default function Google({ width = 18, ...props }) {
 	return (

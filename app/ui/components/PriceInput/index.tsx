@@ -1,7 +1,7 @@
-import { type ComponentProps, forwardRef } from "react";
-import { CurrencyDollar } from "react-bootstrap-icons";
+import { type ComponentProps, forwardRef } from 'react';
+import { CurrencyDollar } from 'react-bootstrap-icons';
 
-export type PriceInputProps = ComponentProps<"input"> & {
+export type PriceInputProps = ComponentProps<'input'> & {
 	label: string;
 	id: string;
 	errorMessage?: string;
@@ -13,7 +13,7 @@ const PriceInput = forwardRef<HTMLInputElement, PriceInputProps>(
 	({ label, id, errorMessage, helperText, ...props }, ref) => {
 		const handleValueFormatter = (value: string) => {
 			const isNumber = /^[0-9.,]*$/.test(value);
-			if (!isNumber) return "";
+			if (!isNumber) return '';
 
 			return value;
 		};
@@ -33,7 +33,7 @@ const PriceInput = forwardRef<HTMLInputElement, PriceInputProps>(
 						className="flex w-full px-4 transition duration-300 border rounded-r-full text-f-black min-h-14 border-neutral-300"
 						{...props}
 						ref={ref}
-						onChange={(e) => {
+						onChange={e => {
 							e.target.value = handleValueFormatter(e.target.value);
 							props.onChange?.(e);
 						}}
@@ -56,6 +56,6 @@ const PriceInput = forwardRef<HTMLInputElement, PriceInputProps>(
 	},
 );
 
-PriceInput.displayName = "PriceInput";
+PriceInput.displayName = 'PriceInput';
 
 export default PriceInput;

@@ -1,6 +1,6 @@
-import { type ComponentProps, forwardRef } from "react";
+import { type ComponentProps, forwardRef } from 'react';
 
-export type TextInputProps = ComponentProps<"input"> & {
+export type TextInputProps = ComponentProps<'input'> & {
 	label: string;
 	id: string;
 	errorMessage?: string;
@@ -25,7 +25,7 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
 					className="flex w-full px-4 transition duration-300 border rounded-full text-f-black min-h-14 border-neutral-300"
 					{...props}
 					ref={ref}
-					onChange={(e) => {
+					onChange={e => {
 						if (handleInputFormatter) {
 							e.target.value = handleInputFormatter(e.target.value);
 						}
@@ -49,6 +49,6 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
 	},
 );
 
-TextInput.displayName = "TextInput";
+TextInput.displayName = 'TextInput';
 
 export default TextInput;

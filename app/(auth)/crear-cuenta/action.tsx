@@ -1,6 +1,6 @@
-"use server";
+'use server';
 
-import { createClient } from "@/app/lib/utils/supabase/server";
+import { createClient } from '@/app/lib/utils/supabase/server';
 
 export async function signUp(email: string) {
 	const supabase = createClient();
@@ -10,7 +10,7 @@ export async function signUp(email: string) {
 	});
 
 	if (error) {
-		console.error("SignUp error:", error, error?.message);
+		console.error('SignUp error:', error, error?.message);
 		return { error: true };
 	}
 

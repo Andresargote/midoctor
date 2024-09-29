@@ -5,7 +5,7 @@ export default function ErrorPage() {
 				¡Ups! Algo salió mal.
 			</h1>
 			<p className="leading-relaxed text-neutral-500">
-				Si el error persiste, por favor contacta con{" "}
+				Si el error persiste, por favor contacta con{' '}
 				{/*Todo: change the email address */}
 				<a href="mailto:test@gmail.com" className="underline text-primary-500">
 					soporte
