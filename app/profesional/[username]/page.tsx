@@ -79,8 +79,8 @@ export default async function Profesional({
 				</div>
 			</header>
 			<main className="px-4 pt-8 pb-6 m-auto max-w-screen-lg">
-				<div className="grid grid-cols-1 m-auto md:grid-cols-2 min-h-[732px]">
-					<section className="flex flex-col gap-6 px-4 py-6 shadow-sm bg-f-white rounded-t-3xl md:rounded-t-none md:!rounded-l-3xl">
+				<div className="grid grid-cols-1 m-auto md:grid-cols-2">
+					<section className="flex flex-col gap-6 px-4 py-6 shadow-sm bg-f-white rounded-t-3xl md:rounded-t-none md:!rounded-l-3xl md:min-h-[632px]">
 						<div className="flex gap-4 items-center">
 							{profesional?.avatar_url && (
 								<Image
@@ -153,10 +153,11 @@ export default async function Profesional({
 							</div>
 						)}
 					</section>
-					<aside className="flex flex-col gap-6 px-4 py-6 shadow-sm bg-f-gray rounded-b-3xl md:rounded-b-none md:!rounded-r-3xl">
+					<aside className="flex flex-col gap-6 px-4 py-6 shadow-sm bg-f-gray rounded-b-3xl md:rounded-b-none md:!rounded-r-3xl min-h-[432px] md:min-h-[632px] ">
 						<ScheduleForm
 							services={services ?? []}
 							availability={availability}
+							isOnline={consult?.is_online}
 						/>
 					</aside>
 				</div>

@@ -42,6 +42,7 @@ export type Day = {
 
 export type Availability = {
 	id: string;
+	user_id: string;
 	timezone: string;
 	name: string;
 	active: boolean;

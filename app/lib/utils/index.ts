@@ -168,3 +168,9 @@ export function getDefaultTimezones(
 
 	return timezone;
 }
+
+export function isCurrentWeek(currentWeekStart: DateTime) {
+	const today = DateTime.now();
+
+	return currentWeekStart.weekNumber === today.weekNumber;
+}

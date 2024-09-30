@@ -3,12 +3,12 @@
 import { Availability, Day, Service, WeekDay } from '@/app/lib/types';
 import { SelectV2 } from '../SelectV2';
 import { useEffect, useState } from 'react';
-//import dayjs from 'dayjs';
 import {
 	convertMinutesInHoursAndMinutes,
 	generateSlotTimes,
 	generateWeekDays,
 	getDefaultTimezones,
+	isCurrentWeek,
 	setHoursInWeekDays,
 	setIsAvailableInWeekDays,
 } from '@/app/lib/utils';
@@ -25,14 +25,17 @@ import {
 import TextInput from '../TextInput';
 import TextareaInput from '../TextareaInput';
 import { Button } from '../Button';
-import { Controller, set, useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { clientSchema } from './validate-schema';
-import { DateTime, Interval } from 'luxon';
+import { DateTime, Interval, Settings } from 'luxon';
+import Balancer from 'react-wrap-balancer';
+import { Loader } from '../Loader';
 
 type ScheduleFormProps = {
 	services: Service[];
 	availability: Availability;
+	isOnline: boolean;
 };
 
 const TIMEZONES = [
@@ -71,7 +74,7 @@ const TIMEZONES = [
 ];
 
 type ScheduleFormValues = {
-	service: string;
+	service_id: string;
 	date: string;
 	time: string;
 	name: string;
@@ -80,138 +83,27 @@ type ScheduleFormValues = {
 	timezone: string;
 };
 
-export function ScheduleForm({ services, availability }: ScheduleFormProps) {
-	/*console.log('disponibilidad', availability);
+Settings.defaultLocale = 'es';
+export function ScheduleForm({
+	services,
+	availability,
+	isOnline,
+}: ScheduleFormProps) {
 	const [step, setStep] = useState(0);
-	const [currentWeekStart, setCurrentWeekStart] = useState(
-		dayjs().startOf('week').add(0, 'day'),
+	const [currentStartWeekDay, setCurrentStartWeekDay] = useState<any>(
+		DateTime.now().startOf('week'),
 	);
+	const [weekDays, setWeekDays] = useState<WeekDay[]>([]);
 	const [submissionStatus, setSubmissionStatus] = useState<
 		'idle' | 'loading' | 'success' | 'error' | 'warning'
 	>('idle');
-	const [hoursByDayAndTimezone, setHoursByDayAndTimezone] = useState<string[]>(
-		[],
-	);
-	// array de dates
-	const [weekHours, setWeekHours] = useState<null[]>([]);
 
-	const generateWeekdaysV2 = (startWeekDate: dayjs.Dayjs) => {
-		const days = [];
-		for (let i = 0; i < 7; i++) {
-			days.push(startWeekDate.add(i, 'day'));
-		}
-		return days;
-	}
-
-	const generateHoursByWeekdaysAndTimezone = (
-		startWeekDate: dayjs.Dayjs,
-		timezone: string,
-		availability: Availability,
-	) => {
-		
-	}
-
-	const getWeekDays = (startDate: dayjs.Dayjs) => {
-		const days = [];
-		for (let i = 0; i < 7; i++) {
-			days.push(startDate.add(i, 'day'));
-		}
-		return days;
-	};
-
-	const serviceOptions = services?.map(service => {
+	const SERVICE_OPTIONS = services?.map(service => {
 		return {
-			value: service.name,
+			value: service.service_id,
 			label: service.name,
 		};
 	});
-
-	const weekDays = getWeekDays(currentWeekStart);
-
-	const getHoursByDayAndTimezone = (
-		day: dayjs.Dayjs | null,
-		timezone: string,
-	) => {
-		if (day) {
-			const dayOfWeek = day.day();
-			const slots = availability?.days.find(
-				day => day.idDay === dayOfWeek,
-			)?.slots;
-			let hours = [];
-
-			const calcStartAtAndEndAtByUserTimezone = (
-				start: string,
-				end: string,
-			) => {
-				if (timezone === availability.timezone) return [start, end];
-
-				const availabilityStartAt = dayjs.tz(
-					`${day.format('YYYY-MM-DD')} ${start}`,
-					availability.timezone,
-				);
-				const availabilityEndAt = dayjs.tz(
-					`${day.format('YYYY-MM-DD')} ${end}`,
-					availability.timezone,
-				);
-
-				const startAt = availabilityStartAt.tz(timezone).format('HH:mm');
-				const endAt = availabilityEndAt.tz(timezone).format('HH:mm');
-
-				return [startAt, endAt];
-			};
-
-			if (slots) {
-				for (const slot of slots) {
-					const [startAt, endAt] = calcStartAtAndEndAtByUserTimezone(
-						slot.start,
-						slot.end,
-					);
-
-					const generatedHoursAndMinutes = generateHoursAndMinutes(
-						startAt,
-						endAt,
-						60,
-					);
-
-					hours.push(generatedHoursAndMinutes);
-				}
-			}
-
-			return hours.flat();
-		}
-
-		return [];
-	};
-
-	const isCurrentDayBeforeToday = (currentDay: dayjs.Dayjs) => {
-		const today = dayjs();
-
-		if (currentDay.isSame(today, 'day')) {
-			return false;
-		}
-
-		return currentDay.isBefore(today);
-	};
-
-	const handleNextWeek = () => {
-		setCurrentWeekStart(currentWeekStart.add(1, 'week'));
-	};
-
-	const handlePrevWeek = () => {
-		setCurrentWeekStart(currentWeekStart.subtract(1, 'week'));
-	};
-
-	const today = dayjs().startOf('week');
-
-	const isCurrentWeek = currentWeekStart.isSame(today, 'week');
-
-	const isDayInCurrentWeek = (day: dayjs.Dayjs) => {
-		return currentWeekStart.isSame(day, 'week');
-	};
-
-	const isTimeZoneExist = (timezone: string) => {
-		return TIMEZONES.find(tz => tz.value === timezone);
-	};
 
 	const {
 		setValue,
@@ -220,27 +112,112 @@ export function ScheduleForm({ services, availability }: ScheduleFormProps) {
 		formState: { errors },
 		control,
 		watch,
-	} = useForm<ClientFormValues>({
+	} = useForm<ScheduleFormValues>({
 		defaultValues: {
-			service: services[0]?.name,
-			day: dayjs(),
-			clientDay: null, // para manejar excepcion,cuando por ejemplo cambia de timezone y las horas son diferentes y algunas pasan al siguiente dia
-			hour: '',
+			service_id: services[0]?.service_id ?? '',
+			date:
+				DateTime.now()
+					.setZone(getDefaultTimezones(TIMEZONES, availability.timezone))
+					.toISODate() ?? '',
+			time: '',
 			name: '',
 			email: '',
 			comment: '',
-			timezone: isTimeZoneExist(
-				Intl.DateTimeFormat().resolvedOptions().timeZone,
-			)
-				? Intl.DateTimeFormat().resolvedOptions().timeZone
+			timezone: isOnline
+				? getDefaultTimezones(TIMEZONES, availability.timezone)
 				: availability.timezone,
 		},
 		resolver: zodResolver(clientSchema),
 	});
 
-	const onSubmit = (formValues: ClientFormValues) => {
-		console.log(formValues);
+	const generateHoursByAvailabilityDaysAndTimezone = ({
+		days,
+		timezone,
+		availabilityTimezone,
+		availabilityIntervalMinutes,
+		currentStartWeekDay,
+	}: {
+		days: Day[];
+		timezone: string;
+		availabilityTimezone: string;
+		availabilityIntervalMinutes: number;
+		currentStartWeekDay: DateTime;
+	}) => {
+		const hours = [];
+		for (const day of days) {
+			if (!day.available) continue;
+			const dayDate = currentStartWeekDay
+				.plus({ days: day.idDay })
+				.setZone(availabilityTimezone);
+			for (const slot of day.slots) {
+				const { startAt, endAt } = generateSlotTimes(slot, dayDate, timezone);
+
+				const interval = Interval.fromDateTimes(startAt, endAt);
+				let indexStartAt = startAt;
+
+				hours.push(indexStartAt);
+
+				const [intervalHours, intervalMinutes] =
+					convertMinutesInHoursAndMinutes(availabilityIntervalMinutes);
+
+				while (interval.contains(indexStartAt)) {
+					indexStartAt = indexStartAt.plus({
+						hours: intervalHours,
+						minutes: intervalMinutes,
+					});
+					hours.push(indexStartAt);
+				}
+			}
+		}
+
+		return hours;
 	};
+
+	const handleNextWeek = () => {
+		console.log('handleNextWeek');
+		setCurrentStartWeekDay(
+			currentStartWeekDay
+				.plus({
+					week: 1,
+				})
+				.startOf('week'),
+		);
+	};
+
+	const handlePrevWeek = () => {
+		setCurrentStartWeekDay(
+			currentStartWeekDay
+				.minus({
+					week: 1,
+				})
+				.startOf('week'),
+		);
+	};
+
+	useEffect(() => {
+		// generate hours
+		const { timezone: availabilityTimezone, days: availabilityDays } =
+			availability;
+
+		const selectedTimezone = watch('timezone');
+
+		const generatedHours = generateHoursByAvailabilityDaysAndTimezone({
+			days: availabilityDays,
+			timezone: selectedTimezone,
+			availabilityTimezone,
+			availabilityIntervalMinutes: 60,
+			currentStartWeekDay,
+		});
+
+		// set hours in week days
+		const weekDays = generateWeekDays(currentStartWeekDay);
+		const weekDaysWithHours = setHoursInWeekDays(weekDays, generatedHours);
+		const weekDaysWithHoursAndIsAvailable = setIsAvailableInWeekDays(
+			weekDaysWithHours,
+			availability.days,
+		);
+		setWeekDays(weekDaysWithHoursAndIsAvailable);
+	}, [availability, currentStartWeekDay, watch('timezone')]);
 
 	const renderSubmissionStatus = () => {
 		switch (submissionStatus) {
@@ -329,6 +306,66 @@ export function ScheduleForm({ services, availability }: ScheduleFormProps) {
 		}
 	};
 
+	const isPastDay = (currentDay: DateTime) => {
+		const today = DateTime.now();
+
+		if (currentDay.hasSame(today, 'day')) {
+			return false;
+		}
+
+		return currentDay < today;
+	};
+
+	const isSameDay = (day: DateTime) => {
+		const formattedDate = DateTime.fromISO(watch('date'));
+		const formattedDay = day.toFormat('ccc');
+
+		return (
+			formattedDate.toFormat('ccc') === formattedDay &&
+			formattedDate.weekNumber === currentStartWeekDay.weekNumber
+		);
+	};
+
+	const hasAvailableHoursForDay = () => {
+		const formattedDate = DateTime.fromISO(watch('date'));
+		const foundWeekDay = weekDays.find(
+			weekDay => weekDay.day.weekday === formattedDate.weekday,
+		);
+
+		if (!foundWeekDay) {
+			return false;
+		}
+
+		return foundWeekDay.hours.length > 0;
+	};
+
+	const foundHoursForDay = () => {
+		const formattedDate = DateTime.fromISO(watch('date'));
+
+		const foundWeekDay = weekDays.find(
+			weekDay => weekDay.day.weekday === formattedDate.weekday,
+		);
+
+		if (!foundWeekDay) {
+			return [];
+		}
+
+		return foundWeekDay.hours;
+	};
+
+	const isSameTime = (time: DateTime) => {
+		return time.toFormat('HH:mm') === watch('time');
+	};
+
+	const onSubmit = (formValues: ScheduleFormValues) => {
+		console.log(formValues);
+		setSubmissionStatus('loading');
+	};
+
+	const formatDate = (date: string) => {
+		return DateTime.fromISO(date);
+	};
+
 	const renderStep = () => {
 		if (submissionStatus !== 'idle') {
 			return renderSubmissionStatus();
@@ -337,140 +374,153 @@ export function ScheduleForm({ services, availability }: ScheduleFormProps) {
 		switch (step) {
 			case 0:
 				return (
-					<form>
-						<div className="flex flex-col gap-2">
-							<label
-								className="text-sm font-light text-neutral-600"
-								htmlFor="motivo-consulta"
-							>
-								Motivo de la consulta:
-							</label>
-							<div className="mb-6 h-12">
-								<Controller
-									render={({ field }) => (
-										<SelectV2
-											label="Elige el motivo de la visita"
-											value={field.value}
-											options={serviceOptions}
-											onChange={field.onChange}
-											namespace="motivo-consulta"
-											id="motivo-consulta"
-										/>
-									)}
-									name="service"
-									control={control}
-								/>
-							</div>
-						</div>
-						<div className="flex flex-col gap-8 p-4 rounded-lg bg-f-white">
-							<div>
-								<h2 className="text-sm font-light text-neutral-600">Dia</h2>
-								<div className="flex gap-2 justify-end mb-4 w-full">
-									{!isCurrentWeek && (
-										<button
-											className="p-1 rounded-full shadow-sm bg-f-white"
-											onClick={e => {
-												e.preventDefault();
-												handlePrevWeek();
-											}}
-										>
-											<ChevronLeft color="#0A0A0A" />
-										</button>
-									)}
-									<button
-										className="p-1 rounded-full shadow-sm bg-f-white"
-										onClick={e => {
-											e.preventDefault();
-											handleNextWeek();
-										}}
+					<>
+						{weekDays.length > 0 ? (
+							<form>
+								<div className="flex flex-col gap-2">
+									<label
+										className="text-sm font-light text-neutral-600"
+										htmlFor="motivo-consulta"
 									>
-										<ChevronRight color="#0A0A0A" />
-									</button>
+										Motivo de la consulta:
+									</label>
+									<div className="mb-6 h-12">
+										<Controller
+											render={({ field }) => (
+												<SelectV2
+													label="Elige el motivo de la visita"
+													value={field.value}
+													options={SERVICE_OPTIONS}
+													onChange={field.onChange}
+													namespace="motivo-consulta"
+													id="motivo-consulta"
+												/>
+											)}
+											name="service_id"
+											control={control}
+										/>
+									</div>
 								</div>
-								<ol className="flex flex-wrap gap-4">
-									{weekDays.map((day, i) => (
-										<li key={i}>
-											<button
-												className={clsx(
-													'flex flex-col items-center p-3 rounded-md font-medium text-sm gap-1 w-[72px]',
-													watch('day') &&
-														watch('day').format('ddd') === day.format('ddd') &&
-														isDayInCurrentWeek(watch('day'))
-														? 'bg-primary-500 text-f-white'
-														: 'bg-neutral-100 text-neutral-500',
-													isCurrentDayBeforeToday(day) &&
-														'bg-neutral-50 text-neutral-200 line-through opacity-70',
-												)}
-												onClick={e => {
-													e.preventDefault();
-													setValue('day', day);
-												}}
-												disabled={isCurrentDayBeforeToday(day)}
-											>
-												<span>{day.format('ddd')}</span>
-												<span>{day.format('D MMM')}</span>
-											</button>
-										</li>
-									))}
-								</ol>
-							</div>
-							<div>
-								<h2 className="mb-4 text-sm font-light text-neutral-600">
-									Hora
-								</h2>
-								{hoursByDayAndTimezone.length > 0 ? (
-									<ol className="flex flex-wrap gap-3.5">
-										{hoursByDayAndTimezone?.map((hour, i) => (
-											<li key={i}>
+								<div className="flex flex-col gap-8 p-4 rounded-lg bg-f-white">
+									<div className="h-full">
+										<h2 className="text-sm font-light text-neutral-600">Dia</h2>
+										<div className="flex gap-2 justify-end mb-4 w-full">
+											{!isCurrentWeek(currentStartWeekDay) && (
 												<button
-													className={clsx(
-														'p-3 font-medium rounded-md w-[72px]',
-														hour === watch('hour')
-															? 'bg-primary-500 text-f-white'
-															: 'bg-neutral-100 text-neutral-500',
-													)}
+													className="p-1 rounded-full shadow-sm bg-f-white"
 													onClick={e => {
 														e.preventDefault();
-														setValue('hour', hour);
-														setStep(1);
+														handlePrevWeek();
 													}}
 												>
-													{hour}
+													<ChevronLeft color="#0A0A0A" />
 												</button>
-											</li>
-										))}
-									</ol>
-								) : !watch('day') ? (
-									<p className="text-sm font-light text-neutral-600">
-										Selecciona un día para poder visualizar las horas
-										disponibles.
-									</p>
-								) : (
-									<p className="text-sm font-light text-neutral-600">
-										No hay horas disponibles para este día.
-									</p>
-								)}
+											)}
+											<button
+												className="p-1 rounded-full shadow-sm bg-f-white"
+												onClick={e => {
+													e.preventDefault();
+													handleNextWeek();
+												}}
+											>
+												<ChevronRight color="#0A0A0A" />
+											</button>
+										</div>
+										<ol className="flex flex-wrap gap-4">
+											{weekDays.map((day, i) => (
+												<li key={i}>
+													<button
+														className={clsx(
+															'flex flex-col items-center p-3 rounded-md font-medium text-sm gap-1 w-[72px] whitespace-nowrap',
+															isSameDay(day.day)
+																? 'bg-primary-500 text-f-white'
+																: 'bg-neutral-100 text-neutral-500',
+															isPastDay(day.day) &&
+																'bg-neutral-50 text-neutral-200 line-through opacity-70',
+														)}
+														onClick={e => {
+															e.preventDefault();
+															setValue('date', day.day.toISODate() || '');
+														}}
+														disabled={isPastDay(day.day)}
+													>
+														<span>{day.day.toFormat('ccc')}</span>
+														<span>{day.day.toFormat('dd LLL')}</span>
+													</button>
+												</li>
+											))}
+										</ol>
+									</div>
+									<div>
+										<h2 className="mb-4 text-sm font-light text-neutral-600">
+											Hora
+										</h2>
+										{!watch('date') && (
+											<p className="text-sm font-light text-neutral-600">
+												Selecciona un día para poder visualizar las horas
+												disponibles.
+											</p>
+										)}
+										{hasAvailableHoursForDay() ? (
+											<ol className="flex flex-wrap gap-3.5">
+												{foundHoursForDay()?.map((time, i) => (
+													<li key={i}>
+														<button
+															className={clsx(
+																'p-3 font-medium rounded-md w-[72px]',
+																isSameTime(time)
+																	? 'bg-primary-500 text-f-white'
+																	: 'bg-neutral-100 text-neutral-500',
+															)}
+															onClick={e => {
+																e.preventDefault();
+																setValue('time', time.toFormat('HH:mm'));
+																setStep(1);
+															}}
+														>
+															{time.toFormat('HH:mm')}
+														</button>
+													</li>
+												))}
+											</ol>
+										) : (
+											<p className="text-sm font-light text-neutral-600">
+												No hay horas disponibles para este día.
+											</p>
+										)}
+									</div>
+									{isOnline && (
+										<div>
+											<h2 className="mb-4 text-sm font-light text-neutral-600">
+												Zona horaria
+											</h2>
+											<select
+												className={clsx(
+													'bg-neutral-50 p-2 rounded-lg text-sm w-[62%] font-medium text-neutral-500',
+													!isOnline && 'opacity-50',
+												)}
+												onChange={e => {
+													setValue('timezone', e.target.value);
+												}}
+												value={watch('timezone')}
+												disabled={!isOnline}
+											>
+												{TIMEZONES.map(timezone => (
+													<option key={timezone.value} value={timezone.value}>
+														{timezone.label}
+													</option>
+												))}
+											</select>
+										</div>
+									)}
+								</div>
+							</form>
+						) : (
+							<div className="flex flex-col gap-4 justify-center items-center h-full">
+								<Loader width={'w-8'} height={'h-8'} />
 							</div>
-							<div>
-								<h2 className="mb-4 text-sm font-light text-neutral-600">
-									Zona horaria
-								</h2>
-								<select
-									className="bg-neutral-50 p-2 rounded-lg text-sm w-[62%] font-medium text-neutral-500"
-									onChange={e => {
-										setValue('timezone', e.target.value);
-									}}
-									value={watch('timezone')}
-								>
-									{TIMEZONES.map(timezone => (
-										<option key={timezone.value} value={timezone.value}>
-											{timezone.label}
-										</option>
-									))}
-								</select>
-							</div>
-						</div>
-					</form>
+						)}
+					</>
 				);
 			case 1:
 				return (
@@ -488,8 +538,9 @@ export function ScheduleForm({ services, availability }: ScheduleFormProps) {
 						<div className="flex gap-2 items-center text-sm">
 							<Calendar4 color="#0F172A" />
 							<p className="text-sm font-light text-neutral-900">
-								{watch('day')?.format('DD')} de {watch('day')?.format('MMMM')}{' '}
-								del {watch('day')?.format('YYYY')}, {watch('hour')}
+								{formatDate(watch('date')).toFormat('dd')} de{' '}
+								{formatDate(watch('date')).toFormat('MMMM')} del{' '}
+								{formatDate(watch('date')).toFormat('yyyy')}, {watch('time')}
 							</p>
 						</div>
 						<form
@@ -525,115 +576,5 @@ export function ScheduleForm({ services, availability }: ScheduleFormProps) {
 		}
 	};
 
-	useEffect(() => {
-		const availabilityTimezone = availability.timezone;
-		const hours = getHoursByDayAndTimezone(
-			watch('day'),
-			watch('timezone') ? watch('timezone') : availabilityTimezone,
-		);
-		setHoursByDayAndTimezone(hours);
-	}, [watch('day'), watch('timezone')]);
-
-	return <>{renderStep()}</>;*/
-
-	const [currentStartWeekDay, setCurrentStartWeekDay] = useState<any>(
-		DateTime.now().startOf('week'),
-	);
-
-	const [weekDays, setWeekDays] = useState<WeekDay[]>([]);
-
-	const {
-		setValue,
-		register,
-		handleSubmit,
-		formState: { errors },
-		control,
-		watch,
-	} = useForm<ScheduleFormValues>({
-		defaultValues: {
-			service: services[0]?.name,
-			date:
-				DateTime.now()
-					.setZone(getDefaultTimezones(TIMEZONES, availability.timezone))
-					.toISODate() ?? '',
-			time: '',
-			name: '',
-			email: '',
-			comment: '',
-			timezone: getDefaultTimezones(TIMEZONES, availability.timezone),
-		},
-		resolver: zodResolver(clientSchema),
-	});
-
-	const generateHoursByAvailabilityDaysAndTimezone = ({
-		days,
-		timezone,
-		availabilityTimezone,
-		availabilityIntervalMinutes,
-		currentStartWeekDay,
-	}: {
-		days: Day[];
-		timezone: string;
-		availabilityTimezone: string;
-		availabilityIntervalMinutes: number;
-		currentStartWeekDay: DateTime;
-	}) => {
-		const hours = [];
-		for (const day of days) {
-			if (!day.available) continue;
-			const dayDate = currentStartWeekDay
-				.plus({ days: day.idDay })
-				.setZone(availabilityTimezone);
-			for (const slot of day.slots) {
-				if (timezone !== availabilityTimezone) {
-					const { startAt, endAt } = generateSlotTimes(slot, dayDate, timezone);
-
-					const interval = Interval.fromDateTimes(startAt, endAt);
-					let indexStartAt = startAt;
-
-					hours.push(indexStartAt);
-
-					const [intervalHours, intervalMinutes] =
-						convertMinutesInHoursAndMinutes(availabilityIntervalMinutes);
-
-					while (interval.contains(indexStartAt)) {
-						indexStartAt = indexStartAt.plus({
-							hours: intervalHours,
-							minutes: intervalMinutes,
-						});
-						hours.push(indexStartAt);
-					}
-				}
-			}
-		}
-
-		return hours;
-	};
-
-	useEffect(() => {
-		// generate hours
-		const { timezone: availabilityTimezone, days: availabilityDays } =
-			availability;
-
-		const selectedTimezone = watch('timezone');
-
-		const generatedHours = generateHoursByAvailabilityDaysAndTimezone({
-			days: availabilityDays,
-			timezone: selectedTimezone,
-			availabilityTimezone,
-			availabilityIntervalMinutes: 60,
-			currentStartWeekDay,
-		});
-
-		// set hours in week days
-		const weekDays = generateWeekDays(currentStartWeekDay);
-		const weekDaysWithHours = setHoursInWeekDays(weekDays, generatedHours);
-		const weekDaysWithHoursAndIsAvailable = setIsAvailableInWeekDays(
-			weekDaysWithHours,
-			availability.days,
-		);
-		setWeekDays(weekDaysWithHoursAndIsAvailable);
-	}, [availability, watch('timezone'), currentStartWeekDay]);
-
-	return <p>Imagine</p>;
+	return <>{renderStep()}</>;
 }

@@ -1,10 +1,9 @@
-// Todo: Add color change
-export function Loader() {
+export function Loader({ width = 'w-4', height = 'h-4' }) {
 	return (
 		<svg
 			aria-hidden="true"
 			role="status"
-			className="inline w-4 h-4 text-white me-3 animate-spin"
+			className={`inline ${width} ${height} text-white me-3 animate-spin`}
 			viewBox="0 0 100 101"
 			fill="none"
 			xmlns="http://www.w3.org/2000/svg"
