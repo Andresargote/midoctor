@@ -1,5 +1,4 @@
 'use client';
-
 import { Availability, Day, Service, WeekDay } from '@/app/lib/types';
 import { SelectV2 } from '../SelectV2';
 import { useEffect, useState } from 'react';
@@ -31,6 +30,7 @@ import { clientSchema } from './validate-schema';
 import { DateTime, Interval, Settings } from 'luxon';
 import Balancer from 'react-wrap-balancer';
 import { Loader } from '../Loader';
+import { createSchedule } from './action';
 
 type ScheduleFormProps = {
 	services: Service[];
@@ -240,7 +240,7 @@ export function ScheduleForm({
 							<CheckCircle color="#FFFF" size={40} />
 						</div>
 						<h3 className="text-xl font-semibold text-center text-neutral-900">
-							<Balancer>Tu cita ha sido confirmada</Balancer>
+							<Balancer>Tu cita ha sido reservada</Balancer>
 						</h3>
 						<p className="text-sm leading-relaxed text-center text-neutral-500">
 							<Balancer>
@@ -357,13 +357,38 @@ export function ScheduleForm({
 		return time.toFormat('HH:mm') === watch('time');
 	};
 
-	const onSubmit = (formValues: ScheduleFormValues) => {
-		console.log(formValues);
+	const onSubmit = async (formValues: ScheduleFormValues) => {
 		setSubmissionStatus('loading');
+		try {
+			const { error, type } = await createSchedule({
+				...formValues,
+				availability_id: availability.id,
+				profesional_id: availability.user_id,
+				timezone: formValues.timezone ?? availability.timezone,
+			});
+
+			if (error) {
+				throw {
+					type,
+				};
+			}
+
+			setSubmissionStatus('success');
+		} catch (error: any) {
+			if (error.type === 'error') {
+				setSubmissionStatus('error');
+			}
+		}
 	};
 
 	const formatDate = (date: string) => {
 		return DateTime.fromISO(date);
+	};
+
+	const isPastTime = (time: string) => {
+		const timezone = watch('timezone');
+		const formattedTime = DateTime.fromFormat(time, 'HH:mm').setZone(timezone);
+		return formattedTime < DateTime.now().setZone(timezone);
 	};
 
 	const renderStep = () => {
@@ -436,7 +461,7 @@ export function ScheduleForm({
 																? 'bg-primary-500 text-f-white'
 																: 'bg-neutral-100 text-neutral-500',
 															isPastDay(day.day) &&
-																'bg-neutral-50 text-neutral-200 line-through opacity-70',
+																'bg-neutral-50 text-neutral-200 line-through opacity-70 cursor-not-allowed',
 														)}
 														onClick={e => {
 															e.preventDefault();
@@ -471,12 +496,15 @@ export function ScheduleForm({
 																isSameTime(time)
 																	? 'bg-primary-500 text-f-white'
 																	: 'bg-neutral-100 text-neutral-500',
+																isPastTime(time.toFormat('HH:mm')) &&
+																	'bg-neutral-50 text-neutral-200 line-through opacity-70 cursor-not-allowed',
 															)}
 															onClick={e => {
 																e.preventDefault();
 																setValue('time', time.toFormat('HH:mm'));
 																setStep(1);
 															}}
+															disabled={isPastTime(time.toFormat('HH:mm'))}
 														>
 															{time.toFormat('HH:mm')}
 														</button>

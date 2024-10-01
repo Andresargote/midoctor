@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const clientSchema = z.object({
-	service: z.string().min(1, {
+	service_id: z.string().min(1, {
 		message: 'Selecciona un servicio',
 	}),
 	date: z.string().min(1, {
