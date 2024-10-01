@@ -45,10 +45,7 @@ export function DeleteServiceModal({
 						¿Eliminar servicio?
 					</Dialog.Title>
 					<Dialog.Description className="mb-6 text-sm font-light leading-relaxed text-neutral-800">
-						<strong>¡Esta acción no tiene vuelta atrás!</strong>
-						<br />
-						¿Seguro que quieres eliminar el servicio{' '}
-						<strong className="font-bold">{serviceName}</strong>?
+						<strong>¡Esta acción no se puede deshacer!</strong>
 					</Dialog.Description>
 
 					<div className="flex gap-3 justify-end items-center">

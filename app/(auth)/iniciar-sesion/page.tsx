@@ -12,13 +12,8 @@ export default function SignIn() {
 					<p className="sr-only">MiDoctor</p>
 				</Link>
 			</header>
-			<main className="container px-6 pt-16 mx-auto max-w-96">
-				<h1 className="mb-12 text-3xl font-semibold text-center text-f-black">
-					Bienvenido de nuevo
-				</h1>
 
-				<SignInForm />
-			</main>
+			<SignInForm />
 		</>
 	);
 }
