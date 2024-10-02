@@ -53,8 +53,33 @@ function buildDateTime(date: string, time: string, timezone: string): DateTime {
 		.plus(timeToHourAndMinutes(time));
 }
 
+function checkScheduleCollision(
+	startAt: DateTime,
+	endAt: DateTime,
+	schedules: ScheduleWithService[],
+): boolean {
+	// Base case - empty array
+	if (schedules.length === 0) return false;
+
+	const scheduleStartAt = DateTime.fromISO(
+		schedules[0].professional_time.start_at,
+	);
+
+	const scheduleEndAt = DateTime.fromISO(schedules[0].professional_time.end_at);
+
+	const START_BETWEEN_SCHEDULE =
+		startAt >= scheduleStartAt && startAt <= scheduleEndAt;
+	const END_BETWEEN_SCHEDULE =
+		endAt >= scheduleStartAt && endAt <= scheduleEndAt;
+
+	// Base case - collision found
+	if (START_BETWEEN_SCHEDULE || END_BETWEEN_SCHEDULE) return true;
+
+	// Recursive case - check the rest of the array
+	return checkScheduleCollision(startAt, endAt, schedules.slice(1));
+}
+
 // TODO: Refactor this function, it's too long
-// Extract schedule calculations to a separate function
 // Extract database calls
 // Better error handling
 export async function createSchedule(schedule: CreateScheduleData) {
@@ -127,40 +152,32 @@ export async function createSchedule(schedule: CreateScheduleData) {
 			.eq('professional_date', professionalStartAt.toISODate());
 
 		let alreadyBooked = false;
+
+		console.log(maybeSchedules, 'schedules');
+
 		if (maybeSchedules.data && maybeSchedules.data.length > 0) {
 			// check if there is a collision in the schedules (Incomplete)
-			for (const schedule of maybeSchedules.data as ScheduleWithService[]) {
-				const scheduleStartAt = DateTime.fromISO(
-					schedule.professional_time.start_at,
-				);
-
-				const scheduleEndAt = DateTime.fromISO(
-					schedule.professional_time.end_at,
-				);
-
-				const START_BETWEEN_SCHEDULE =
-					professionalStartAt > scheduleStartAt &&
-					professionalStartAt < scheduleEndAt;
-				const END_BETWEEN_SCHEDULE =
-					professionalEndAt > scheduleStartAt &&
-					professionalEndAt < scheduleEndAt;
-
-				if (START_BETWEEN_SCHEDULE || END_BETWEEN_SCHEDULE) {
-					alreadyBooked = true;
-				}
-			}
+			alreadyBooked = checkScheduleCollision(
+				professionalStartAt,
+				professionalEndAt,
+				maybeSchedules.data as ScheduleWithService[],
+			);
 		}
+
+		console.log(alreadyBooked, 'alreadyBooked');
 
 		if (alreadyBooked) {
 			return {
 				error: true,
-				type: 'already booked',
+				type: 'error',
 			};
 		}
 
 		const scheduleData = {
 			professional_id: schedule.profesional_id,
 			service_id: schedule.service_id,
+			availability_id: schedule.availability_id,
+			consult_id: schedule.consult_id,
 			name: schedule.name,
 			email: schedule.email,
 			comment: schedule.comment,

@@ -3,8 +3,8 @@ import { Service } from '.';
 export type Schedule = {
 	id: string;
 	professional_id: number;
-	professional_id: string;
 	service_id: string;
+	availability_id: string;
 	name: string;
 	email: string;
 	comment: string;
