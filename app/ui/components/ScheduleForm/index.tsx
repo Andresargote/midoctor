@@ -1,5 +1,5 @@
 'use client';
-import { Availability, Day, Service, WeekDay } from '@/app/lib/types';
+import { Availability, Consult, Day, Service, WeekDay } from '@/app/lib/types';
 import { SelectV2 } from '../SelectV2';
 import { useEffect, useState } from 'react';
 import {
@@ -35,6 +35,7 @@ import { createSchedule } from './action';
 type ScheduleFormProps = {
 	services: Service[];
 	availability: Availability;
+	consult: Consult;
 	isOnline: boolean;
 };
 
@@ -87,6 +88,7 @@ Settings.defaultLocale = 'es';
 export function ScheduleForm({
 	services,
 	availability,
+	consult,
 	isOnline,
 }: ScheduleFormProps) {
 	const [step, setStep] = useState(0);
@@ -365,6 +367,7 @@ export function ScheduleForm({
 				availability_id: availability.id,
 				profesional_id: availability.user_id,
 				timezone: formValues.timezone ?? availability.timezone,
+				consult_id: consult.id,
 			});
 
 			if (error) {

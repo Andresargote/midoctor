@@ -12,11 +12,12 @@ type Schedule = {
 	timezone: string;
 	availability_id: string;
 	profesional_id: string;
+	consult_id: string;
 };
 
 export async function createSchedule(schedule: Schedule) {
 	try {
-		console.log(schedule);
+		console.log('here', schedule);
 		const supabase = createClient();
 
 		// TODO: verificar que la disponibilidad existe

@@ -8,7 +8,7 @@ import { Balancer } from 'react-wrap-balancer';
 /**
 TODO:
 	- redirect to 404 if profesional not found
-	- add skeleton loading
+
  */
 
 export default async function Profesional({
@@ -157,6 +157,7 @@ export default async function Profesional({
 						<ScheduleForm
 							services={services ?? []}
 							availability={availability}
+							consult={consult}
 							isOnline={consult?.is_online}
 						/>
 					</aside>

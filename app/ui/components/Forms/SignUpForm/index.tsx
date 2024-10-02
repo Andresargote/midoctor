@@ -29,6 +29,7 @@ export function SignUpForm() {
 		},
 		resolver: zodResolver(signUpSchema),
 	});
+
 	const onSubmit = async (formValues: SignUpFormDefaultValues) => {
 		setIsLoading(true);
 		setError(null);

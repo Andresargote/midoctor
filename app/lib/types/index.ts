@@ -54,3 +54,24 @@ export type WeekDay = {
 	hours: luxon.DateTime[];
 	available: boolean;
 };
+
+export type Schedule = {
+	id: number;
+	created_at: string;
+	prefesionial_id: number;
+	service_id: number;
+	date: string;
+	time: string;
+	name: string;
+	email: string;
+	comment: string;
+	timezone: string;
+	service: {
+		name: string;
+		price: number;
+		duration: {
+			hours: number;
+			minutes: number;
+		};
+	};
+};

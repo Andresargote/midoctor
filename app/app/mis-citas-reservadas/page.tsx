@@ -1,4 +1,24 @@
+import { createClient } from '@/app/lib/utils/supabase/server';
+import { SchedulesList } from '@/app/ui/components/SchedulesList';
+
 export default async function MisCitasReservadas() {
+	const supabase = createClient();
+
+	const { data } = await supabase.auth.getUser();
+
+	const { data: schedules } = await supabase
+		.from('schedules')
+		.select(
+			`
+				*,
+				services:service_id (name, price, duration),
+				availabilities:availability_id (timezone)
+			`,
+		)
+		.eq('profesional_id', data?.user?.id);
+
+	console.log(schedules);
+
 	return (
 		<div className="px-4 py-6 mx-auto">
 			<div className="container mx-auto lg:pl-72">
@@ -12,7 +32,15 @@ export default async function MisCitasReservadas() {
 						</p>
 					</div>
 				</header>
-				<main></main>
+				<main>
+					{schedules?.length === 0 ? (
+						<p className="text-lg font-light text-center text-neutral-800">
+							Aún no tienes citas reservadas
+						</p>
+					) : (
+						<SchedulesList schedules={schedules ?? []} />
+					)}
+				</main>
 			</div>
 		</div>
 	);
