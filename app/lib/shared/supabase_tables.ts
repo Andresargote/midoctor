@@ -2,5 +2,6 @@ export const SUPABASE_TABLES = {
 	CONSULTS: 'consults',
 	AVIABILITY: 'availabilities',
 	PROFILE: 'profiles',
-	SERICES: 'services',
+	SERVICES: 'services',
+	SCHEDULES: 'schedules',
 } as const;

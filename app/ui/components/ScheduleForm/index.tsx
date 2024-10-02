@@ -431,7 +431,7 @@ export function ScheduleForm({
 								</div>
 								<div className="flex flex-col gap-8 p-4 rounded-lg bg-f-white">
 									<div className="h-full">
-										<h2 className="text-sm font-light text-neutral-600">Dia</h2>
+										<h2 className="text-sm font-light text-neutral-600">Día</h2>
 										<div className="flex gap-2 justify-end mb-4 w-full">
 											{!isCurrentWeek(currentStartWeekDay) && (
 												<button

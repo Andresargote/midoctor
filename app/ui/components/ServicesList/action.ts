@@ -9,7 +9,7 @@ export async function deleteService(serviceId: ServiceId) {
 		const supabase = createClient();
 
 		const { error } = await supabase
-			.from(SUPABASE_TABLES.SERICES)
+			.from(SUPABASE_TABLES.SERVICES)
 			.delete()
 			.eq('service_id', serviceId);
 

@@ -141,7 +141,7 @@ export default async function Profesional({
 
 						{consult && !consult.is_online && (
 							<div className="flex flex-col">
-								<h2 className="mb-3 text-sm font-medium font-semibold text-neutral-900">
+								<h2 className="mb-3 text-sm font-medium text-neutral-900">
 									Información de consulta
 								</h2>
 								<address className="flex gap-2 items-center mb-2 text-sm not-italic font-light text-neutral-500">
