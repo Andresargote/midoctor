@@ -11,13 +11,12 @@ export default async function MisCitasReservadas() {
 		.select(
 			`
 				*,
-				services:service_id (name, price, duration),
-				availabilities:availability_id (timezone)
+				service:service_id (name, price, duration),
+				availability:availability_id (timezone),
+				consult:consult_id (name, address, is_online)
 			`,
 		)
 		.eq('profesional_id', data?.user?.id);
-
-	console.log(schedules);
 
 	return (
 		<div className="px-4 py-6 mx-auto">

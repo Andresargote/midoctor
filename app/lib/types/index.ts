@@ -74,4 +74,12 @@ export type Schedule = {
 			minutes: number;
 		};
 	};
+	consult: {
+		name: string;
+		address: string;
+		is_online: boolean;
+	};
+	availability: {
+		timezone: string;
+	};
 };
