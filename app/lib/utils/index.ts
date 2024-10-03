@@ -167,8 +167,8 @@ export function getDefaultTimezones(
 	return timezone ?? defaultTimezone;
 }
 
+// In luxon Sunday is 0 and the first day of the week is 1. Changing from Sunday to Monday change the week number
 export function isCurrentWeek(currentWeekStart: DateTime) {
 	const today = DateTime.now();
-
-	return currentWeekStart.weekNumber === today.weekNumber;
+	return currentWeekStart.plus({ days: 1 }).weekNumber === today.weekNumber;
 }

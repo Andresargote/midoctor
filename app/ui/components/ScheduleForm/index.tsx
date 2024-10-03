@@ -93,7 +93,7 @@ export function ScheduleForm({
 }: ScheduleFormProps) {
 	const [step, setStep] = useState(0);
 	const [currentStartWeekDay, setCurrentStartWeekDay] = useState<any>(
-		DateTime.now().startOf('week'),
+		DateTime.now().startOf('week').minus({ days: 1 }),
 	);
 	const [weekDays, setWeekDays] = useState<WeekDay[]>([]);
 	const [submissionStatus, setSubmissionStatus] = useState<
@@ -176,23 +176,18 @@ export function ScheduleForm({
 	};
 
 	const handleNextWeek = () => {
-		console.log('handleNextWeek');
 		setCurrentStartWeekDay(
-			currentStartWeekDay
-				.plus({
-					week: 1,
-				})
-				.startOf('week'),
+			currentStartWeekDay.plus({
+				week: 1,
+			}),
 		);
 	};
 
 	const handlePrevWeek = () => {
 		setCurrentStartWeekDay(
-			currentStartWeekDay
-				.minus({
-					week: 1,
-				})
-				.startOf('week'),
+			currentStartWeekDay.minus({
+				week: 1,
+			}),
 		);
 	};
 
@@ -219,6 +214,7 @@ export function ScheduleForm({
 			availability.days,
 		);
 		setWeekDays(weekDaysWithHoursAndIsAvailable);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [availability, currentStartWeekDay, watch('timezone')]);
 
 	const renderSubmissionStatus = () => {
@@ -311,21 +307,21 @@ export function ScheduleForm({
 	const isPastDay = (currentDay: DateTime) => {
 		const today = DateTime.now();
 
-		if (currentDay.hasSame(today, 'day')) {
-			return false;
-		}
+		if (currentDay.hasSame(today, 'day')) return false;
 
 		return currentDay < today;
 	};
 
-	const isSameDay = (day: DateTime) => {
-		const formattedDate = DateTime.fromISO(watch('date'));
-		const formattedDay = day.toFormat('ccc');
+	const isSameDay = (day1: DateTime, day2: DateTime): boolean => {
+		return day1.weekday === day2.weekday;
+	};
 
-		return (
-			formattedDate.toFormat('ccc') === formattedDay &&
-			formattedDate.weekNumber === currentStartWeekDay.weekNumber
-		);
+	const isSameDate = (date1: DateTime, date2: DateTime): boolean => {
+		return date1.toFormat('yyyy-MM-dd') === date2.toFormat('yyyy-MM-dd');
+	};
+
+	const hightlightCurrentDay = (day1: DateTime, day2: DateTime): boolean => {
+		return isSameDay(day1, day2) && isSameDate(day1, day2);
 	};
 
 	const hasAvailableHoursForDay = () => {
@@ -334,7 +330,7 @@ export function ScheduleForm({
 			weekDay => weekDay.day.weekday === formattedDate.weekday,
 		);
 
-		if (!foundWeekDay) {
+		if (!foundWeekDay || isPastDay(foundWeekDay.day)) {
 			return false;
 		}
 
@@ -375,7 +371,7 @@ export function ScheduleForm({
 					...formValues,
 					availability_id: availability.id,
 					profesional_id: availability.user_id,
-					timezone: formValues.timezone ?? availability.timezone,
+					timezone: watch('timezone'),
 					consult_id: consult.id,
 				},
 				{
@@ -478,7 +474,10 @@ export function ScheduleForm({
 													<button
 														className={clsx(
 															'flex flex-col items-center p-3 rounded-md font-medium text-sm gap-1 w-[72px] whitespace-nowrap',
-															isSameDay(day.day)
+															hightlightCurrentDay(
+																day.day,
+																DateTime.fromISO(watch('date')),
+															)
 																? 'bg-primary-500 text-f-white'
 																: 'bg-neutral-100 text-neutral-500',
 															isPastDay(day.day) &&
@@ -517,7 +516,15 @@ export function ScheduleForm({
 																isSameTime(time)
 																	? 'bg-primary-500 text-f-white'
 																	: 'bg-neutral-100 text-neutral-500',
-																isPastTime(time.toFormat('HH:mm')) &&
+																isSameDate(
+																	DateTime.fromISO(watch('date')),
+																	DateTime.now(),
+																) &&
+																	isSameDay(
+																		DateTime.fromISO(watch('date')),
+																		DateTime.now(),
+																	) &&
+																	isPastTime(time.toFormat('HH:mm')) &&
 																	'bg-neutral-50 text-neutral-200 line-through opacity-70 cursor-not-allowed',
 															)}
 															onClick={e => {
@@ -525,7 +532,17 @@ export function ScheduleForm({
 																setValue('time', time.toFormat('HH:mm'));
 																setStep(1);
 															}}
-															disabled={isPastTime(time.toFormat('HH:mm'))}
+															disabled={
+																isSameDay(
+																	DateTime.fromISO(watch('date')),
+																	DateTime.now(),
+																) &&
+																isSameDate(
+																	DateTime.fromISO(watch('date')),
+																	DateTime.now(),
+																) &&
+																isPastTime(time.toFormat('HH:mm'))
+															}
 														>
 															{time.toFormat('HH:mm')}
 														</button>

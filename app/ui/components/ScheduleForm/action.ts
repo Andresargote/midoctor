@@ -1,7 +1,6 @@
 'use server';
 
 import { SUPABASE_TABLES } from '@/app/lib/shared/supabase_tables';
-import { Availability, Service } from '@/app/lib/types';
 import { ScheduleWithService } from '@/app/lib/types/schedule';
 import { createClient } from '@/app/lib/utils/supabase/server';
 import { DateTime } from 'luxon';
@@ -27,23 +26,6 @@ type ProfesionalScheduleData = {
 	};
 };
 
-/*{
-  service_id: 'e07dce48-25c4-4f3e-8f43-a8f2480f7cfc',
-  date: '2024-10-02',
-  time: '12:00',
-  name: 'Andre',
-  email: 'aizarra2015@gmail.com',
-  comment: 'Comments',
-  availability_id: 1,
-  profesional_id: 'ade57abe-ea6d-471d-8026-557c461c0994',
-  timezone: 'America/Caracas',
-  consult_id: 10
-} Schedule*/
-
-function dateStringToDateTime(date: string): DateTime {
-	return DateTime.fromISO(date);
-}
-
 function timeToHourAndMinutes(time: string): {
 	hours: number;
 	minutes: number;
@@ -55,10 +37,34 @@ function timeToHourAndMinutes(time: string): {
 	};
 }
 
+function dateStringToDateObject(date: string): {
+	year: number;
+	month: number;
+	day: number;
+} {
+	const [year, month, day] = date.split('-').map(Number);
+	return {
+		year,
+		month,
+		day,
+	};
+}
+
 function buildDateTime(date: string, time: string, timezone: string): DateTime {
-	return dateStringToDateTime(date)
-		.setZone(timezone)
-		.plus(timeToHourAndMinutes(time));
+	const { year, month, day } = dateStringToDateObject(date);
+	const { hours, minutes } = timeToHourAndMinutes(time);
+	return DateTime.fromObject(
+		{
+			year,
+			month,
+			day,
+			hour: hours,
+			minute: minutes,
+			second: 0,
+			millisecond: 0,
+		},
+		{ zone: timezone },
+	);
 }
 
 function checkScheduleCollision(
@@ -103,9 +109,6 @@ export async function createSchedule(
 		let clientStartAt: DateTime;
 		let clientEndAt: DateTime;
 
-		console.log(profesionalSchedule, 'profesionalSchedule');
-		console.log(schedule, 'schedule');
-
 		if (profesionalSchedule.availabilityTimezone === schedule.timezone) {
 			const startAt = buildDateTime(
 				schedule.date,
@@ -148,8 +151,6 @@ export async function createSchedule(
 
 		let alreadyBooked = false;
 
-		console.log(maybeSchedules, 'schedules');
-
 		// TODO: REMOVE THIS FROM THE ACTION FUNCTION
 		if (maybeSchedules.data && maybeSchedules.data.length > 0) {
 			// check if there is a collision in the schedules (Incomplete)
@@ -159,8 +160,6 @@ export async function createSchedule(
 				maybeSchedules.data as ScheduleWithService[],
 			);
 		}
-
-		console.log(alreadyBooked, 'alreadyBooked');
 
 		if (alreadyBooked) {
 			return {
