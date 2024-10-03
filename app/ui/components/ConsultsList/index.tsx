@@ -26,7 +26,11 @@ export function ConsultsList({ data }: { data: Consult[] }) {
 		setError(null);
 		setDeleted('');
 		try {
-			await deleteConsult(consultId);
+			const { error } = await deleteConsult(consultId);
+
+			if (error) {
+				throw new Error();
+			}
 
 			setConsults(prev => prev.filter(c => c.id !== consultId));
 			setDeleted('Consultorio eliminado exitosamente');

@@ -162,11 +162,9 @@ export function getDefaultTimezones(
 	defaultTimezone?: string,
 ) {
 	const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-	const timezone =
-		validTimezones.find(tz => tz.value === userTimezone)?.value ??
-		defaultTimezone;
+	const timezone = validTimezones.find(tz => tz.value === userTimezone)?.value;
 
-	return timezone;
+	return timezone ?? defaultTimezone;
 }
 
 export function isCurrentWeek(currentWeekStart: DateTime) {

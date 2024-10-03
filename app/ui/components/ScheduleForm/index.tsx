@@ -362,13 +362,27 @@ export function ScheduleForm({
 	const onSubmit = async (formValues: ScheduleFormValues) => {
 		setSubmissionStatus('loading');
 		try {
-			const { error, type } = await createSchedule({
-				...formValues,
-				availability_id: availability.id,
-				profesional_id: availability.user_id,
-				timezone: formValues.timezone ?? availability.timezone,
-				consult_id: consult.id,
-			});
+			const availabilityTimezone = availability.timezone;
+			const serviceDuration = services.find(
+				service => service.service_id === formValues.service_id,
+			)?.duration ?? {
+				hours: 0,
+				minutes: 0,
+			};
+
+			const { error, type } = await createSchedule(
+				{
+					...formValues,
+					availability_id: availability.id,
+					profesional_id: availability.user_id,
+					timezone: formValues.timezone ?? availability.timezone,
+					consult_id: consult.id,
+				},
+				{
+					availabilityTimezone,
+					serviceDuration,
+				},
+			);
 
 			if (error) {
 				throw {
@@ -380,6 +394,10 @@ export function ScheduleForm({
 		} catch (error: any) {
 			if (error.type === 'error') {
 				setSubmissionStatus('error');
+			}
+
+			if (error.type === 'reserved') {
+				setSubmissionStatus('warning');
 			}
 		}
 	};

@@ -20,7 +20,6 @@ export function UploadAvatar({
 	defaultAvatarUrl,
 	handleSetAvatarFileBeforeUpload,
 }: UploadAvatarProps) {
-	console.log(isLoading);
 	const [previewAvatarUrl, setPreviewAvatarUrl] = useState<null | PreviewFile>(
 		null,
 	);
@@ -38,7 +37,6 @@ export function UploadAvatar({
 		};
 
 		reader.readAsDataURL(file as Blob);
-		console.log(reader);
 	};
 
 	useEffect(() => {
@@ -48,8 +46,6 @@ export function UploadAvatar({
 			});
 		}
 	}, [defaultAvatarUrl]);
-
-	console.log(previewAvatarUrl, defaultAvatarUrl);
 
 	return (
 		<div className="flex flex-wrap items-center gap-4">

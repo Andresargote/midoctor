@@ -19,6 +19,14 @@ type CreateScheduleData = {
 	timezone: string; // Client timezone
 };
 
+type ProfesionalScheduleData = {
+	availabilityTimezone: string;
+	serviceDuration: {
+		hours: number;
+		minutes: number;
+	};
+};
+
 /*{
   service_id: 'e07dce48-25c4-4f3e-8f43-a8f2480f7cfc',
   date: '2024-10-02',
@@ -82,30 +90,12 @@ function checkScheduleCollision(
 // TODO: Refactor this function, it's too long
 // Extract database calls
 // Better error handling
-export async function createSchedule(schedule: CreateScheduleData) {
+export async function createSchedule(
+	schedule: CreateScheduleData,
+	profesionalSchedule: ProfesionalScheduleData,
+) {
 	try {
 		const supabase = createClient();
-
-		const maybeAvailability = await supabase
-			.from(SUPABASE_TABLES.AVIABILITY)
-			.select('*')
-			.eq('id', schedule.availability_id);
-
-		const maybeService = await supabase
-			.from(SUPABASE_TABLES.SERVICES)
-			.select('*')
-			.eq('service_id', schedule.service_id);
-
-		if (!maybeService.data || maybeService.data?.length === 0) {
-			throw new Error('No se encontró el servicio');
-		}
-
-		if (!maybeAvailability.data || maybeAvailability.data?.length === 0) {
-			throw new Error('No se encontró la disponibilidad');
-		}
-
-		const service: Service = maybeService.data[0];
-		const availability: Availability = maybeAvailability?.data[0];
 
 		let professionalStartAt: DateTime;
 		let professionalEndAt: DateTime;
@@ -113,7 +103,10 @@ export async function createSchedule(schedule: CreateScheduleData) {
 		let clientStartAt: DateTime;
 		let clientEndAt: DateTime;
 
-		if (availability.timezone === schedule.timezone) {
+		console.log(profesionalSchedule, 'profesionalSchedule');
+		console.log(schedule, 'schedule');
+
+		if (profesionalSchedule.availabilityTimezone === schedule.timezone) {
 			const startAt = buildDateTime(
 				schedule.date,
 				schedule.time,
@@ -121,10 +114,10 @@ export async function createSchedule(schedule: CreateScheduleData) {
 			);
 
 			professionalStartAt = startAt;
-			professionalEndAt = startAt.plus(service.duration);
+			professionalEndAt = startAt.plus(profesionalSchedule.serviceDuration);
 
 			clientStartAt = startAt;
-			clientEndAt = startAt.plus(service.duration);
+			clientEndAt = startAt.plus(profesionalSchedule.serviceDuration);
 		} else {
 			let startAt = buildDateTime(
 				schedule.date,
@@ -133,12 +126,14 @@ export async function createSchedule(schedule: CreateScheduleData) {
 			);
 
 			clientStartAt = startAt;
-			clientEndAt = startAt.plus(service.duration);
+			clientEndAt = startAt.plus(profesionalSchedule.serviceDuration);
 
-			professionalStartAt = startAt.setZone(availability.timezone);
+			professionalStartAt = startAt.setZone(
+				profesionalSchedule.availabilityTimezone,
+			);
 			professionalEndAt = startAt
-				.setZone(availability.timezone)
-				.plus(service.duration);
+				.setZone(profesionalSchedule.availabilityTimezone)
+				.plus(profesionalSchedule.serviceDuration);
 		}
 
 		const maybeSchedules = await supabase
@@ -155,6 +150,7 @@ export async function createSchedule(schedule: CreateScheduleData) {
 
 		console.log(maybeSchedules, 'schedules');
 
+		// TODO: REMOVE THIS FROM THE ACTION FUNCTION
 		if (maybeSchedules.data && maybeSchedules.data.length > 0) {
 			// check if there is a collision in the schedules (Incomplete)
 			alreadyBooked = checkScheduleCollision(
@@ -169,7 +165,7 @@ export async function createSchedule(schedule: CreateScheduleData) {
 		if (alreadyBooked) {
 			return {
 				error: true,
-				type: 'error',
+				type: 'reserved',
 			};
 		}
 
@@ -185,7 +181,7 @@ export async function createSchedule(schedule: CreateScheduleData) {
 			professional_time: {
 				start_at: professionalStartAt.toISO(),
 				end_at: professionalEndAt.toISO(),
-				timezone: availability.timezone,
+				timezone: profesionalSchedule.availabilityTimezone,
 			},
 			client_time: {
 				start_at: clientStartAt.toISO(),

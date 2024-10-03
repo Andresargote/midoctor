@@ -61,6 +61,7 @@ export function ProfileForm({ profile, profileError }: ProfileFormProps) {
 				avatarFormData.append('file', avatarImg as File);
 				avatarFormData.append('upload_preset', 'midoctor-avatars');
 
+				// TODO: generate signed url
 				const avatarImgResponse = await fetch(
 					`${process.env.NEXT_PUBLIC_CLOUDINARY_API}`,
 					{
