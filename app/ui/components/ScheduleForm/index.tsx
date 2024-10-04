@@ -90,15 +90,20 @@ Settings.defaultWeekSettings = {
 	minimalDays: 1,
 	weekend: [6, 7],
 };
+
 export function ScheduleForm({
 	services,
 	availability,
 	consult,
 	isOnline,
 }: ScheduleFormProps) {
+	const defaultCurrentStartWeekDay =
+		DateTime.now().startOf('week').day === 1
+			? DateTime.now().startOf('week').minus({ days: 1 })
+			: DateTime.now().startOf('week');
 	const [step, setStep] = useState(0);
 	const [currentStartWeekDay, setCurrentStartWeekDay] = useState<any>(
-		DateTime.now().startOf('week'),
+		defaultCurrentStartWeekDay,
 	);
 	const [weekDays, setWeekDays] = useState<WeekDay[]>([]);
 	const [submissionStatus, setSubmissionStatus] = useState<
@@ -156,6 +161,7 @@ export function ScheduleForm({
 			const dayDate = currentStartWeekDay
 				.plus({ days: day.idDay })
 				.setZone(availabilityTimezone);
+
 			for (const slot of day.slots) {
 				const { startAt, endAt } = generateSlotTimes(slot, dayDate, timezone);
 
