@@ -85,6 +85,11 @@ type ScheduleFormValues = {
 };
 
 Settings.defaultLocale = 'es';
+Settings.defaultWeekSettings = {
+	firstDay: 7,
+	minimalDays: 1,
+	weekend: [6, 7],
+};
 export function ScheduleForm({
 	services,
 	availability,
@@ -93,7 +98,7 @@ export function ScheduleForm({
 }: ScheduleFormProps) {
 	const [step, setStep] = useState(0);
 	const [currentStartWeekDay, setCurrentStartWeekDay] = useState<any>(
-		DateTime.now().startOf('week').minus({ days: 1 }),
+		DateTime.now().startOf('week'),
 	);
 	const [weekDays, setWeekDays] = useState<WeekDay[]>([]);
 	const [submissionStatus, setSubmissionStatus] = useState<
