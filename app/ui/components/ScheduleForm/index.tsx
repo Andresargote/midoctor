@@ -31,6 +31,7 @@ import { DateTime, Interval, Settings } from 'luxon';
 import Balancer from 'react-wrap-balancer';
 import { Loader } from '../Loader';
 import { createSchedule } from './action';
+import { buildDateTime } from '@/app/lib/shared/time';
 
 type ScheduleFormProps = {
 	services: Service[];
@@ -97,13 +98,13 @@ export function ScheduleForm({
 	consult,
 	isOnline,
 }: ScheduleFormProps) {
-	const defaultCurrentStartWeekDay =
-		DateTime.now().startOf('week').day === 1
-			? DateTime.now().startOf('week').minus({ days: 1 })
-			: DateTime.now().startOf('week');
 	const [step, setStep] = useState(0);
 	const [currentStartWeekDay, setCurrentStartWeekDay] = useState<any>(
-		defaultCurrentStartWeekDay,
+		buildDateTime(
+			DateTime.now().toISODate(),
+			'00:00',
+			availability.timezone,
+		).startOf('week'),
 	);
 	const [weekDays, setWeekDays] = useState<WeekDay[]>([]);
 	const [submissionStatus, setSubmissionStatus] = useState<
@@ -157,10 +158,14 @@ export function ScheduleForm({
 	}) => {
 		const hours = [];
 		for (const day of days) {
+			console.log(day, 'day');
 			if (!day.available) continue;
 			const dayDate = currentStartWeekDay
-				.plus({ days: day.idDay })
-				.setZone(availabilityTimezone);
+				.setZone(availabilityTimezone)
+				.minus({ days: 1 })
+				.plus({ days: day.idDay });
+			console.log(dayDate.toISO(), 'dayDate');
+			console.log(currentStartWeekDay.toISO(), 'currentStartWeekDay');
 
 			for (const slot of day.slots) {
 				const { startAt, endAt } = generateSlotTimes(slot, dayDate, timezone);
