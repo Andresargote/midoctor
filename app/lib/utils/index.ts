@@ -114,6 +114,47 @@ export function setHoursInWeekDays(
 	return weekDaysWithHours;
 }
 
+export function setHoursInWeekDaysV2(
+	weekDays: luxon.DateTime[],
+	hours: luxon.DateTime[],
+	bookedHours: {
+		bookedDate: string;
+		bookedTime: {
+			start_at: string;
+			end_at: string;
+		};
+	}[],
+) {
+	const weekDaysWithHours = weekDays.map(weekDay => {
+		const dayHours = hours.filter(
+			hour => hour.toFormat('yyyy-MM-dd') === weekDay.toFormat('yyyy-MM-dd'),
+		);
+
+		const bookedHoursForDay = dayHours.map(dayHour => {
+			const bookedHoursForTime = bookedHours.find(
+				bookedHour =>
+					bookedHour.bookedDate === dayHour.toISODate() &&
+					bookedHour.bookedTime.start_at &&
+					DateTime.fromISO(bookedHour.bookedTime.start_at).toFormat('HH:mm') ===
+						dayHour.toFormat('HH:mm'),
+			);
+
+			return {
+				hour: dayHour,
+				isBooked: bookedHoursForTime ? true : false,
+			};
+		});
+
+		return {
+			day: weekDay,
+			hours: bookedHoursForDay,
+			available: true,
+		};
+	});
+
+	return weekDaysWithHours;
+}
+
 export function setIsAvailableInWeekDays(
 	weekDaysWithHours: { day: luxon.DateTime; hours: luxon.DateTime[] }[],
 	availabilityDays: Day[],
@@ -137,8 +178,65 @@ export function setIsAvailableInWeekDays(
 	return weekDaysWithHoursAndIsAvailable;
 }
 
+export function setIsAvailableInWeekDaysV2(
+	weekDaysWithHours: {
+		day: luxon.DateTime;
+		hours: {
+			hour: luxon.DateTime;
+			isBooked: boolean;
+		}[];
+		available: boolean;
+	}[],
+	availabilityDays: Day[],
+) {
+	const weekDaysWithHoursAndIsAvailable = weekDaysWithHours.map(weekDay => {
+		const availabilityDay = availabilityDays.find(
+			day => day.idDay === weekDay.day.weekday,
+		);
+
+		const isAvailable = isWeekDayAvailableV2(
+			weekDay,
+			availabilityDay?.available ?? false,
+		);
+
+		return {
+			...weekDay,
+			available: isAvailable,
+		};
+	});
+
+	return weekDaysWithHoursAndIsAvailable;
+}
+
 export function isWeekDayAvailable(
 	day: { day: luxon.DateTime; hours: luxon.DateTime[] },
+	availability: boolean,
+) {
+	const dt = DateTime.now();
+	const today = dt
+		.setZone(day.day.zoneName ?? 'America/Caracas')
+		.startOf('day');
+
+	if (day.day.startOf('day') < today) {
+		return false;
+	} else {
+		if (day.hours.length > 0) {
+			return true;
+		}
+
+		return availability;
+	}
+}
+
+export function isWeekDayAvailableV2(
+	day: {
+		day: luxon.DateTime;
+		hours: {
+			hour: luxon.DateTime;
+			isBooked: boolean;
+		}[];
+		available: boolean;
+	},
 	availability: boolean,
 ) {
 	const dt = DateTime.now();

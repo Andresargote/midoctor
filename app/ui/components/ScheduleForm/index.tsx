@@ -9,7 +9,9 @@ import {
 	getDefaultTimezones,
 	isCurrentWeek,
 	setHoursInWeekDays,
+	setHoursInWeekDaysV2,
 	setIsAvailableInWeekDays,
+	setIsAvailableInWeekDaysV2,
 } from '@/app/lib/utils';
 import clsx from 'clsx';
 import {
@@ -98,6 +100,8 @@ export function ScheduleForm({
 	consult,
 	isOnline,
 }: ScheduleFormProps) {
+	const [isBookedHoursLoading, setIsBookedHoursLoading] = useState(false);
+	const [isBookedHoursError, setIsBookedHoursError] = useState(false);
 	const [step, setStep] = useState(0);
 	const [currentStartWeekDay, setCurrentStartWeekDay] = useState<any>(
 		buildDateTime(
@@ -158,14 +162,10 @@ export function ScheduleForm({
 	}) => {
 		const hours = [];
 		for (const day of days) {
-			console.log(day, 'day');
 			if (!day.available) continue;
 			const dayDate = currentStartWeekDay
 				.setZone(availabilityTimezone)
-				.minus({ days: 1 })
-				.plus({ days: day.idDay });
-			console.log(dayDate.toISO(), 'dayDate');
-			console.log(currentStartWeekDay.toISO(), 'currentStartWeekDay');
+				.plus({ days: day.idDay - 1 });
 
 			for (const slot of day.slots) {
 				const { startAt, endAt } = generateSlotTimes(slot, dayDate, timezone);
@@ -208,6 +208,7 @@ export function ScheduleForm({
 	};
 
 	useEffect(() => {
+		setIsBookedHoursLoading(true);
 		// generate hours
 		const { timezone: availabilityTimezone, days: availabilityDays } =
 			availability;
@@ -222,14 +223,50 @@ export function ScheduleForm({
 			currentStartWeekDay,
 		});
 
+		const bookedHours = async () => {
+			const params = new URLSearchParams({
+				startAt: currentStartWeekDay.toISO(),
+				endAt: currentStartWeekDay.plus({ days: 6 }).toISO(),
+				timezone: selectedTimezone,
+			});
+			const data = await fetch(`/api/bookedHours?${params}`, {
+				method: 'GET',
+			});
+
+			const { bookedHours } = await data.json();
+
+			return bookedHours;
+		};
+
+		bookedHours()
+			.then(bookedHours => {
+				const weekDays = generateWeekDays(currentStartWeekDay);
+				const weekDaysWithHours = setHoursInWeekDaysV2(
+					weekDays,
+					generatedHours,
+					bookedHours,
+				);
+				const weekDaysWithHoursAndIsAvailable = setIsAvailableInWeekDaysV2(
+					weekDaysWithHours,
+					availability.days,
+				);
+
+				setWeekDays(weekDaysWithHoursAndIsAvailable);
+				setIsBookedHoursLoading(false);
+			})
+			.catch(error => {
+				setIsBookedHoursLoading(false);
+				setIsBookedHoursError(true);
+			});
+
 		// set hours in week days
-		const weekDays = generateWeekDays(currentStartWeekDay);
+		/*const weekDays = generateWeekDays(currentStartWeekDay);
 		const weekDaysWithHours = setHoursInWeekDays(weekDays, generatedHours);
 		const weekDaysWithHoursAndIsAvailable = setIsAvailableInWeekDays(
 			weekDaysWithHours,
 			availability.days,
 		);
-		setWeekDays(weekDaysWithHoursAndIsAvailable);
+		setWeekDays(weekDaysWithHoursAndIsAvailable);*/
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [availability, currentStartWeekDay, watch('timezone')]);
 
@@ -460,140 +497,178 @@ export function ScheduleForm({
 									</div>
 								</div>
 								<div className="flex flex-col gap-8 p-4 rounded-lg bg-f-white">
-									<div className="h-full">
-										<h2 className="text-sm font-light text-neutral-600">Día</h2>
-										<div className="flex gap-2 justify-end mb-4 w-full">
-											{!isCurrentWeek(currentStartWeekDay) && (
-												<button
-													className="p-1 rounded-full shadow-sm bg-f-white"
-													onClick={e => {
+									{isBookedHoursError && (
+										<div className="min-h-[432px] flex justify-center items-center">
+											<div className="flex flex-col gap-4 justify-center items-center">
+												<p className="text-sm font-light text-error-500 leading-relaxed">
+													Ocurrió un error al buscar las horas disponibles. Por
+													favor, intenta de nuevo. Si el problema persiste
+													contacta con soporte.
+												</p>
+												<Button
+													onClick={(e: any) => {
 														e.preventDefault();
-														handlePrevWeek();
+														window.location.reload();
 													}}
 												>
-													<ChevronLeft color="#0A0A0A" />
-												</button>
-											)}
-											<button
-												className="p-1 rounded-full shadow-sm bg-f-white"
-												onClick={e => {
-													e.preventDefault();
-													handleNextWeek();
-												}}
-											>
-												<ChevronRight color="#0A0A0A" />
-											</button>
+													Reintentar
+												</Button>
+											</div>
 										</div>
-										<ol className="flex flex-wrap gap-4">
-											{weekDays.map((day, i) => (
-												<li key={i}>
-													<button
-														className={clsx(
-															'flex flex-col items-center p-3 rounded-md font-medium text-sm gap-1 w-[72px] whitespace-nowrap',
-															hightlightCurrentDay(
-																day.day,
-																DateTime.fromISO(watch('date')),
-															)
-																? 'bg-primary-500 text-f-white'
-																: 'bg-neutral-100 text-neutral-500',
-															isPastDay(day.day) &&
-																'bg-neutral-50 text-neutral-200 line-through opacity-70 cursor-not-allowed',
-														)}
-														onClick={e => {
-															e.preventDefault();
-															setValue('date', day.day.toISODate() || '');
-														}}
-														disabled={isPastDay(day.day)}
-													>
-														<span>{day.day.toFormat('ccc')}</span>
-														<span>{day.day.toFormat('dd LLL')}</span>
-													</button>
-												</li>
-											))}
-										</ol>
-									</div>
-									<div>
-										<h2 className="mb-4 text-sm font-light text-neutral-600">
-											Hora
-										</h2>
-										{!watch('date') && (
-											<p className="text-sm font-light text-neutral-600">
-												Selecciona un día para poder visualizar las horas
-												disponibles.
-											</p>
-										)}
-										{hasAvailableHoursForDay() ? (
-											<ol className="flex flex-wrap gap-3.5">
-												{foundHoursForDay()?.map((time, i) => (
-													<li key={i}>
+									)}
+									{isBookedHoursLoading && (
+										<div className="min-h-[432px] flex justify-center items-center">
+											<Loader width="w-8" height="h-8" />
+										</div>
+									)}
+									{!isBookedHoursLoading && !isBookedHoursError && (
+										<>
+											<div className="h-full">
+												<h2 className="text-sm font-light text-neutral-600">
+													Día
+												</h2>
+												<div className="flex gap-2 justify-end mb-4 w-full">
+													{!isCurrentWeek(currentStartWeekDay) && (
 														<button
-															className={clsx(
-																'p-3 font-medium rounded-md w-[72px]',
-																isSameTime(time)
-																	? 'bg-primary-500 text-f-white'
-																	: 'bg-neutral-100 text-neutral-500',
-																isSameDate(
-																	DateTime.fromISO(watch('date')),
-																	DateTime.now(),
-																) &&
-																	isSameDay(
-																		DateTime.fromISO(watch('date')),
-																		DateTime.now(),
-																	) &&
-																	isPastTime(time.toFormat('HH:mm')) &&
-																	'bg-neutral-50 text-neutral-200 line-through opacity-70 cursor-not-allowed',
-															)}
+															className="p-1 rounded-full shadow-sm bg-f-white"
 															onClick={e => {
 																e.preventDefault();
-																setValue('time', time.toFormat('HH:mm'));
-																setStep(1);
+																handlePrevWeek();
 															}}
-															disabled={
-																isSameDay(
-																	DateTime.fromISO(watch('date')),
-																	DateTime.now(),
-																) &&
-																isSameDate(
-																	DateTime.fromISO(watch('date')),
-																	DateTime.now(),
-																) &&
-																isPastTime(time.toFormat('HH:mm'))
-															}
 														>
-															{time.toFormat('HH:mm')}
+															<ChevronLeft color="#0A0A0A" />
 														</button>
-													</li>
-												))}
-											</ol>
-										) : (
-											<p className="text-sm font-light text-neutral-600">
-												No hay horas disponibles para este día.
-											</p>
-										)}
-									</div>
-									{isOnline && (
-										<div>
-											<h2 className="mb-4 text-sm font-light text-neutral-600">
-												Zona horaria
-											</h2>
-											<select
-												className={clsx(
-													'bg-neutral-50 p-2 rounded-lg text-sm w-[62%] font-medium text-neutral-500',
-													!isOnline && 'opacity-50',
+													)}
+													<button
+														className="p-1 rounded-full shadow-sm bg-f-white"
+														onClick={e => {
+															e.preventDefault();
+															handleNextWeek();
+														}}
+													>
+														<ChevronRight color="#0A0A0A" />
+													</button>
+												</div>
+												<ol className="flex flex-wrap gap-4">
+													{weekDays.map((day, i) => (
+														<li key={i}>
+															<button
+																className={clsx(
+																	'flex flex-col items-center p-3 rounded-md font-medium text-sm gap-1 w-[72px] whitespace-nowrap',
+																	hightlightCurrentDay(
+																		day.day,
+																		DateTime.fromISO(watch('date')),
+																	)
+																		? 'bg-primary-500 text-f-white'
+																		: 'bg-neutral-100 text-neutral-500',
+																	isPastDay(day.day) &&
+																		'bg-neutral-50 text-neutral-200 line-through opacity-70 cursor-not-allowed',
+																)}
+																onClick={e => {
+																	e.preventDefault();
+																	setValue('date', day.day.toISODate() || '');
+																}}
+																disabled={isPastDay(day.day)}
+															>
+																<span>{day.day.toFormat('ccc')}</span>
+																<span>{day.day.toFormat('dd LLL')}</span>
+															</button>
+														</li>
+													))}
+												</ol>
+											</div>
+											<div>
+												<h2 className="mb-4 text-sm font-light text-neutral-600">
+													Hora
+												</h2>
+												{!watch('date') && (
+													<p className="text-sm font-light text-neutral-600">
+														Selecciona un día para poder visualizar las horas
+														disponibles.
+													</p>
 												)}
-												onChange={e => {
-													setValue('timezone', e.target.value);
-												}}
-												value={watch('timezone')}
-												disabled={!isOnline}
-											>
-												{TIMEZONES.map(timezone => (
-													<option key={timezone.value} value={timezone.value}>
-														{timezone.label}
-													</option>
-												))}
-											</select>
-										</div>
+												{hasAvailableHoursForDay() ? (
+													<ol className="flex flex-wrap gap-3.5">
+														{foundHoursForDay()?.map(
+															({ hour: time, isBooked }, i) => (
+																<li key={i}>
+																	<button
+																		className={clsx(
+																			'p-3 font-medium rounded-md w-[72px]',
+																			isSameTime(time)
+																				? 'bg-primary-500 text-f-white'
+																				: 'bg-neutral-100 text-neutral-500',
+																			(isSameDate(
+																				DateTime.fromISO(watch('date')),
+																				DateTime.now(),
+																			) &&
+																				isSameDay(
+																					DateTime.fromISO(watch('date')),
+																					DateTime.now(),
+																				) &&
+																				isPastTime(time.toFormat('HH:mm'))) ||
+																				isBooked
+																				? 'bg-neutral-50 text-neutral-200 line-through opacity-70 cursor-not-allowed'
+																				: '',
+																		)}
+																		onClick={e => {
+																			e.preventDefault();
+																			setValue('time', time.toFormat('HH:mm'));
+																			setStep(1);
+																		}}
+																		disabled={
+																			(isSameDay(
+																				DateTime.fromISO(watch('date')),
+																				DateTime.now(),
+																			) &&
+																				isSameDate(
+																					DateTime.fromISO(watch('date')),
+																					DateTime.now(),
+																				) &&
+																				isPastTime(time.toFormat('HH:mm'))) ||
+																			isBooked
+																		}
+																	>
+																		{time.toFormat('HH:mm')}
+																	</button>
+																</li>
+															),
+														)}
+													</ol>
+												) : (
+													<p className="text-sm font-light text-neutral-600">
+														No hay horas disponibles para este día.
+													</p>
+												)}
+											</div>
+											{isOnline && (
+												<div>
+													<h2 className="mb-4 text-sm font-light text-neutral-600">
+														Zona horaria
+													</h2>
+													<select
+														className={clsx(
+															'bg-neutral-50 p-2 rounded-lg text-sm w-[62%] font-medium text-neutral-500',
+															!isOnline && 'opacity-50',
+														)}
+														onChange={e => {
+															setValue('timezone', e.target.value);
+														}}
+														value={watch('timezone')}
+														disabled={!isOnline}
+													>
+														{TIMEZONES.map(timezone => (
+															<option
+																key={timezone.value}
+																value={timezone.value}
+															>
+																{timezone.label}
+															</option>
+														))}
+													</select>
+												</div>
+											)}
+										</>
 									)}
 								</div>
 							</form>
@@ -622,7 +697,12 @@ export function ScheduleForm({
 							<p className="text-sm font-light text-neutral-900">
 								{formatDate(watch('date')).toFormat('dd')} de{' '}
 								{formatDate(watch('date')).toFormat('MMMM')} del{' '}
-								{formatDate(watch('date')).toFormat('yyyy')}, {watch('time')}
+								{formatDate(watch('date')).toFormat('yyyy')}, {watch('time')} -{' '}
+								{
+									services.find(
+										service => service.service_id === watch('service_id'),
+									)?.name
+								}
 							</p>
 						</div>
 						<form

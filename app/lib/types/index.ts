@@ -51,7 +51,10 @@ export type Availability = {
 
 export type WeekDay = {
 	day: luxon.DateTime;
-	hours: luxon.DateTime[];
+	hours: {
+		hour: luxon.DateTime;
+		isBooked: boolean;
+	}[];
 	available: boolean;
 };
 
