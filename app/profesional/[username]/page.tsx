@@ -153,7 +153,7 @@ export default async function Profesional({
 							</div>
 						)}
 					</section>
-					<aside className="flex flex-col gap-6 px-4 py-6 shadow-sm bg-f-gray rounded-b-3xl md:rounded-b-none md:!rounded-r-3xl min-h-[432px] md:min-h-[632px] ">
+					<aside className="flex flex-col gap-6 px-4 py-6 shadow-sm bg-f-gray rounded-b-3xl md:rounded-b-none md:!rounded-r-3xl min-h-[432px] md:min-h-[632px]">
 						<ScheduleForm
 							services={services ?? []}
 							availability={availability}

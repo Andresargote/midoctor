@@ -1,4 +1,4 @@
-import { DateTime } from 'luxon';
+import { DateTime, Interval } from 'luxon';
 import { Day, Slot } from '../types';
 
 export function generateHoursAndMinutes(
@@ -131,13 +131,18 @@ export function setHoursInWeekDaysV2(
 		);
 
 		const bookedHoursForDay = dayHours.map(dayHour => {
-			const bookedHoursForTime = bookedHours.find(
-				bookedHour =>
-					bookedHour.bookedDate === dayHour.toISODate() &&
-					bookedHour.bookedTime.start_at &&
-					DateTime.fromISO(bookedHour.bookedTime.start_at).toFormat('HH:mm') ===
-						dayHour.toFormat('HH:mm'),
-			);
+			const bookedHoursForTime = bookedHours.find(bookedHour => {
+				if (bookedHour.bookedDate === dayHour.toISODate()) {
+					const interval = Interval.fromDateTimes(
+						DateTime.fromISO(bookedHour.bookedTime.start_at),
+						DateTime.fromISO(bookedHour.bookedTime.end_at),
+					);
+					if (interval.contains(dayHour)) {
+						return bookedHour;
+					}
+				}
+				return null;
+			});
 
 			return {
 				hour: dayHour,

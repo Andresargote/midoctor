@@ -254,19 +254,11 @@ export function ScheduleForm({
 				setWeekDays(weekDaysWithHoursAndIsAvailable);
 				setIsBookedHoursLoading(false);
 			})
-			.catch(error => {
+			.catch(() => {
 				setIsBookedHoursLoading(false);
 				setIsBookedHoursError(true);
 			});
 
-		// set hours in week days
-		/*const weekDays = generateWeekDays(currentStartWeekDay);
-		const weekDaysWithHours = setHoursInWeekDays(weekDays, generatedHours);
-		const weekDaysWithHoursAndIsAvailable = setIsAvailableInWeekDays(
-			weekDaysWithHours,
-			availability.days,
-		);
-		setWeekDays(weekDaysWithHoursAndIsAvailable);*/
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [availability, currentStartWeekDay, watch('timezone')]);
 
