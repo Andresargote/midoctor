@@ -21,7 +21,7 @@ export default async function MiConsultorio() {
 				title="Mi consultorio"
 				description="Aquí puedes ver y editar la información de tu consultorio."
 				btnText="Agregar consultorio"
-				showAddBtn={consults?.data ? consults?.data?.length === 0 : false}
+				conditionalShowBtn={true}
 				data={consults.data ?? []}
 				AddModal={AddConsult}
 				Content={ConsultsList}

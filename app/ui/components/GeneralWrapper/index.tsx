@@ -8,7 +8,7 @@ type GeneralWrapperProps = {
 	title: string;
 	description: string;
 	btnText: string;
-	showAddBtn?: boolean;
+	conditionalShowBtn?: boolean;
 	AddModal: any;
 	Content: any;
 	data: any[];
@@ -19,7 +19,7 @@ export function GeneralWrapper({
 	title,
 	description,
 	btnText,
-	showAddBtn = true,
+	conditionalShowBtn = false,
 	AddModal,
 	Content,
 	data,
@@ -29,6 +29,13 @@ export function GeneralWrapper({
 
 	const handleAddData = (data: any) => {
 		setCurrentData([...currentData, data]);
+	};
+
+	const showBtn = () => {
+		if (conditionalShowBtn) {
+			return data?.length === 0;
+		}
+		return true;
 	};
 
 	return (
@@ -44,7 +51,7 @@ export function GeneralWrapper({
 						</p>
 					</div>
 
-					{showAddBtn && (
+					{showBtn() && (
 						<Button
 							onClick={() => {
 								setIsOpen(!isOpen);
