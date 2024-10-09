@@ -10,9 +10,7 @@ export async function updateProfile(profile: ProfileFormValues) {
 	try {
 		const supabase = createClient();
 
-		const { data, error } = await supabase.from('profiles').upsert(profile);
-
-		console.log(data);
+		const { error } = await supabase.from('profiles').upsert(profile);
 
 		if (error) {
 			console.error('Error updating profile:', error, error.message);

@@ -92,11 +92,21 @@ export default async function Profesional({
 								/>
 							)}
 
-							{profesional?.full_name && (
-								<h1 className="text-xl font-semibold text-neutral-900">
-									{profesional.full_name}
-								</h1>
-							)}
+							{profesional?.full_name || profesional?.profession ? (
+								<div className="flex flex-col gap-1">
+									{profesional?.full_name && (
+										<h1 className="text-xl font-semibold text-neutral-900">
+											{profesional.full_name}
+										</h1>
+									)}
+
+									{profesional?.profession && (
+										<p className="text-sm font-light text-neutral-500">
+											{profesional.profession}
+										</p>
+									)}
+								</div>
+							) : null}
 						</div>
 						{profesional?.about_me && (
 							<p className="leading-relaxed text-neutral-500">

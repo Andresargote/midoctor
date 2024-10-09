@@ -1,18 +1,21 @@
 'use client';
 
-import { mapDateTimeToString } from '@/app/lib/shared/time';
 import { Schedule } from '@/app/lib/types';
 import { capitalize } from '@/app/lib/utils/capitalize';
 import { DateTime, Settings } from 'luxon';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Trash3 } from 'react-bootstrap-icons';
 import { CancelScheduleModal } from '../Modals/CancelSchedule';
-import { mapStatusToString } from '@/app/lib/scheduleStatus';
+import {
+	mapStatusToString,
+	ScheduleStatus,
+	ScheduleStatusValues,
+} from '@/app/lib/scheduleStatus';
 import { cancelScheduleAction } from './action';
 import { Toast } from '../Toast';
 
 export type ShedulesListProps = {
-	schedules: Schedule[];
+	data: Schedule[];
 };
 
 type CancelScheduleModalData = {
@@ -21,7 +24,8 @@ type CancelScheduleModalData = {
 };
 
 Settings.defaultLocale = 'es';
-export function SchedulesList({ schedules }: ShedulesListProps) {
+export function SchedulesList({ data }: ShedulesListProps) {
+	const [schedules, setSchedules] = useState(data ?? []);
 	const [cancelScheduleModal, setCancelScheduleModal] =
 		useState<CancelScheduleModalData>({
 			visible: false,
@@ -40,7 +44,38 @@ export function SchedulesList({ schedules }: ShedulesListProps) {
 			error: !!res.error,
 			success: !res.error,
 		});
+
+		if (!res.error) {
+			setSchedules(prev =>
+				prev.map(s => {
+					if (s.id === schedule.id) {
+						return {
+							...s,
+							status: ScheduleStatus.CANCELLED,
+						};
+					}
+					return s;
+				}),
+			);
+		}
 	}
+
+	const backgroundByStatus = (status: ScheduleStatusValues) => {
+		switch (status) {
+			case ScheduleStatus.SCHEDULED:
+				return 'bg-warning-500';
+			case ScheduleStatus.CANCELLED:
+				return 'bg-error-500';
+			case ScheduleStatus.COMPLETED:
+				return 'bg-success-500';
+			default:
+				return 'bg-warning-500';
+		}
+	};
+
+	useEffect(() => {
+		setSchedules(data);
+	}, [data]);
 
 	return (
 		<>
@@ -70,18 +105,19 @@ export function SchedulesList({ schedules }: ShedulesListProps) {
 					);
 
 					return (
-						<li key={schedule.id} className="bg-f-white rounded-lg">
+						<li
+							key={schedule.id}
+							className="bg-f-white rounded-lg flex flex-col "
+						>
 							<div className="bg-neutral-200 p-4 rounded-t-lg flex items-center justify-between">
 								<time
 									dateTime={professional_date.toISO()!}
 									className="font-medium text-neutral-900"
 								>
-									{mapDateTimeToString(
-										DateTime.fromISO(schedule.professional_time.start_at),
-									)}{' '}
-									-{' '}
-									{mapDateTimeToString(
-										DateTime.fromISO(schedule.professional_time.end_at),
+									{capitalize(
+										DateTime.fromISO(
+											schedule.professional_time.start_at,
+										).toFormat('DDDD'),
 									)}
 								</time>
 
@@ -96,19 +132,59 @@ export function SchedulesList({ schedules }: ShedulesListProps) {
 									<Trash3 color="#EF4444" />
 								</button>
 							</div>
-							<div className="p-4 rounded-b-lg">
-								<p className="text-lg font-light text-neutral-900">
-									Cliente: {capitalize(schedule.name)}
-								</p>
-								<p className="text-md font-light text-neutral-800">
-									Servicio: {capitalize(schedule.service?.name)}
-								</p>
-								<p className="text-md font-light text-neutral-800">
-									Estado: {mapStatusToString(schedule.status)}
-								</p>
-								<p className="text-sm font-light text-neutral-800">
-									{schedule.comment}
-								</p>
+							<div className="p-4 rounded-b-lg flex flex-col gap-4">
+								<div className="flex items-center gap-4">
+									<div className="flex gap-1 items-center">
+										<div
+											className={`w-4 h-4 rounded-full ${backgroundByStatus(schedule.status)} text-f-white`}
+										></div>
+										<span className="text-xs text-neutral-400 font-medium">
+											{mapStatusToString(schedule.status)}
+										</span>
+									</div>
+									<div className="flex gap-1">
+										<time
+											dateTime={schedule.professional_time.start_at}
+											className="font-light text-neutral-900"
+										>
+											{DateTime.fromISO(
+												schedule.professional_time.start_at,
+											).toFormat('HH:mm')}
+										</time>
+										<span className="font-light text-neutral-900">-</span>
+										<time
+											dateTime={schedule.professional_time.end_at}
+											className="font-light text-neutral-900"
+										>
+											{DateTime.fromISO(
+												schedule.professional_time.end_at,
+											).toFormat('HH:mm')}
+										</time>
+									</div>
+								</div>
+								<div className="flex flex-col gap-1">
+									<p className="text-xs font-light text-neutral-600">
+										Nombre paciente:{' '}
+										<span className="text-base text-neutral-900 font-medium">
+											{capitalize(schedule.name)}
+										</span>
+									</p>
+									<p className="text-xs font-light text-neutral-600">
+										Servicio:{' '}
+										<span className="text-base text-neutral-900 font-medium">
+											{capitalize(schedule.service?.name)}
+										</span>
+									</p>
+
+									{schedule.comment && (
+										<p className="text-xs font-light text-neutral-600">
+											Comentario:{' '}
+											<span className="text-base text-neutral-900 font-medium">
+												{schedule.comment}
+											</span>
+										</p>
+									)}
+								</div>
 							</div>
 						</li>
 					);

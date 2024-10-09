@@ -20,6 +20,7 @@ type ProfileFormProps = {
 export type UserFormDefaultValues = {
 	username: string;
 	full_name: string;
+	profession: string;
 	about_me: string;
 	avatar_url: string;
 };
@@ -45,6 +46,7 @@ export function ProfileForm({ profile, profileError }: ProfileFormProps) {
 		defaultValues: {
 			username: profile?.username ?? '',
 			full_name: profile?.full_name ?? '',
+			profession: profile?.profession ?? '',
 			about_me: profile?.about_me ?? '',
 			avatar_url: profile?.avatar_url ?? '',
 		},
@@ -111,6 +113,12 @@ export function ProfileForm({ profile, profileError }: ProfileFormProps) {
 					id="full-name"
 					{...register('full_name')}
 					errorMessage={(errors.full_name?.message as string) ?? ''}
+				/>
+				<TextInput
+					label="Profesión"
+					id="profession"
+					{...register('profession')}
+					errorMessage={(errors.profession?.message as string) ?? ''}
 				/>
 				<TextareaInput
 					label="Sobre mí"

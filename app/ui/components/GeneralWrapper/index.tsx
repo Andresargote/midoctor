@@ -9,9 +9,10 @@ type GeneralWrapperProps = {
 	description: string;
 	btnText: string;
 	conditionalShowBtn?: boolean;
-	AddModal: any;
+	AddModal?: any;
 	Content: any;
 	data: any[];
+	addNewElement?: boolean;
 };
 
 export function GeneralWrapper({
@@ -23,6 +24,7 @@ export function GeneralWrapper({
 	AddModal,
 	Content,
 	data,
+	addNewElement = true,
 }: GeneralWrapperProps) {
 	const [currentData, setCurrentData] = useState(data);
 	const [isOpen, setIsOpen] = useState(false);
@@ -51,7 +53,7 @@ export function GeneralWrapper({
 						</p>
 					</div>
 
-					{showBtn() && (
+					{addNewElement && showBtn() && (
 						<Button
 							onClick={() => {
 								setIsOpen(!isOpen);
@@ -65,14 +67,16 @@ export function GeneralWrapper({
 					)}
 				</header>
 				<Content userId={userId} data={currentData} />
-				<AddModal
-					opened={isOpen}
-					userId={userId}
-					handleCloseModal={() => {
-						setIsOpen(false);
-					}}
-					handleOnSuccess={handleAddData}
-				/>
+				{AddModal && (
+					<AddModal
+						opened={isOpen}
+						userId={userId}
+						handleCloseModal={() => {
+							setIsOpen(false);
+						}}
+						handleOnSuccess={handleAddData}
+					/>
+				)}
 			</div>
 		</div>
 	);

@@ -6,14 +6,12 @@ type Props = {
 	visible: boolean;
 	handleCloseModal: (accept: boolean) => void;
 	loading: boolean;
-	serviceName?: string;
 };
 
 export function DeleteServiceModal({
 	visible,
 	handleCloseModal,
 	loading,
-	serviceName,
 }: Props) {
 	return (
 		<Dialog.Root open={visible}>

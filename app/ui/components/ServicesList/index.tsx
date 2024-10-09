@@ -83,7 +83,6 @@ export function ServicesList({ data }: { data: Service[] }) {
 			)}
 			<DeleteServiceModal
 				loading={state.loading}
-				serviceName={selectedService?.name}
 				visible={deleteModal.visible}
 				handleCloseModal={handleDeleteService}
 			/>

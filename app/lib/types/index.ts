@@ -4,6 +4,7 @@ export type UserProfile = {
 	id: string;
 	username: string;
 	full_name: string;
+	profession: string;
 	about_me: string;
 	avatar_url: string;
 	created_at: string | null;

@@ -55,11 +55,10 @@ export function CancelScheduleModal({
 						}}
 					>
 						<Dialog.Title className="max-w-[90%] mb-2 text-2xl font-semibold leading-relaxed text-neutral-900">
-							Cancelar reserva
+							¿Cancelar reserva?
 						</Dialog.Title>
 						<Dialog.Description className="mb-6 text-sm font-light leading-relaxed text-neutral-800">
-							¿Estás seguro de que deseas cancelar la reserva con{' '}
-							{capitalize(schedule.name)}?
+							<strong>¡Esta acción no se puede deshacer!</strong>
 						</Dialog.Description>
 						<Dialog.Close asChild>
 							<button
