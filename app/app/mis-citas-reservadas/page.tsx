@@ -18,8 +18,6 @@ export default async function MisCitasReservadas() {
 		)
 		.eq('professional_id', data?.user?.id);
 
-	console.log('data', schedules);
-
 	return (
 		<div className="px-4 py-6 mx-auto">
 			<div className="container mx-auto lg:pl-72">

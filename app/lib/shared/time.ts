@@ -12,6 +12,10 @@ export function timeToHourAndMinutes(time: string): {
 	};
 }
 
+export function mapDateTimeToString(dateTime: DateTime): string {
+	return `${dateTime.year}-${dateTime.month}-${dateTime.day} ${dateTime.hour}:${dateTime.minute}`;
+}
+
 export function dateStringToDateObject(date: string): {
 	year: number;
 	month: number;

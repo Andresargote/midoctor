@@ -1,3 +1,5 @@
+import { ScheduleStatusValues } from '../scheduleStatus';
+
 export type UserProfile = {
 	id: string;
 	username: string;
@@ -61,28 +63,39 @@ export type WeekDay = {
 export type Schedule = {
 	id: number;
 	created_at: string;
-	prefesionial_id: number;
 	service_id: number;
-	date: string;
-	time: string;
+	availability_id: number;
 	name: string;
 	email: string;
 	comment: string;
-	timezone: string;
+	consult_id: string;
+	professional_date: string;
+	professional_time: {
+		start_at: string;
+		end_at: string;
+		timezone: string;
+	};
+	client_time: {
+		start_at: string;
+		end_at: string;
+		timezone: string;
+	};
+	status: ScheduleStatusValues;
+	professional_id: string;
 	service: {
 		name: string;
 		price: number;
-		duration: {
-			hours: number;
-			minutes: number;
-		};
+		duration: any;
+		service_id: string;
 	};
 	consult: {
 		name: string;
 		address: string;
 		is_online: boolean;
+		id: number;
 	};
 	availability: {
+		id: number;
 		timezone: string;
 	};
 };
