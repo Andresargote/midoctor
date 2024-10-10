@@ -64,8 +64,14 @@ export function SignUpForm() {
 					</p>
 					<p className="text-sm leading-relaxed text-neutral-500">
 						<Balancer>
-							Si no recibes un correo en breve, revisa tu bandeja de spam o
-							contacta con soporte.
+							Si no recibes un correo en breve, revisa tu bandeja de spam o {''}
+							{/*Todo: change the email address */}
+							<a
+								href="mailto:test@gmail.com"
+								className="underline text-primary-500"
+							>
+								contacta con soporte.
+							</a>
 						</Balancer>
 					</p>
 				</div>

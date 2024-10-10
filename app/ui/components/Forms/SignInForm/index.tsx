@@ -55,7 +55,7 @@ export function SignInForm() {
 		<main className="container px-6 pt-16 mx-auto">
 			{isMagicLinkSent ? (
 				<div className="flex flex-col gap-4 justify-center items-center h-full mx-auto max-w-128 text-center">
-					<h1 className="text-3xl font-semibold text-neutral-900 ">
+					<h1 className="text-3xl font-semibold text-neutral-900">
 						<Balancer>Revisa tu correo para continuar</Balancer>
 					</h1>
 					<p className="text-sm leading-relaxed text-neutral-500">
@@ -65,8 +65,14 @@ export function SignInForm() {
 					</p>
 					<p className="text-sm leading-relaxed text-neutral-500">
 						<Balancer>
-							Si no recibes un correo en breve, revisa tu bandeja de spam o
-							contacta con soporte.
+							Si no recibes un correo en breve, revisa tu bandeja de spam o {''}
+							{/*Todo: change the email address */}
+							<a
+								href="mailto:test@gmail.com"
+								className="underline text-primary-500"
+							>
+								contacta con soporte.
+							</a>
 						</Balancer>
 					</p>
 				</div>

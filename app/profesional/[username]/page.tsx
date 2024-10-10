@@ -2,14 +2,9 @@ import { createClient } from '@/app/lib/utils/supabase/server';
 import { ScheduleForm } from '@/app/ui/components/ScheduleForm';
 import Logo from '@/app/ui/icons/Logo';
 import Image from 'next/image';
+import { notFound } from 'next/navigation';
 import { GeoAlt, Telephone } from 'react-bootstrap-icons';
 import { Balancer } from 'react-wrap-balancer';
-
-/**
-TODO:
-	- redirect to 404 if profesional not found
-
- */
 
 export default async function Profesional({
 	params,
@@ -27,6 +22,10 @@ export default async function Profesional({
 		.eq('username', username);
 
 	const profesional = data ? data[0] : {};
+
+	if (!profesional) {
+		notFound();
+	}
 
 	const { data: consultData } = await supabase
 		.from('consults')
