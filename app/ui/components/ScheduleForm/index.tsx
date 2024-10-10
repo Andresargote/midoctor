@@ -8,9 +8,7 @@ import {
 	generateWeekDays,
 	getDefaultTimezones,
 	isCurrentWeek,
-	setHoursInWeekDays,
 	setHoursInWeekDaysV2,
-	setIsAvailableInWeekDays,
 	setIsAvailableInWeekDaysV2,
 } from '@/app/lib/utils';
 import clsx from 'clsx';
