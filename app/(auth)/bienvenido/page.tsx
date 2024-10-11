@@ -22,7 +22,7 @@ export default async function Welcome() {
 					</h1>
 					<p className="leading-relaxed text-neutral-500">
 						¡Felicidades! {data?.user?.email} Tu cuenta ha sido registrada
-						exitosamente en MiDotor. Estamos emocionados de tenerte en nuestra
+						exitosamente en MiDoctor. Estamos emocionados de tenerte en nuestra
 						plataforma.
 					</p>
 					<p className="leading-relaxed text-neutral-500">

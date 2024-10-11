@@ -59,11 +59,23 @@ export function ProfileForm({ profile, profileError }: ProfileFormProps) {
 		setIsLoading(true);
 		try {
 			if (avatarImg) {
+				const signature = await fetch('/api/img/signature').then(r => r.json());
+
+				if (!signature) {
+					throw new Error('Error al generar la firma');
+				}
+
 				const avatarFormData = new FormData();
 				avatarFormData.append('file', avatarImg as File);
-				avatarFormData.append('upload_preset', 'midoctor-avatars');
+				avatarFormData.append('resource_type', 'image');
+				avatarFormData.append('api_key', signature.api_key);
+				avatarFormData.append('timestamp', `${signature.timestamp}`);
+				avatarFormData.append(
+					'upload_preset',
+					process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET ?? '',
+				);
+				avatarFormData.append('signature', signature.signature);
 
-				// TODO: generate signed url
 				const avatarImgResponse = await fetch(
 					`${process.env.NEXT_PUBLIC_CLOUDINARY_API}`,
 					{

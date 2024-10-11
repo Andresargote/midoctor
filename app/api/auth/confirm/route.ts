@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
 		if (!error) {
 			if (type === 'magiclink') {
 				redirectTo.searchParams.delete('next');
-				redirectTo.pathname = '/app';
+				redirectTo.pathname = '/app/mis-citas-reservadas';
 				return NextResponse.redirect(redirectTo);
 			}
 

@@ -98,98 +98,104 @@ export function SchedulesList({ data }: ShedulesListProps) {
 			{actionResult.success && (
 				<Toast message="Reserva cancelada exitosamente" type="success" />
 			)}
-			<ol className="grid grid-cols-1 gap-6">
-				{schedules?.map(schedule => {
-					const professional_date = DateTime.fromISO(
-						schedule.professional_time.start_at,
-					);
+			{data?.length === 0 ? (
+				<p className="text-lg font-light text-center text-neutral-800">
+					Aún no tienes citas reservadas
+				</p>
+			) : (
+				<ol className="grid grid-cols-1 gap-6">
+					{schedules?.map(schedule => {
+						const professional_date = DateTime.fromISO(
+							schedule.professional_time.start_at,
+						);
 
-					return (
-						<li
-							key={schedule.id}
-							className="bg-f-white rounded-lg flex flex-col "
-						>
-							<div className="bg-neutral-200 p-4 rounded-t-lg flex items-center justify-between">
-								<time
-									dateTime={professional_date.toISO()!}
-									className="font-medium text-neutral-900"
-								>
-									{capitalize(
-										DateTime.fromISO(
-											schedule.professional_time.start_at,
-										).toFormat('DDDD'),
-									)}
-								</time>
-
-								<button
-									onClick={() =>
-										setCancelScheduleModal({ visible: true, schedule })
-									}
-									type="button"
-									className="flex items-center justify-center w-8 h-8 transition duration-300 rounded-md hover:bg-error-50 focused-btn"
-									aria-label="Botón para eliminar consultorio"
-								>
-									<Trash3 color="#EF4444" />
-								</button>
-							</div>
-							<div className="p-4 rounded-b-lg flex flex-col gap-4">
-								<div className="flex items-center gap-4">
-									<div className="flex gap-1 items-center">
-										<div
-											className={`w-4 h-4 rounded-full ${backgroundByStatus(schedule.status)} text-f-white`}
-										></div>
-										<span className="text-xs text-neutral-400 font-medium">
-											{mapStatusToString(schedule.status)}
-										</span>
-									</div>
-									<div className="flex gap-1">
-										<time
-											dateTime={schedule.professional_time.start_at}
-											className="font-light text-neutral-900"
-										>
-											{DateTime.fromISO(
+						return (
+							<li
+								key={schedule.id}
+								className="bg-f-white rounded-lg flex flex-col "
+							>
+								<div className="bg-neutral-200 p-4 rounded-t-lg flex items-center justify-between">
+									<time
+										dateTime={professional_date.toISO()!}
+										className="font-medium text-neutral-900"
+									>
+										{capitalize(
+											DateTime.fromISO(
 												schedule.professional_time.start_at,
-											).toFormat('HH:mm')}
-										</time>
-										<span className="font-light text-neutral-900">-</span>
-										<time
-											dateTime={schedule.professional_time.end_at}
-											className="font-light text-neutral-900"
-										>
-											{DateTime.fromISO(
-												schedule.professional_time.end_at,
-											).toFormat('HH:mm')}
-										</time>
-									</div>
-								</div>
-								<div className="flex flex-col gap-1">
-									<p className="text-xs font-light text-neutral-600">
-										Nombre paciente:{' '}
-										<span className="text-base text-neutral-900 font-medium">
-											{capitalize(schedule.name)}
-										</span>
-									</p>
-									<p className="text-xs font-light text-neutral-600">
-										Servicio:{' '}
-										<span className="text-base text-neutral-900 font-medium">
-											{capitalize(schedule.service?.name)}
-										</span>
-									</p>
+											).toFormat('DDDD'),
+										)}
+									</time>
 
-									{schedule.comment && (
+									<button
+										onClick={() =>
+											setCancelScheduleModal({ visible: true, schedule })
+										}
+										type="button"
+										className="flex items-center justify-center w-8 h-8 transition duration-300 rounded-md hover:bg-error-50 focused-btn"
+										aria-label="Botón para eliminar consultorio"
+									>
+										<Trash3 color="#EF4444" />
+									</button>
+								</div>
+								<div className="p-4 rounded-b-lg flex flex-col gap-4">
+									<div className="flex items-center gap-4">
+										<div className="flex gap-1 items-center">
+											<div
+												className={`w-4 h-4 rounded-full ${backgroundByStatus(schedule.status)} text-f-white`}
+											></div>
+											<span className="text-xs text-neutral-400 font-medium">
+												{mapStatusToString(schedule.status)}
+											</span>
+										</div>
+										<div className="flex gap-1">
+											<time
+												dateTime={schedule.professional_time.start_at}
+												className="font-light text-neutral-900"
+											>
+												{DateTime.fromISO(
+													schedule.professional_time.start_at,
+												).toFormat('HH:mm')}
+											</time>
+											<span className="font-light text-neutral-900">-</span>
+											<time
+												dateTime={schedule.professional_time.end_at}
+												className="font-light text-neutral-900"
+											>
+												{DateTime.fromISO(
+													schedule.professional_time.end_at,
+												).toFormat('HH:mm')}
+											</time>
+										</div>
+									</div>
+									<div className="flex flex-col gap-1">
 										<p className="text-xs font-light text-neutral-600">
-											Comentario:{' '}
+											Nombre paciente:{' '}
 											<span className="text-base text-neutral-900 font-medium">
-												{schedule.comment}
+												{capitalize(schedule.name)}
 											</span>
 										</p>
-									)}
+										<p className="text-xs font-light text-neutral-600">
+											Servicio:{' '}
+											<span className="text-base text-neutral-900 font-medium">
+												{capitalize(schedule.service?.name)}
+											</span>
+										</p>
+
+										{schedule.comment && (
+											<p className="text-xs font-light text-neutral-600">
+												Comentario:{' '}
+												<span className="text-base text-neutral-900 font-medium">
+													{schedule.comment}
+												</span>
+											</p>
+										)}
+									</div>
 								</div>
-							</div>
-						</li>
-					);
-				})}
-			</ol>
+							</li>
+						);
+					})}
+				</ol>
+			)}
 		</>
 	);
 }

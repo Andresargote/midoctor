@@ -28,7 +28,9 @@ export default async function MiDisponibilidad() {
 				<main>
 					<Suspense fallback={<div>Cargando...</div>}>
 						{availibilities?.length === 0 && (
-							<p>No hay disponibilidadades agregadas</p>
+							<p className="text-lg font-light text-center text-neutral-800">
+								Aún no hay una disponibilidad agregada
+							</p>
 						)}
 
 						{availibilities && availibilities?.length > 0 && (

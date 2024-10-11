@@ -16,7 +16,7 @@ type SignUpFormDefaultValues = {
 
 export function SignUpForm() {
 	const [isLoading, setIsLoading] = useState(false);
-	const [isMagicLinkSent, setIsMagicLinkSent] = useState(true);
+	const [isMagicLinkSent, setIsMagicLinkSent] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const {
 		watch,

@@ -25,6 +25,6 @@ export const profileSchema = z.object({
 		.max(200, {
 			message: 'La descripción no puede exceder los 200 caracteres',
 		}),
-	profession: z.string().optional(),
+	profession: z.string().min(1, { message: 'Por favor ingresa tu profesión' }),
 	avatar_url: z.string().optional(),
 });

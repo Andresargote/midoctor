@@ -8,8 +8,5 @@ export const signInSchema = z.object({
 		})
 		.email({
 			message: 'Introduce un email válido (ej. "hola@ejemplo.com")',
-		})
-		.endsWith('.com', {
-			message: 'Introduce un email válido (ej. "hola@ejemplo.com")',
 		}),
 });
