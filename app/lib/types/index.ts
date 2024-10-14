@@ -94,9 +94,13 @@ export type Schedule = {
 		address: string;
 		is_online: boolean;
 		id: number;
+		phone_number: string;
 	};
 	availability: {
 		id: number;
 		timezone: string;
+	};
+	profile: {
+		full_name: string;
 	};
 };
