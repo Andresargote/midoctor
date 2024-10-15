@@ -31,7 +31,7 @@ export function ScheduleReminder({
 
 			<p style={{ fontSize: '1rem', color: '#020617' }}>
 				Tu consulta es el día <strong>{startAt.toFormat('dddd')}</strong> a las{' '}
-				las <strong>{startAt.toFormat('HH:mm')}</strong>.
+				<strong>{startAt.toFormat('HH:mm')}</strong>.
 			</p>
 
 			{address && (

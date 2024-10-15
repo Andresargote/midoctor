@@ -1,10 +1,15 @@
 'use server';
+import { Resend } from 'resend';
 
 import { SUPABASE_TABLES } from '@/app/lib/shared/supabase_tables';
 import { buildDateTime, checkScheduleCollision } from '@/app/lib/shared/time';
 import { ScheduleWithService } from '@/app/lib/types/schedule';
 import { createClient } from '@/app/lib/utils/supabase/server';
 import { DateTime } from 'luxon';
+import { ClientNewScheduleEmail } from '../EmailTemplates/ClientNewSchedule';
+import { DoctorNewScheduleEmail } from '../EmailTemplates/DoctorNewSchedule';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 type CreateScheduleData = {
 	service_id: string;
@@ -132,6 +137,44 @@ export async function createSchedule(
 				error: true,
 				type: 'error',
 			};
+		}
+
+		const professional = await supabase
+			.from(SUPABASE_TABLES.PROFILE)
+			.select('*')
+			.eq('id', schedule.profesional_id);
+
+		if (professional.data && professional.data.length > 0) {
+			const clientEmail = await resend.emails.send({
+				from: 'info@midoctor.io',
+				to: [schedule.email],
+				subject: 'Cita reservada',
+				react: ClientNewScheduleEmail({
+					professionalName: professional.data[0].full_name,
+					clientName: schedule.name,
+					startAt: clientStartAt,
+				}),
+			});
+
+			if (clientEmail.error) {
+				console.log(clientEmail.error, 'Fail client email');
+			}
+
+			/*const doctorEmail = await resend.emails.send({
+				from: 'info@midoctor.io',
+				to: [professional.data[0].email],
+				subject: 'Nueva cita programada',
+				react: DoctorNewScheduleEmail({
+					professionalName: professional.data[0].full_name,
+					clientName: schedule.name,
+					email: schedule.email,
+					startAt: clientStartAt,
+				}),
+			});
+
+			if (doctorEmail.error) {
+				console.log(doctorEmail.error, 'Fail doctor email');
+			}*/
 		}
 
 		return {
