@@ -1,4 +1,11 @@
+import { Metadata } from 'next';
 import Balancer from 'react-wrap-balancer';
+
+export const metadata: Metadata = {
+	title: 'App - MiDoctor',
+	description:
+		'MiDoctor es una plataforma diseñada para que los profesionales de la salud gestionen fácilmente las citas con sus pacientes, optimizando su agenda y mejorando la experiencia de atención.',
+};
 
 export default async function App() {
 	return (

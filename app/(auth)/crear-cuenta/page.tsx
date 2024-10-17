@@ -1,7 +1,14 @@
 import { SignUpForm } from '@/app/ui/components/Forms/SignUpForm';
 import Logo from '@/app/ui/icons/Logo';
+import { Metadata } from 'next';
 import Link from 'next/link';
 import React from 'react';
+
+export const metadata: Metadata = {
+	title: 'Crear cuenta - MiDoctor',
+	description:
+		'Crea una cuenta en MiDoctor para gestionar las citas con tus pacientes.',
+};
 
 export default function SignUp() {
 	return (

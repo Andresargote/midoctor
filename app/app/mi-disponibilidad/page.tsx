@@ -1,6 +1,12 @@
 import { createClient } from '@/app/lib/utils/supabase/server';
 import { Availability } from '@/app/ui/components/Availability';
+import { Metadata } from 'next';
 import { Suspense } from 'react';
+
+export const metadata: Metadata = {
+	title: 'Mi disponibilidad - MiDoctor',
+	description: 'Aquí puedes ver y editar la información de tu disponibilidad.',
+};
 
 export default async function MiDisponibilidad() {
 	const supabase = createClient();

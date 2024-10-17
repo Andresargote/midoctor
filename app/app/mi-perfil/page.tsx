@@ -3,8 +3,14 @@ import { createClient } from '@/app/lib/utils/supabase/server';
 import { ProfileForm } from '@/app/ui/components/Forms/ProfileForm';
 import * as Switch from '@radix-ui/react-switch';
 import type { PostgrestError } from '@supabase/supabase-js';
+import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { Envelope } from 'react-bootstrap-icons';
+
+export const metadata: Metadata = {
+	title: 'Mi perfil - MiDoctor',
+	description: 'Aquí puedes ver y editar la información de tu perfil.',
+};
 
 export default async function MiPerfil() {
 	const supabase = createClient();

@@ -1,7 +1,14 @@
 import { createClient } from '@/app/lib/utils/supabase/server';
 import { Confetti } from '@/app/ui/components/Confetti';
+import { Metadata } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
+
+export const metadata: Metadata = {
+	title: 'Bienvenid@ - MiDoctor',
+	description:
+		'Bienvenid@ a MiDoctor, una plataforma diseñada para que los profesionales de la salud gestionen fácilmente las citas con sus pacientes, optimizando su agenda y mejorando la experiencia de atención.',
+};
 
 export default async function Welcome() {
 	const supabase = createClient();

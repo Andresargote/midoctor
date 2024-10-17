@@ -2,7 +2,13 @@ import { createClient } from '@/app/lib/utils/supabase/server';
 import { GeneralWrapper } from '@/app/ui/components/GeneralWrapper';
 import { SchedulesList } from '@/app/ui/components/SchedulesList';
 import { DateTime } from 'luxon';
+import { Metadata } from 'next';
 import { Suspense } from 'react';
+
+export const metadata: Metadata = {
+	title: 'Mis citas reservadas - MiDoctor',
+	description: 'Aquí puedes ver y gestionar todas tus citas reservadas.',
+};
 
 export default async function MisCitasReservadas() {
 	const supabase = createClient();

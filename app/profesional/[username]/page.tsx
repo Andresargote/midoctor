@@ -6,6 +6,48 @@ import { notFound } from 'next/navigation';
 import { GeoAlt, Telephone } from 'react-bootstrap-icons';
 import { Balancer } from 'react-wrap-balancer';
 
+export async function generateMetadata({
+	params,
+}: {
+	params: {
+		username: string;
+	};
+}) {
+	const { username } = params;
+	const supabase = createClient();
+
+	const { data } = await supabase
+		.from('profiles')
+		.select('*')
+		.eq('username', username)
+		.single();
+
+	if (!data || data.length === 0) {
+		return null;
+	}
+
+	const { full_name, profession, about_me } = data;
+
+	const generateTitle = () => {
+		let title = '';
+
+		if (full_name) {
+			title += `${full_name}`;
+		}
+
+		if (profession) {
+			title += `, ${profession}`;
+		}
+
+		return title;
+	};
+
+	return {
+		title: `${generateTitle()} - Reservar cita - MiDoctor`,
+		description: about_me ?? '',
+	};
+}
+
 export default async function Profesional({
 	params,
 }: {
