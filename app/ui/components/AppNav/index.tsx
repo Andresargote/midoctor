@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import {
+	BoxArrowUpRight,
 	Briefcase,
 	Clock,
 	Hospital,
@@ -13,7 +14,11 @@ import {
 } from 'react-bootstrap-icons';
 import Logo from '../../icons/Logo';
 
-export function AppNav() {
+type AppNavProps = {
+	username: string;
+};
+
+export function AppNav({ username }: AppNavProps) {
 	const [isNavOpen, setIsNavOpen] = useState(false);
 	const currentPath = usePathname();
 
@@ -24,6 +29,8 @@ export function AppNav() {
 			icon: (
 				<Hospital color="#0A0A0A" width={20} height={20} className="mr-6" />
 			),
+			isVisible: true,
+			newTab: false,
 		},
 		{
 			title: 'Mis Servicios',
@@ -31,11 +38,15 @@ export function AppNav() {
 			icon: (
 				<Briefcase color="#0A0A0A" width={20} height={20} className="mr-6" />
 			),
+			isVisible: true,
+			newTab: false,
 		},
 		{
 			title: 'Mi Disponibilidad',
 			href: '/app/mi-disponibilidad',
 			icon: <Clock color="#0A0A0A" width={20} height={20} className="mr-6" />,
+			isVisible: true,
+			newTab: false,
 		} /*,
 		{
 			title: "Mi Calendario",
@@ -53,6 +64,22 @@ export function AppNav() {
 			title: 'Citas Reservadas',
 			href: '/app/mis-citas-reservadas',
 			icon: <Wallet2 color="#0A0A0A" width={20} height={20} className="mr-6" />,
+			isVisible: true,
+			newTab: false,
+		},
+		{
+			title: 'Ver página pública',
+			href: `/profesional/${username}`,
+			icon: (
+				<BoxArrowUpRight
+					color="#0A0A0A"
+					width={20}
+					height={20}
+					className="mr-6"
+				/>
+			),
+			newTab: true,
+			isVisible: username ? true : false,
 		},
 	];
 
@@ -91,7 +118,6 @@ export function AppNav() {
 					'fixed top-0 left-0 z-40 w-full h-full bg-f-black opacity-15 lg:hidden',
 					isNavOpen ? 'block' : 'hidden',
 				)}
-				role="presentation"
 			/>
 
 			<div
@@ -114,23 +140,29 @@ export function AppNav() {
 				</div>
 				<nav aria-label="Menú principal">
 					<ul className="flex flex-col gap-1">
-						{navLinks.map(link => (
-							<li
-								key={link.href}
-								className={clsx(
-									`p-3 transition duration-300 rounded-full text-neutral-900 ${
-										currentPath === link.href
-											? 'bg-neutral-100'
-											: 'hover:bg-neutral'
-									}`,
-								)}
-							>
-								<Link href={link.href} className="flex items-center">
-									{link.icon}
-									{link.title}
-								</Link>
-							</li>
-						))}
+						{navLinks.map(link =>
+							link.isVisible ? (
+								<li
+									key={link.href}
+									className={clsx(
+										`p-3 transition duration-300 rounded-full text-neutral-900 ${
+											currentPath === link.href
+												? 'bg-neutral-100'
+												: 'hover:bg-neutral-100'
+										} `,
+									)}
+								>
+									<Link
+										href={link.href}
+										className="flex items-center"
+										target={link.newTab ? '_blank' : '_self'}
+									>
+										{link.icon}
+										{link.title}
+									</Link>
+								</li>
+							) : null,
+						)}
 					</ul>
 				</nav>
 			</div>

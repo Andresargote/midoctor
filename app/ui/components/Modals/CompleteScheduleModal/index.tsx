@@ -8,20 +8,20 @@ type Props = {
 	isOpen: boolean;
 	schedule: Schedule;
 	handleCloseModal: () => void;
-	handleCancelSchedule: (schedule: Schedule) => Promise<void>;
+	handleCompleteSchedule: (schedule: Schedule) => Promise<void>;
 };
 
-export function CancelScheduleModal({
+export function CompleteScheduleModal({
 	isOpen,
 	schedule,
 	handleCloseModal,
-	handleCancelSchedule,
+	handleCompleteSchedule,
 }: Props) {
 	const [isLoading, setIsLoading] = useState(false);
 
 	const cancelSchedule = async (schedule: Schedule) => {
 		setIsLoading(true);
-		await handleCancelSchedule(schedule);
+		await handleCompleteSchedule(schedule);
 		setIsLoading(false);
 		handleCloseModal();
 	};
@@ -54,7 +54,7 @@ export function CancelScheduleModal({
 						}}
 					>
 						<Dialog.Title className="max-w-[90%] mb-2 text-2xl font-semibold leading-relaxed text-neutral-900">
-							¿Cancelar reserva?
+							¿Marcar cita como completada?
 						</Dialog.Title>
 						<Dialog.Description className="mb-6 text-sm font-light leading-relaxed text-neutral-800">
 							<strong>¡Esta acción no se puede deshacer!</strong>
@@ -91,10 +91,11 @@ export function CancelScheduleModal({
 
 							<Button
 								onClick={() => cancelSchedule(schedule)}
-								bgColorKey="error"
+								bgColorKey="success"
 								type="submit"
 								isLoading={isLoading}
 								disabled={isLoading}
+								aria-label="Marcar como completada la reserva"
 							>
 								Aceptar
 							</Button>

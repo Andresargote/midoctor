@@ -18,3 +18,16 @@ export async function cancelScheduleAction(scheduleId: number) {
 
 	return { error: !!error };
 }
+
+export async function completeScheduleAction(scheduleId: number) {
+	const supabase = createClient();
+
+	const { error } = await supabase
+		.from(SUPABASE_TABLES.SCHEDULES)
+		.update({
+			status: ScheduleStatus.COMPLETED,
+		})
+		.match({ id: scheduleId });
+
+	return { error: !!error };
+}

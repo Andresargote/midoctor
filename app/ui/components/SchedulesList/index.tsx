@@ -11,14 +11,20 @@ import {
 	ScheduleStatus,
 	ScheduleStatusValues,
 } from '@/app/lib/scheduleStatus';
-import { cancelScheduleAction } from './action';
+import { cancelScheduleAction, completeScheduleAction } from './action';
 import { Toast } from '../Toast';
+import { CompleteScheduleModal } from '../Modals/CompleteScheduleModal';
 
 export type ShedulesListProps = {
 	data: Schedule[];
 };
 
 type CancelScheduleModalData = {
+	visible: boolean;
+	schedule: Schedule | null;
+};
+
+type MarkAsCompletedModalData = {
 	visible: boolean;
 	schedule: Schedule | null;
 };
@@ -31,8 +37,18 @@ export function SchedulesList({ data }: ShedulesListProps) {
 			visible: false,
 			schedule: null,
 		});
+	const [markAsCompletedModal, setMarkAsCompletedModal] =
+		useState<MarkAsCompletedModalData>({
+			visible: false,
+			schedule: null,
+		});
 
 	const [actionResult, setActionResult] = useState({
+		success: false,
+		error: false,
+	});
+
+	const [completeActionResult, setCompleteActionResult] = useState({
 		success: false,
 		error: false,
 	});
@@ -52,6 +68,29 @@ export function SchedulesList({ data }: ShedulesListProps) {
 						return {
 							...s,
 							status: ScheduleStatus.CANCELLED,
+						};
+					}
+					return s;
+				}),
+			);
+		}
+	}
+
+	async function completeSchedule(schedule: Schedule) {
+		const res = await completeScheduleAction(schedule.id);
+
+		setCompleteActionResult({
+			error: !!res.error,
+			success: !res.error,
+		});
+
+		if (!res.error) {
+			setSchedules(prev =>
+				prev.map(s => {
+					if (s.id === schedule.id) {
+						return {
+							...s,
+							status: ScheduleStatus.COMPLETED,
 						};
 					}
 					return s;
@@ -98,6 +137,28 @@ export function SchedulesList({ data }: ShedulesListProps) {
 			{actionResult.success && (
 				<Toast message="Reserva cancelada exitosamente" type="success" />
 			)}
+			{markAsCompletedModal.visible && (
+				<CompleteScheduleModal
+					isOpen={markAsCompletedModal.visible}
+					schedule={markAsCompletedModal.schedule!}
+					handleCloseModal={() =>
+						setMarkAsCompletedModal({ visible: false, schedule: null })
+					}
+					handleCompleteSchedule={completeSchedule}
+				/>
+			)}
+			{completeActionResult.error && (
+				<Toast
+					message="Ha ocurrido un error al marcar como completada, por favor intenta de nuevo."
+					type="error"
+				/>
+			)}
+			{completeActionResult.success && (
+				<Toast
+					message="Cita marcada como completada exitosamente"
+					type="success"
+				/>
+			)}
 			{data?.length === 0 ? (
 				<p className="text-lg font-light text-center text-neutral-800">
 					Aún no tienes citas reservadas
@@ -114,7 +175,7 @@ export function SchedulesList({ data }: ShedulesListProps) {
 								key={schedule.id}
 								className="bg-f-white rounded-lg flex flex-col "
 							>
-								<div className="bg-neutral-200 p-4 rounded-t-lg flex items-center justify-between">
+								<div className="bg-neutral-200 p-4 rounded-t-lg flex items-center justify-between flex-wrap gap-4">
 									<time
 										dateTime={professional_date.toISO()!}
 										className="font-medium text-neutral-900"
@@ -126,16 +187,33 @@ export function SchedulesList({ data }: ShedulesListProps) {
 										)}
 									</time>
 
-									<button
-										onClick={() =>
-											setCancelScheduleModal({ visible: true, schedule })
-										}
-										type="button"
-										className="flex items-center justify-center w-8 h-8 transition duration-300 rounded-md hover:bg-error-50 focused-btn"
-										aria-label="Botón para eliminar consultorio"
-									>
-										<Trash3 color="#EF4444" />
-									</button>
+									<div className="flex items-center gap-4">
+										{schedule.status === ScheduleStatus.SCHEDULED && (
+											<button
+												onClick={() => {
+													setMarkAsCompletedModal({
+														visible: true,
+														schedule,
+													});
+												}}
+												className="text-xs bg-success-500 text-f-white px-4 py-2 rounded-md transition duration-300 hover:bg-success-600 focus:outline-none focus:ring-2 focus:ring-success-500 focus:ring-offset-2"
+												aria-label="Botón para abrir modal de marcar como completada"
+											>
+												Marcar cita como completada
+											</button>
+										)}
+
+										<button
+											onClick={() =>
+												setCancelScheduleModal({ visible: true, schedule })
+											}
+											type="button"
+											className="flex items-center justify-center w-8 h-8 transition duration-300 rounded-md hover:bg-error-50 focused-btn"
+											aria-label="Botón para eliminar consultorio"
+										>
+											<Trash3 color="#EF4444" />
+										</button>
+									</div>
 								</div>
 								<div className="p-4 rounded-b-lg flex flex-col gap-4">
 									<div className="flex items-center gap-4">
