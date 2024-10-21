@@ -147,7 +147,7 @@ export async function createSchedule(
 		if (professional.data && professional.data.length > 0) {
 			const clientEmail = await resend.emails.send({
 				from: 'info@midoctor.io',
-				to: [schedule.email],
+				to: ['delivered@resend.dev'],
 				subject: 'Cita reservada',
 				react: ClientNewScheduleEmail({
 					professionalName: professional.data[0].full_name,
@@ -160,9 +160,9 @@ export async function createSchedule(
 				console.log(clientEmail.error, 'Fail client email');
 			}
 
-			/*const doctorEmail = await resend.emails.send({
+			const doctorEmail = await resend.emails.send({
 				from: 'info@midoctor.io',
-				to: [professional.data[0].email],
+				to: ['delivered@resend.dev'],
 				subject: 'Nueva cita programada',
 				react: DoctorNewScheduleEmail({
 					professionalName: professional.data[0].full_name,
@@ -174,7 +174,7 @@ export async function createSchedule(
 
 			if (doctorEmail.error) {
 				console.log(doctorEmail.error, 'Fail doctor email');
-			}*/
+			}
 		}
 
 		return {
