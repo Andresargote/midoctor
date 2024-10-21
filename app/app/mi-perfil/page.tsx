@@ -44,7 +44,11 @@ export default async function MiPerfil() {
 					</p>
 
 					<div className="w-full px-4 py-6 mb-6 rounded-lg shadow-sm bg-f-white">
-						<ProfileForm profile={profile} profileError={!!profileError} />
+						<ProfileForm
+							profile={profile}
+							profileError={!!profileError}
+							email={data?.user?.email ?? ''}
+						/>
 					</div>
 
 					<h2 className="mb-2 text-2xl font-semibold text-neutral-900">

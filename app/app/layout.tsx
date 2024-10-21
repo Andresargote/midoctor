@@ -22,7 +22,7 @@ export default async function AppLayout({
 		.from('profiles')
 		.select()
 		.eq('id', data?.user?.id)
-		.single();
+		.maybeSingle();
 
 	if (error || !data?.user) {
 		redirect('/iniciar-sesion');

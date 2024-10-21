@@ -15,6 +15,7 @@ import { profileSchema } from './validate-schema';
 type ProfileFormProps = {
 	profile: UserProfile | null;
 	profileError: boolean;
+	email: string;
 };
 
 export type UserFormDefaultValues = {
@@ -25,7 +26,11 @@ export type UserFormDefaultValues = {
 	avatar_url: string;
 };
 
-export function ProfileForm({ profile, profileError }: ProfileFormProps) {
+export function ProfileForm({
+	profile,
+	profileError,
+	email,
+}: ProfileFormProps) {
 	const [isSuccess, setIsSuccess] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [isError, setIsError] = useState(false);
@@ -91,6 +96,7 @@ export function ProfileForm({ profile, profileError }: ProfileFormProps) {
 			await updateProfile({
 				id: profile?.id as string,
 				...formValues,
+				email,
 			});
 
 			setIsSuccess(true);

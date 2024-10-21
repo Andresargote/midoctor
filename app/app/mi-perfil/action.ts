@@ -4,6 +4,7 @@ import type { UserFormDefaultValues } from '@/app/ui/components/Forms/ProfileFor
 
 type ProfileFormValues = UserFormDefaultValues & {
 	id: string;
+	email: string;
 };
 
 export async function updateProfile(profile: ProfileFormValues) {
