@@ -1,12 +1,10 @@
 import { DateTime } from 'luxon';
-import { Resend } from 'resend';
 
 import { SUPABASE_TABLES } from '@/app/lib/shared/supabase_tables';
 import { createClient } from '@/app/lib/utils/supabase/server';
 import { ScheduleReminder } from '@/app/ui/components/EmailTemplates/ScheduleReminder';
 import { ScheduleStatus } from '@/app/lib/scheduleStatus';
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+import { resend } from '@/app/lib/utils/resend';
 
 export async function GET() {
 	const supabase = createClient();
