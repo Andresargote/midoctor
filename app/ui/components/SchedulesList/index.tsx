@@ -31,6 +31,7 @@ type MarkAsCompletedModalData = {
 
 Settings.defaultLocale = 'es';
 export function SchedulesList({ data }: ShedulesListProps) {
+	console.log(data);
 	const [schedules, setSchedules] = useState(data ?? []);
 	const [cancelScheduleModal, setCancelScheduleModal] =
 		useState<CancelScheduleModalData>({
@@ -181,9 +182,9 @@ export function SchedulesList({ data }: ShedulesListProps) {
 										className="font-medium text-neutral-900"
 									>
 										{capitalize(
-											DateTime.fromISO(
-												schedule.professional_time.start_at,
-											).toFormat('DDDD'),
+											DateTime.fromISO(schedule.professional_time.start_at)
+												.setZone(schedule.professional_time.timezone)
+												.toFormat('DDDD'),
 										)}
 									</time>
 
@@ -230,26 +231,32 @@ export function SchedulesList({ data }: ShedulesListProps) {
 												dateTime={schedule.professional_time.start_at}
 												className="font-light text-neutral-900"
 											>
-												{DateTime.fromISO(
-													schedule.professional_time.start_at,
-												).toFormat('HH:mm')}
+												{DateTime.fromISO(schedule.professional_time.start_at)
+													.setZone(schedule.professional_time.timezone)
+													.toFormat('HH:mm')}
 											</time>
 											<span className="font-light text-neutral-900">-</span>
 											<time
 												dateTime={schedule.professional_time.end_at}
 												className="font-light text-neutral-900"
 											>
-												{DateTime.fromISO(
-													schedule.professional_time.end_at,
-												).toFormat('HH:mm')}
+												{DateTime.fromISO(schedule.professional_time.end_at)
+													.setZone(schedule.professional_time.timezone)
+													.toFormat('HH:mm')}
 											</time>
 										</div>
 									</div>
-									<div className="flex flex-col gap-1">
+									<div className="flex flex-col gap-2">
 										<p className="text-xs font-light text-neutral-600">
 											Nombre paciente:{' '}
 											<span className="text-base text-neutral-900 font-medium">
 												{capitalize(schedule.name)}
+											</span>
+										</p>
+										<p className="text-xs font-light text-neutral-600">
+											Email paciente:{' '}
+											<span className="text-base text-neutral-900 font-medium">
+												{schedule.email}
 											</span>
 										</p>
 										<p className="text-xs font-light text-neutral-600">

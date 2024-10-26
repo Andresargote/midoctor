@@ -1,4 +1,5 @@
-import { DateTime } from 'luxon';
+import { capitalize } from '@/app/lib/utils/capitalize';
+import { Settings, DateTime } from 'luxon';
 
 type Props = {
 	name: string;
@@ -8,6 +9,8 @@ type Props = {
 	serviceName: string;
 	startAt: DateTime;
 };
+
+Settings.defaultLocale = 'es';
 
 export function ScheduleReminder({
 	name,
@@ -30,7 +33,8 @@ export function ScheduleReminder({
 			</p>
 
 			<p style={{ fontSize: '1rem', color: '#020617' }}>
-				Tu consulta es el día <strong>{startAt.toFormat('dddd')}</strong> a las{' '}
+				Tu consulta es el día{' '}
+				<strong>{capitalize(startAt.toFormat('DDDD'))}</strong> a las{' '}
 				<strong>{startAt.toFormat('HH:mm')}</strong>.
 			</p>
 

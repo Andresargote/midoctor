@@ -142,14 +142,29 @@ export async function createSchedule(
 			.eq('id', schedule.profesional_id)
 			.maybeSingle();
 
+		const consult = await supabase
+			.from(SUPABASE_TABLES.CONSULTS)
+			.select('*')
+			.eq('id', schedule.consult_id)
+			.maybeSingle();
+
+		const service = await supabase
+			.from(SUPABASE_TABLES.SERVICES)
+			.select('name')
+			.eq('id', schedule.service_id)
+			.maybeSingle();
+
 		if (professional.data) {
 			const clientEmail = await resend.emails.send({
-				from: 'info@midoctor.io',
+				from: 'MiDoctor <info@midoctor.io>',
 				to: [schedule.email],
-				subject: 'Cita reservada',
+				subject: 'MiDoctor - ¡Tu cita está confirmada!',
 				react: ClientNewScheduleEmail({
-					professionalName: professional.data.full_name,
-					clientName: schedule.name,
+					professionalName: professional?.data?.full_name,
+					clientName: schedule?.name,
+					serviceName: service?.data?.name,
+					address: consult?.data?.address,
+					phoneNumber: consult?.data?.phone_number,
 					startAt: clientStartAt,
 				}),
 			});
@@ -159,13 +174,14 @@ export async function createSchedule(
 			}
 
 			const doctorEmail = await resend.emails.send({
-				from: 'info@midoctor.io',
+				from: 'MiDoctor <info@midoctor.io>',
 				to: [professional.data.email],
-				subject: 'Nueva cita programada',
+				subject: 'MiDoctor - Tienes una nueva cita programada',
 				react: DoctorNewScheduleEmail({
 					professionalName: professional.data.full_name,
 					clientName: schedule.name,
 					email: schedule.email,
+					serviceName: service?.data?.name,
 					startAt: professionalStartAt,
 				}),
 			});

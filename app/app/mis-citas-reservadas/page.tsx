@@ -29,8 +29,8 @@ export default async function MisCitasReservadas() {
 
 	const sortedSchedules = schedules?.sort((a, b) => {
 		return (
-			DateTime.fromISO(a.professional_time.start_at).toMillis() -
-			DateTime.fromISO(b.professional_time.start_at).toMillis()
+			DateTime.fromISO(b.professional_time.start_at).toMillis() -
+			DateTime.fromISO(a.professional_time.start_at).toMillis()
 		);
 	});
 

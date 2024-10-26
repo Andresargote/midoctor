@@ -23,9 +23,9 @@ async function sendCancelEmailToClient(scheduleId: number) {
 	const clientTime = DateTime.fromISO(data.client_time.start_at);
 
 	const result = await resend.emails.send({
-		from: 'info@midoctor.io',
+		from: 'MiDoctor <info@midoctor.io>',
 		to: [data.email],
-		subject: 'Cita reservada',
+		subject: 'MiDoctor - Tu cita ha sido cancelada',
 		react: DoctorCanceledSchedule({
 			name: data.name,
 			startAt: clientTime,

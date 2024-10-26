@@ -54,7 +54,7 @@ export function CancelScheduleModal({
 						}}
 					>
 						<Dialog.Title className="max-w-[90%] mb-2 text-2xl font-semibold leading-relaxed text-neutral-900">
-							¿Cancelar reserva?
+							¿Cancelar cita?
 						</Dialog.Title>
 						<Dialog.Description className="mb-6 text-sm font-light leading-relaxed text-neutral-800">
 							<strong>¡Esta acción no se puede deshacer!</strong>

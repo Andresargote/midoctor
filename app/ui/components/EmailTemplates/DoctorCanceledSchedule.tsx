@@ -1,9 +1,12 @@
-import { DateTime } from 'luxon';
+import { capitalize } from '@/app/lib/utils/capitalize';
+import { Settings, DateTime } from 'luxon';
 
 type Props = {
 	name: string;
 	startAt: DateTime;
 };
+
+Settings.defaultLocale = 'es';
 
 export function DoctorCanceledSchedule({ name, startAt }: Props) {
 	return (
@@ -13,17 +16,19 @@ export function DoctorCanceledSchedule({ name, startAt }: Props) {
 			<p style={{ fontSize: '1rem', color: '#020617' }}>Hola, {name}</p>
 
 			<p style={{ fontSize: '1rem', color: '#020617' }}>
-				Te informamos que tu reserva del {startAt.toISO()} ha sida cancelada por
-				el profesional.
+				Lamentamos informarte que tu cita programada para el{' '}
+				<strong>{capitalize(startAt.toFormat('DDDD'))}</strong> a las{' '}
+				<strong>{startAt.toFormat('HH:mm')}</strong> ha sido cancelada por el
+				profesional.
 			</p>
 
 			<p style={{ fontSize: '1rem', color: '#020617' }}>
-				Para mas información comunícate directamente con el profesional o agenda
-				una nueva reserva.
+				Si necesitas más información, puedes comunicarte directamente con el
+				profesional o programar una nueva cita desde nuestra plataforma.
 			</p>
 
 			<p style={{ fontSize: '1rem', color: '#020617' }}>
-				¡Saludos!
+				Gracias por tu comprensión,
 				<br />
 				El equipo de MiDoctor
 			</p>
