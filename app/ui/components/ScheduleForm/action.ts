@@ -142,15 +142,16 @@ export async function createSchedule(
 		const professional = await supabase
 			.from(SUPABASE_TABLES.PROFILE)
 			.select('*')
-			.eq('id', schedule.profesional_id);
+			.eq('id', schedule.profesional_id)
+			.maybeSingle();
 
-		if (professional.data && professional.data.length > 0) {
+		if (professional.data) {
 			const clientEmail = await resend.emails.send({
 				from: 'info@midoctor.io',
-				to: ['delivered@resend.dev'],
+				to: [schedule.email],
 				subject: 'Cita reservada',
 				react: ClientNewScheduleEmail({
-					professionalName: professional.data[0].full_name,
+					professionalName: professional.data.full_name,
 					clientName: schedule.name,
 					startAt: clientStartAt,
 				}),
@@ -162,13 +163,13 @@ export async function createSchedule(
 
 			const doctorEmail = await resend.emails.send({
 				from: 'info@midoctor.io',
-				to: ['delivered@resend.dev'],
+				to: [professional.data.email],
 				subject: 'Nueva cita programada',
 				react: DoctorNewScheduleEmail({
-					professionalName: professional.data[0].full_name,
+					professionalName: professional.data.full_name,
 					clientName: schedule.name,
 					email: schedule.email,
-					startAt: clientStartAt,
+					startAt: professionalStartAt,
 				}),
 			});
 
