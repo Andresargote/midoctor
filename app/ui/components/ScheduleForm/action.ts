@@ -1,6 +1,4 @@
 'use server';
-import { Resend } from 'resend';
-
 import { SUPABASE_TABLES } from '@/app/lib/shared/supabase_tables';
 import { buildDateTime, checkScheduleCollision } from '@/app/lib/shared/time';
 import { ScheduleWithService } from '@/app/lib/types/schedule';
@@ -8,8 +6,7 @@ import { createClient } from '@/app/lib/utils/supabase/server';
 import { DateTime } from 'luxon';
 import { ClientNewScheduleEmail } from '../EmailTemplates/ClientNewSchedule';
 import { DoctorNewScheduleEmail } from '../EmailTemplates/DoctorNewSchedule';
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+import { resend } from '@/app/lib/utils/resend';
 
 type CreateScheduleData = {
 	service_id: string;
