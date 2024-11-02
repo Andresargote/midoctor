@@ -9,9 +9,9 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-	title: 'MiDoctor - Gestiona fácilmente tus citas con tus pacientes',
+	title: 'MiDoctor - Optimiza tu tiempo y mejora la atención a tus pacientes',
 	description:
-		'MiDoctor es una plataforma diseñada para que los profesionales de la salud gestionen fácilmente las citas con sus pacientes, optimizando su agenda y mejorando la experiencia de atención.',
+		'MiDoctor te permite gestionar tus citas de forma simple y eficiente. Diseñada para profesionales de la salud, nuestra plataforma facilita la programación de citas y el seguimiento de pacientes, ayudándote a optimizar tu agenda y brindar una experiencia de atención excepcional.',
 };
 
 export default function RootLayout({

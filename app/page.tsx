@@ -1,16 +1,15 @@
-import { createClient } from './lib/utils/supabase/server';
+import { Footer } from './ui/components/Footer';
+import { Header } from './ui/components/Header';
+import { Hero } from './ui/components/Hero';
+import { ProductOffert } from './ui/components/ProductOffert';
 
 export default async function Home() {
-	const supabase = createClient();
-
-	const { data } = await supabase.auth.getUser();
-
 	return (
-		<main>
-			<p className="text-3xl font-bold underline text-primary-500">
-				Telemedicine super app
-				{data?.user?.email}
-			</p>
-		</main>
+		<>
+			<Header />
+			<Hero />
+			<ProductOffert />
+			<Footer />
+		</>
 	);
 }
