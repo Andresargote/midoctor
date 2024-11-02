@@ -19,7 +19,7 @@ export function Header() {
 						<li>
 							<Link
 								href="/crear-cuenta"
-								className="focused-btn font-semibold rounded-full  text-f-white bg-primary-500 hover:bg-primary-600 py-2 px-4 transition duration-300"
+								className="focused-btn font-semibold rounded-full  text-f-white bg-primary-800 hover:bg-primary-600 py-2 px-4 transition duration-300"
 							>
 								Crear cuenta
 							</Link>
