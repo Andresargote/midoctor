@@ -26,25 +26,49 @@ export async function generateMetadata({
 		return null;
 	}
 
-	const { full_name, profession, about_me } = data;
+	const { full_name, profession, about_me, avatar_url } = data;
 
 	const generateTitle = () => {
 		let title = '';
-
 		if (full_name) {
 			title += `${full_name}`;
 		}
-
 		if (profession) {
 			title += `, ${profession}`;
 		}
-
 		return title;
 	};
 
+	const title = generateTitle();
+	const description =
+		about_me ?? `Agenda tu cita con ${full_name}, ${profession}`;
+
 	return {
-		title: `${generateTitle()} - Reservar cita - MiDoctor`,
-		description: about_me ?? '',
+		title: `${title} - Reservar cita - MiDoctor`,
+		description,
+		openGraph: {
+			title: `${title} - Reservar cita - MiDoctor`,
+			description,
+			type: 'profile',
+			locale: 'es_ES',
+			siteName: 'MiDoctor',
+			images: avatar_url
+				? [
+						{
+							url: avatar_url,
+							width: 800,
+							height: 800,
+							alt: `Foto de perfil de ${full_name}`,
+						},
+					]
+				: [],
+		},
+		twitter: {
+			card: 'summary_large_image',
+			title: `${title} - Reservar cita - MiDoctor`,
+			description,
+			images: avatar_url ? [avatar_url] : [],
+		},
 	};
 }
 

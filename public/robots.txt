@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /*
+Disallow: /app/*
+Disallow: /api/*
+Disallow: /iniciar-sesion
+Disallow: /crear-cuenta
+Disallow: /bienvenido
