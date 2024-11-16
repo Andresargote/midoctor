@@ -227,7 +227,7 @@ export function ScheduleForm({
 				endAt: currentStartWeekDay.plus({ days: 6 }).toISO(),
 				timezone: selectedTimezone,
 			});
-			const data = await fetch(`/api/bookedHours?${params.toString()}`, {
+			const data = await fetch(`/api/bookedHours?${params}`, {
 				method: 'GET',
 			});
 

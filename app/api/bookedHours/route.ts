@@ -1,9 +1,12 @@
 import { createClient } from '@/app/lib/utils/supabase/server';
 import { DateTime } from 'luxon';
+import { NextRequest } from 'next/server';
 
-export async function GET(request: Request) {
+export const dynamic = 'force-dynamic';
+
+export async function GET(request: NextRequest) {
 	try {
-		const { searchParams } = new URL(request.url);
+		const { searchParams } = request.nextUrl;
 		const { startAt, endAt, timezone } = Object.fromEntries(
 			searchParams.entries(),
 		);
