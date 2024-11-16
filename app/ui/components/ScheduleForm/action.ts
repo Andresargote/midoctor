@@ -151,7 +151,7 @@ export async function createSchedule(
 		const service = await supabase
 			.from(SUPABASE_TABLES.SERVICES)
 			.select('name')
-			.eq('id', schedule.service_id)
+			.eq('service_id', schedule.service_id)
 			.maybeSingle();
 
 		if (professional.data) {
