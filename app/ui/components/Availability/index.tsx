@@ -19,11 +19,11 @@ export type AvailabilityProps = {
 
 const START_TIMES = generateHoursAndMinutes('06:00', '23:59', 15).map(time => ({
 	value: time,
-	label: parseInt(time.split(':')[0]) > 12 ? `${time}pm` : `${time}am`,
+	label: parseInt(time.split(':')[0]) >= 12 ? `${time}pm` : `${time}am`,
 }));
 const END_TIMES = generateHoursAndMinutes('06:00', '23:59', 15).map(time => ({
 	value: time,
-	label: parseInt(time.split(':')[0]) > 12 ? `${time}pm` : `${time}am`,
+	label: parseInt(time.split(':')[0]) >= 12 ? `${time}pm` : `${time}am`,
 }));
 
 export function Availability({ availability }: AvailabilityProps) {
