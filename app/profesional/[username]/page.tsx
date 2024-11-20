@@ -153,7 +153,7 @@ export default async function Profesional({
 									src={profesional?.avatar_url}
 									width={88}
 									height={88}
-									className="object-cover rounded-full"
+									className="object-cover rounded-full w-20 h-20"
 								/>
 							)}
 
