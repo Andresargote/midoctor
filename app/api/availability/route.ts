@@ -1,7 +1,9 @@
+import { SUPABASE_TABLES } from '@/app/lib/shared/supabase_tables';
 import { buildDefaultAvailability } from '@/app/lib/utils/buildDefaultAvailability';
 import { createClient } from '@/app/lib/utils/supabase/server';
+import { NextRequest } from 'next/server';
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
 	const body = await req.json();
 	const { record } = body;
 
@@ -11,7 +13,10 @@ export async function POST(req: Request) {
 		...defaultAvailability,
 		days: JSON.stringify(defaultAvailability.days),
 	};
-	const { error } = await supabase.from('availability').insert(data);
+
+	const { error } = await supabase
+		.from(SUPABASE_TABLES.AVIABILITY)
+		.insert(data);
 
 	console.log('error', error);
 
