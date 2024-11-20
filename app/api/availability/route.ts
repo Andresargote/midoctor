@@ -6,7 +6,7 @@ export async function POST(req: Request) {
 	const { record } = body;
 
 	const supabase = createClient();
-	const defaultAvailability = buildDefaultAvailability(record.user_id);
+	const defaultAvailability = buildDefaultAvailability(record.id);
 	const data = {
 		...defaultAvailability,
 		days: JSON.stringify(defaultAvailability.days),
