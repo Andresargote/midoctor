@@ -13,6 +13,8 @@ export async function POST(req: Request) {
 	};
 	const { error } = await supabase.from('availability').insert(data);
 
+	console.log('error', error);
+
 	if (error) {
 		return Response.json(
 			{ error: true, message: 'Ha ocurrido un error' },
