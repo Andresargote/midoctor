@@ -447,7 +447,17 @@ export function ScheduleForm({
 
 	const isPastTime = (time: string) => {
 		const timezone = watch('timezone');
-		const formattedTime = DateTime.fromFormat(time, 'HH:mm').setZone(timezone);
+		if (isOnline) {
+			const formattedTime = DateTime.fromFormat(time, 'HH:mm').setZone(
+				timezone,
+			);
+			return formattedTime < DateTime.now().setZone(timezone);
+		}
+
+		const formattedTime = DateTime.fromFormat(time, 'HH:mm').setZone(timezone, {
+			keepLocalTime: true,
+		});
+
 		return formattedTime < DateTime.now().setZone(timezone);
 	};
 
