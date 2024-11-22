@@ -9,16 +9,13 @@ export async function POST(req: NextRequest) {
 
 	const supabase = createClient();
 	const defaultAvailability = buildDefaultAvailability(record.id);
-	const data = {
+
+	const { error } = await supabase.from(SUPABASE_TABLES.AVIABILITY).insert({
 		...defaultAvailability,
-		days: JSON.stringify(defaultAvailability.days),
-	};
+		days: defaultAvailability.days,
+	});
 
-	const { error } = await supabase
-		.from(SUPABASE_TABLES.AVIABILITY)
-		.insert(data);
-
-	console.log('error', error);
+	console.log('error webhook', error);
 
 	if (error) {
 		return Response.json(

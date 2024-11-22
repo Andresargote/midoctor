@@ -40,7 +40,15 @@ export default async function MiDisponibilidad() {
 						)}
 
 						{availibilities && availibilities?.length > 0 && (
-							<Availability availability={availibilities[0]} />
+							<Availability
+								availability={{
+									...availibilities[0],
+									days:
+										typeof availibilities[0].days === 'string'
+											? JSON.parse(availibilities[0].days)
+											: availibilities[0].days,
+								}}
+							/>
 						)}
 					</Suspense>
 				</main>

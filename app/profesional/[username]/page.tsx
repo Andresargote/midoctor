@@ -134,7 +134,15 @@ export default async function Profesional({
 		.select('*')
 		.eq('user_id', profesional?.id);
 
-	const availability = availabilityData ? availabilityData[0] : null;
+	const availability = availabilityData
+		? {
+				...availabilityData[0],
+				days:
+					typeof availabilityData[0].days === 'string'
+						? JSON.parse(availabilityData[0].days)
+						: availabilityData[0].days,
+			}
+		: null;
 
 	return (
 		<>

@@ -225,7 +225,7 @@ export function AvailabilityRow({
 											start: value,
 										});
 									}}
-									label="Selecciona hora de inicio"
+									label="Hora de inicio"
 								/>
 							</div>
 							<div className="h-12 w-36">
@@ -239,7 +239,7 @@ export function AvailabilityRow({
 											end: value,
 										});
 									}}
-									label="Selecciona hora de fin"
+									label="Hora de fin"
 								/>
 							</div>
 							{i === 0 && (

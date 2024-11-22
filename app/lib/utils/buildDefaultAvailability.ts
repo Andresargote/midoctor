@@ -10,7 +10,7 @@ export function buildDefaultAvailability(user_id: string): CreateAvailability {
 		active: true,
 		days: [
 			{
-				idDay: 0,
+				idDay: 7,
 				day: 'Domingo',
 				available: false,
 				slots: [],
@@ -22,7 +22,7 @@ export function buildDefaultAvailability(user_id: string): CreateAvailability {
 				slots: [
 					{
 						start: '09:00',
-						end: '17:00',
+						end: '18:00',
 					},
 				],
 			},
@@ -32,8 +32,8 @@ export function buildDefaultAvailability(user_id: string): CreateAvailability {
 				available: true,
 				slots: [
 					{
-						start: '9:00',
-						end: '17:00',
+						start: '09:00',
+						end: '18:00',
 					},
 				],
 			},
@@ -43,8 +43,8 @@ export function buildDefaultAvailability(user_id: string): CreateAvailability {
 				available: true,
 				slots: [
 					{
-						start: '9:00',
-						end: '17:00',
+						start: '09:00',
+						end: '18:00',
 					},
 				],
 			},
@@ -55,7 +55,7 @@ export function buildDefaultAvailability(user_id: string): CreateAvailability {
 				slots: [
 					{
 						start: '09:00',
-						end: '17:00',
+						end: '18:00',
 					},
 				],
 			},
@@ -66,7 +66,7 @@ export function buildDefaultAvailability(user_id: string): CreateAvailability {
 				slots: [
 					{
 						start: '09:00',
-						end: '17:00',
+						end: '18:00',
 					},
 				],
 			},
