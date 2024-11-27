@@ -1,15 +1,15 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+
 import ConfettiComponent from 'react-confetti';
 
 export function Confetti() {
 	const [vWidth, setVWidth] = useState(0);
 	const [vHeight, setVHeight] = useState(0);
+
 	const [confettiPieces, setConfettiPieces] = useState(200);
 
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation> No need
 	useEffect(() => {
 		if (vHeight === 0) setVHeight(window.innerHeight);
 		if (vWidth === 0) setVWidth(window.innerWidth);
@@ -34,12 +34,14 @@ export function Confetti() {
 	}, []);
 
 	return (
-		<div className="fixed top-0 left-0 z-50 w-full h-full ">
-			<ConfettiComponent
-				width={vWidth}
-				height={vHeight}
-				numberOfPieces={confettiPieces}
-			/>
-		</div>
+		<ConfettiComponent
+			style={{
+				margin: '0 auto',
+				width: '100%',
+			}}
+			width={vWidth}
+			height={vHeight}
+			numberOfPieces={confettiPieces}
+		/>
 	);
 }

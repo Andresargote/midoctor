@@ -22,7 +22,7 @@ export default async function Welcome() {
 	return (
 		<>
 			<Confetti />
-			<main className="container flex flex-col justify-center items-center px-6 mx-auto h-screen">
+			<main className="container z-100 flex flex-col justify-center items-center px-6 mx-auto h-screen">
 				<div className="flex flex-col gap-4 max-w-96">
 					<h1 className="mb-12 text-3xl font-semibold text-f-black">
 						¡Bienvenid@!
