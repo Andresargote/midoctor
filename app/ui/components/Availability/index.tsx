@@ -249,7 +249,7 @@ export function AvailabilityRow({
 									className="flex items-center justify-center w-8 h-8 transition duration-300 rounded-md hover:bg-neutral-200 focused-btn"
 									onClick={() => handleAddSlot(availability.day)}
 								>
-									<PlusLg />
+									<PlusLg size={20} />
 								</button>
 							)}
 							{i > 0 && (
@@ -259,7 +259,7 @@ export function AvailabilityRow({
 									className="flex items-center justify-center w-8 h-8 transition duration-300 rounded-md hover:bg-error-200 focused-btn"
 									onClick={() => handleRemoveSlot(availability.day, i)}
 								>
-									<Trash3 />
+									<Trash3 size={20} />
 								</button>
 							)}
 						</div>
