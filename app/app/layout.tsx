@@ -9,7 +9,7 @@ export default async function AppLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	const supabase = createClient();
+	const supabase = await createClient();
 	const { data, error } = await supabase.auth.getUser();
 
 	const {

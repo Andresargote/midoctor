@@ -8,7 +8,7 @@ import { DateTime } from 'luxon';
 //import { revalidatePath } from 'next/cache';
 
 async function sendCancelEmailToClient(scheduleId: number) {
-	const supabase = createClient();
+	const supabase = await createClient();
 
 	const { error, data } = await supabase
 		.from(SUPABASE_TABLES.SCHEDULES)
@@ -38,7 +38,7 @@ async function sendCancelEmailToClient(scheduleId: number) {
 }
 
 export async function cancelScheduleAction(scheduleId: number) {
-	const supabase = createClient();
+	const supabase = await createClient();
 
 	const { error } = await supabase
 		.from(SUPABASE_TABLES.SCHEDULES)
@@ -55,7 +55,7 @@ export async function cancelScheduleAction(scheduleId: number) {
 }
 
 export async function completeScheduleAction(scheduleId: number) {
-	const supabase = createClient();
+	const supabase = await createClient();
 
 	const { error } = await supabase
 		.from(SUPABASE_TABLES.SCHEDULES)

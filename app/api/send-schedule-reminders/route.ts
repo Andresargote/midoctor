@@ -7,7 +7,7 @@ import { ScheduleStatus } from '@/app/lib/scheduleStatus';
 import { resend } from '@/app/lib/utils/resend';
 
 export async function GET() {
-	const supabase = createClient();
+	const supabase = await createClient();
 
 	//todo: Add 1 day
 	const tomorrowISO = DateTime.fromJSDate(new Date()).toISODate();
@@ -16,7 +16,7 @@ export async function GET() {
 		.from(SUPABASE_TABLES.SCHEDULES)
 		.select(
 			`
-				status, 
+				status,
 				email,
 				name,
 				professional_date,

@@ -6,7 +6,7 @@ type ServiceId = string;
 
 export async function deleteService(serviceId: ServiceId) {
 	try {
-		const supabase = createClient();
+		const supabase = await createClient();
 
 		const { error } = await supabase
 			.from(SUPABASE_TABLES.SERVICES)

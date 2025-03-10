@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default async function MisServicios() {
-	const supabase = createClient();
+	const supabase = await createClient();
 
 	const { data } = await supabase.auth.getUser();
 

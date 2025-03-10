@@ -13,7 +13,7 @@ export async function generateMetadata(props: {
 }) {
 	const params = await props.params;
 	const { username } = params;
-	const supabase = createClient();
+	const supabase = await createClient();
 
 	const { data } = await supabase
 		.from('profiles')
@@ -78,7 +78,7 @@ export default async function Profesional(props: {
 }) {
 	const params = await props.params;
 	const { username } = params;
-	const supabase = createClient();
+	const supabase = await createClient();
 
 	const { data } = await supabase
 		.from('profiles')

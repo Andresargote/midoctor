@@ -18,7 +18,7 @@ export async function addService(service: Service): Promise<{
 	data?: ServiceType;
 }> {
 	try {
-		const supabase = createClient();
+		const supabase = await createClient();
 
 		const convertPriceToCents = (price: string) => {
 			if (price === '0') return 0;

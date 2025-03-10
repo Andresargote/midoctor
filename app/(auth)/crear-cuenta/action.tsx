@@ -3,7 +3,7 @@
 import { createClient } from '@/app/lib/utils/supabase/server';
 
 export async function signUp(email: string) {
-	const supabase = createClient();
+	const supabase = await createClient();
 
 	const { error } = await supabase.auth.signInWithOtp({
 		email,

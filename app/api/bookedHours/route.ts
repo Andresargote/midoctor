@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
 
 		const formatedStartAt = DateTime.fromISO(startAt).toISODate();
 		const formatedEndAt = DateTime.fromISO(endAt).toISODate();
-		const supabase = createClient();
+		const supabase = await createClient();
 
 		const { data, error } = await supabase
 			.from('schedules')

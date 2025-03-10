@@ -6,7 +6,7 @@ type ConsultId = string;
 
 export async function deleteConsult(consultId: ConsultId) {
 	try {
-		const supabase = createClient();
+		const supabase = await createClient();
 
 		console.log(consultId);
 

@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Welcome() {
-	const supabase = createClient();
+	const supabase = await createClient();
 
 	const { error, data } = await supabase.auth.getUser();
 

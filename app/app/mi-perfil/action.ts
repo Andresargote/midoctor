@@ -9,7 +9,7 @@ type ProfileFormValues = UserFormDefaultValues & {
 
 export async function updateProfile(profile: ProfileFormValues) {
 	try {
-		const supabase = createClient();
+		const supabase = await createClient();
 
 		const { error } = await supabase.from('profiles').upsert(profile);
 

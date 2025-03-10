@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default async function MiConsultorio() {
-	const supabase = createClient();
+	const supabase = await createClient();
 
 	const { data } = await supabase.auth.getUser();
 

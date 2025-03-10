@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
 	const body = await req.json();
 	const { record } = body;
 
-	const supabase = createClient();
+	const supabase = await createClient();
 	const defaultAvailability = buildDefaultAvailability(record.id);
 
 	const { error } = await supabase.from(SUPABASE_TABLES.AVIABILITY).insert({

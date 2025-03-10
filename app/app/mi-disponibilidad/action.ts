@@ -10,7 +10,7 @@ export async function editAvailabilyDays({
 	days: Day[];
 }) {
 	try {
-		const supabase = createClient();
+		const supabase = await createClient();
 
 		const { data, error } = await supabase
 			.from('availabilities')

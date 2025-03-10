@@ -37,7 +37,7 @@ export async function createSchedule(
 	profesionalSchedule: ProfesionalScheduleData,
 ) {
 	try {
-		const supabase = createClient();
+		const supabase = await createClient();
 
 		let professionalStartAt: DateTime;
 		let professionalEndAt: DateTime;

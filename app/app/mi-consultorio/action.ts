@@ -16,7 +16,7 @@ export async function addConsult(consult: Consult): Promise<{
 	data?: ConsultType;
 }> {
 	try {
-		const supabase = createClient();
+		const supabase = await createClient();
 
 		const { data, error } = await supabase
 			.from('consults')
