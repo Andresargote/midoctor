@@ -6,13 +6,12 @@ import { notFound } from 'next/navigation';
 import { GeoAlt, Telephone } from 'react-bootstrap-icons';
 import { Balancer } from 'react-wrap-balancer';
 
-export async function generateMetadata({
-	params,
-}: {
-	params: {
+export async function generateMetadata(props: {
+	params: Promise<{
 		username: string;
-	};
+	}>;
 }) {
+	const params = await props.params;
 	const { username } = params;
 	const supabase = createClient();
 
@@ -72,13 +71,12 @@ export async function generateMetadata({
 	};
 }
 
-export default async function Profesional({
-	params,
-}: {
-	params: {
+export default async function Profesional(props: {
+	params: Promise<{
 		username: string;
-	};
+	}>;
 }) {
+	const params = await props.params;
 	const { username } = params;
 	const supabase = createClient();
 
