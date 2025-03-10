@@ -17,6 +17,7 @@ type CreateScheduleData = {
 	time: string; // Client time
 	name: string;
 	email: string;
+	phone: string;
 	comment: string;
 	timezone: string; // Client timezone
 };
@@ -111,6 +112,7 @@ export async function createSchedule(
 			consult_id: schedule.consult_id,
 			name: schedule.name,
 			email: schedule.email,
+			phone_number: schedule.phone,
 			comment: schedule.comment,
 			professional_date: professionalStartAt.toISODate(),
 			professional_time: {

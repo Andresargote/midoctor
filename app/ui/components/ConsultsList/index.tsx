@@ -2,7 +2,6 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import { Trash3, X } from 'react-bootstrap-icons';
 import { Button } from '../Button';
-import 'react-phone-number-input/style.css';
 import type { Consult } from '@/app/lib/types';
 import { useEffect, useState } from 'react';
 import { Toast } from '../Toast';

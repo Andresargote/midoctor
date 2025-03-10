@@ -57,7 +57,7 @@ export function SelectV2({
 				id={id}
 			>
 				{chosen?.label || label}
-				<ChevronDown color="#0A0A0A" />
+				<ChevronDown color="#0A0A0A" width={20} height={20} />
 			</button>
 			{isDropdownOpen && (
 				<ul

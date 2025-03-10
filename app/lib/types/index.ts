@@ -69,6 +69,7 @@ export type Schedule = {
 	name: string;
 	email: string;
 	comment: string;
+	phone_number: string;
 	consult_id: string;
 	professional_date: string;
 	professional_time: {

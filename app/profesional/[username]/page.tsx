@@ -226,10 +226,12 @@ export default async function Profesional(props: {
 									Información de consulta
 								</h2>
 								<address className="flex gap-2 items-center mb-2 text-sm not-italic font-light text-neutral-500">
-									{<GeoAlt />} {consult?.address}
+									{<GeoAlt color="gray" width={18} height={18} />}{' '}
+									{consult?.address}
 								</address>
 								<address className="flex gap-2 items-center text-sm not-italic font-light text-neutral-500">
-									{<Telephone />} {consult?.phone_number}
+									{<Telephone width={18} height={18} color="gray" />}{' '}
+									{consult?.phone_number}
 								</address>
 							</div>
 						)}

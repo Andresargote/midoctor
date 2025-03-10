@@ -31,7 +31,6 @@ type MarkAsCompletedModalData = {
 
 Settings.defaultLocale = 'es';
 export function SchedulesList({ data }: ShedulesListProps) {
-	console.log(data);
 	const [schedules, setSchedules] = useState(data ?? []);
 	const [cancelScheduleModal, setCancelScheduleModal] =
 		useState<CancelScheduleModalData>({
@@ -212,7 +211,7 @@ export function SchedulesList({ data }: ShedulesListProps) {
 											className="flex items-center justify-center w-8 h-8 transition duration-300 rounded-md hover:bg-error-50 focused-btn"
 											aria-label="Botón para eliminar consultorio"
 										>
-											<Trash3 color="#EF4444" />
+											<Trash3 color="#EF4444" size={24} />
 										</button>
 									</div>
 								</div>
@@ -251,6 +250,12 @@ export function SchedulesList({ data }: ShedulesListProps) {
 											Nombre paciente:{' '}
 											<span className="text-base text-neutral-900 font-medium">
 												{capitalize(schedule.name)}
+											</span>
+										</p>
+										<p className="text-xs font-light text-neutral-600">
+											Telefono paciente:{' '}
+											<span className="text-base text-neutral-900 font-medium">
+												{schedule.phone_number}
 											</span>
 										</p>
 										<p className="text-xs font-light text-neutral-600">

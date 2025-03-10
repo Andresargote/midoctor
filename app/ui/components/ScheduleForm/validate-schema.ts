@@ -13,6 +13,19 @@ export const clientSchema = z.object({
 	name: z.string().min(1, {
 		message: 'Introduce tu nombre',
 	}),
+	phone: z
+		.string({
+			required_error: 'Introduce tu número de teléfono',
+		})
+		.min(1, {
+			message: 'Introduce tu número de teléfono',
+		})
+		.refine(value => {
+			if (!value) return false;
+
+			const digitsOnly = value.replace(/\D/g, '');
+			return digitsOnly.length >= 10;
+		}, 'Introduce un número de teléfono válido con al menos 10 dígitos'),
 	email: z.string().email({
 		message: 'Introduce un email válido',
 	}),

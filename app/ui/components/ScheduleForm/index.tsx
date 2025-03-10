@@ -32,6 +32,8 @@ import Balancer from 'react-wrap-balancer';
 import { Loader } from '../Loader';
 import { createSchedule } from './action';
 import { buildDateTime } from '@/app/lib/shared/time';
+import PhoneInput from 'react-phone-number-input';
+import 'react-phone-number-input/style.css';
 
 type ScheduleFormProps = {
 	services: Service[];
@@ -81,6 +83,7 @@ type ScheduleFormValues = {
 	time: string;
 	name: string;
 	email: string;
+	phone: string;
 	comment: string;
 	timezone: string;
 };
@@ -137,6 +140,7 @@ export function ScheduleForm({
 			time: '',
 			name: '',
 			email: '',
+			phone: '',
 			comment: '',
 			timezone: isOnline
 				? getDefaultTimezones(TIMEZONES, availability.timezone)
@@ -536,7 +540,11 @@ export function ScheduleForm({
 																handlePrevWeek();
 															}}
 														>
-															<ChevronLeft color="#0A0A0A" />
+															<ChevronLeft
+																color="#0A0A0A"
+																width={20}
+																height={20}
+															/>
 														</button>
 													)}
 													<button
@@ -546,7 +554,11 @@ export function ScheduleForm({
 															handleNextWeek();
 														}}
 													>
-														<ChevronRight color="#0A0A0A" />
+														<ChevronRight
+															color="#0A0A0A"
+															width={20}
+															height={20}
+														/>
 													</button>
 												</div>
 												<ol className="flex flex-wrap gap-4">
@@ -689,11 +701,11 @@ export function ScheduleForm({
 									setStep(0);
 								}}
 							>
-								<ChevronLeft color="#0A0A0A" />
+								<ChevronLeft color="#0A0A0A" width={20} height={20} />
 							</button>
 						</div>
 						<div className="flex gap-2 items-center text-sm">
-							<Calendar4 color="#0F172A" />
+							<Calendar4 color="#0F172A" width={20} height={20} />
 							<p className="text-sm font-light text-neutral-900">
 								{formatDate(watch('date')).toFormat('dd')} de{' '}
 								{formatDate(watch('date')).toFormat('MMMM')} del{' '}
@@ -714,12 +726,45 @@ export function ScheduleForm({
 								id="name"
 								type="text"
 								{...register('name')}
+								placeholder="Carlos Perez"
 								errorMessage={(errors.name?.message as string) ?? ''}
+							/>
+							<Controller
+								name="phone"
+								control={control}
+								render={({ field }) => (
+									<label
+										htmlFor="phone"
+										className="text-sm font-light text-neutral-600"
+									>
+										{' '}
+										Teléfono
+										<PhoneInput
+											id="phone"
+											label="Telefono"
+											placeholder="04244396089"
+											defaultCountry="VE"
+											countries={['VE']}
+											country="VE"
+											value={field.value}
+											onChange={value => {
+												field.onChange(value);
+												setValue('phone', value as string);
+											}}
+										/>
+										{errors.phone && (
+											<span className="text-xs font-semibold text-error-500 font-xs">
+												{errors.phone.message}
+											</span>
+										)}
+									</label>
+								)}
 							/>
 							<TextInput
 								label="Email"
 								id="email"
 								type="email"
+								placeholder="carlosperez@example.com"
 								{...register('email')}
 								errorMessage={(errors.email?.message as string) ?? ''}
 							/>

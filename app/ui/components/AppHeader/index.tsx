@@ -6,7 +6,7 @@ import clsx from 'clsx';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
-import { BoxArrowInLeft, Person } from 'react-bootstrap-icons';
+import { BoxArrowInLeft, Person, Link45deg } from 'react-bootstrap-icons';
 import Logo from '../../icons/Logo';
 import { AppNav } from '../AppNav';
 import { Avatar } from '../Avatar';
@@ -50,15 +50,27 @@ export function AppHeader({ profile }: { profile: UserProfile | null }) {
 
 					<div className="flex items-center gap-8 flex-wrap">
 						{profile?.username && (
-							<Link
-								href={`/profesional/${profile?.username}`}
-								target="_blank"
-								className="hidden bg-primary-500 text-f-white rounded-full px-4 py-2 font-semibold text-sm md:flex"
+							<button
+								onClick={() => {
+									const profileUrl = `${window.location.origin}/profesional/${profile?.username}`;
+									navigator.clipboard
+										.writeText(profileUrl)
+										.then(() => {
+											alert(
+												'¡Enlace del perfil copiado! Ahora puedes compartirlo con tus clientes.',
+											);
+										})
+										.catch(err => {
+											console.error('Error al copiar: ', err);
+										});
+								}}
+								className="hidden shadow-sm bg-primary-500 text-f-white rounded-full px-4 py-2 font-semibold text-sm md:flex items-center gap-2"
 							>
-								<span className="text-sm font-semibold text-f-white underline">
-									Ver página pública
+								<Link45deg size={20} color="white" />
+								<span className="text-sm font-semibold text-f-white">
+									Compartir perfil
 								</span>
-							</Link>
+							</button>
 						)}
 
 						<DropdownMenu.Root modal={false}>
